@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home_tab"
+        android:icon="@drawable/ic_round_event_note_24"
+        android:title="@string/bottom_menu_record" />
+
+    <item
+        android:id="@+id/category_tab"
+        android:icon="@drawable/ic_round_receipt_long_24"
+        android:title="@string/bottom_menu_receipt" />
+
+    <item
+        android:id="@+id/search_tab"
+        android:icon="@drawable/ic_outline_food_bank_24"
+        android:title="@string/bottom_menu_togo" />
+
+    <item
+        android:id="@+id/my_tab"
+        android:icon="@drawable/free_icon_pawprint"
+        android:title="@string/bottom_menu_my" />
+
+</menu>

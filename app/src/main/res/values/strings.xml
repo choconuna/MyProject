@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MyProject</string>
+
+    <string name="bottom_menu_record">기록</string>
+
+    <string name="bottom_menu_receipt">소비</string>
+
+    <string name="bottom_menu_togo">TOGO</string>
+
+    <string name="bottom_menu_my">MY</string>
+
+    <!-- 네이티브 앱 키 (예시) -->
+    <string name="kakao_app_key">f33995d02976609332bd00f2f44e27a2</string>
+</resources>

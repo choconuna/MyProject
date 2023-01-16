@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/border.xml" value="0.146" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/bottom_icon_color.xml" value="0.146" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/button_clicked_color.xml" value="0.146" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/button_icon_color.xml" value="0.146" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/button_ok.xml" value="0.146" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_outline_food_bank_24.xml" value="0.132" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_round_receipt_long_24.xml" value="0.132" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/round_button.xml" value="0.146" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_join.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_main.xml" value="0.136" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_splash.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_start.xml" value="0.176" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/start_toolbar.xml" value="0.2" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/top_toolbar.xml" value="0.12222222222222222" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/menu/bottom_menu.xml" value="0.25052083333333336" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.121" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.12" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.122" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable/baseline_pets_24.xml" value="0.1" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable/border.xml" value="0.1" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable/bottom_icon_color.xml" value="0.1" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable/round_botton.xml" value="0.1" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable/round_button.xml" value="0.149" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/layout/activity_splash.xml" value="0.25052083333333336" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/layout/activity_start.xml" value="0.2" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/layout/start_toolbar.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/layout/top_toolbar.xml" value="0.25052083333333336" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/menu/bottom_menu.xml" value="0.25104166666666666" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/up.xml" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
