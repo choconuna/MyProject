@@ -21,16 +21,12 @@ import androidx.appcompat.widget.Toolbar
 import com.firebase.ui.auth.data.model.User
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 class JoinActivity : AppCompatActivity() {
-
     lateinit var mFirebaseAuth: FirebaseAuth            // 파이어베이스 인증
-    lateinit var mDatabaseReference: DatabaseReference  // 실시간 데이터베이스
 
     lateinit var emailArea : EditText
     lateinit var emailAlert : TextView
@@ -53,7 +49,6 @@ class JoinActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         mFirebaseAuth = FirebaseAuth.getInstance()
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference("mungNote")
 
         emailAlert = findViewById(R.id.emailAlert)
         emailArea = findViewById(R.id.emailArea)
@@ -65,102 +60,37 @@ class JoinActivity : AppCompatActivity() {
         pwCheckArea = findViewById(R.id.pwCheckArea)
         pwAlert.visibility = GONE
 
-        emailFormCheck()
-
-        pwCheck()
-
         joinBtn = findViewById(R.id.joinBtn)
 
         joinBtn.setOnClickListener {
-            Log.d("Main", email + " " + pw)
+            email = emailArea.text.toString().trim()
+            pw = pwArea.text.toString().trim()
 
-            if(!email.equals("") && !pw.equals("")) {
-                createUser(email, pw)
-                finish()
-            } else if(email.equals("") && !pw.equals("")) {
-                Toast.makeText(this, "이메일을 입력하세요!", Toast.LENGTH_LONG).show()
-            } else if(!email.equals("") && pw.equals("")) {
-                Toast.makeText(this, "비밀번호를 입력하세요!", Toast.LENGTH_LONG).show()
-            }
+            Log.d("Join", email + " " + pw)
+
+            createUser(email, pw)
         }
-    }
-
-    fun emailFormCheck() { // 이메일 형식으로 입력한 것인지 확인
-        emailArea.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable) {
-                emailAlert.visibility = View.VISIBLE
-                if (!Patterns.EMAIL_ADDRESS.matcher(s.toString().trim()).matches()) {
-                    if(emailArea.text.toString().equals("")) {
-                        emailAlert.visibility = View.GONE
-                    } else {
-                        emailAlert.setText("이메일 형식으로 입력해 주세요.") // 경고 메세지
-                    }
-                } else {
-                    emailAlert.visibility = View.GONE //에러 메세지 제거
-                    email = emailArea.getText().toString().trim()
-                    emailVeri.setOnClickListener {
-                    }
-                }
-            }
-        })
-    }
-
-    fun pwCheck() {
-        pwCheckArea.addTextChangedListener(object : TextWatcher {
-            //입력하기 전
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                pwAlert.setText("")
-            }
-            //텍스트 변화가 있을 시
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(pwArea.getText().toString().trim().equals(pwCheckArea.getText().toString().trim())){
-                    pwAlert.visibility = GONE
-                    // 가입하기 버튼 활성화
-                    joinBtn.isEnabled=true
-                }
-                else{
-                    pwAlert.setText("비밀번호가 일치하지 않습니다.")
-                    // 가입하기 버튼 비활성화
-                    joinBtn.isEnabled=false
-                }
-            }
-            // 텍스트 변화가 있을 시
-            override fun afterTextChanged(p0: Editable?) {
-                pwAlert.visibility = VISIBLE
-                if(pwArea.getText().toString().trim().equals(pwCheckArea.getText().toString().trim()) && !pwArea.getText().toString().equals("")){
-                    pwAlert.visibility = GONE
-                    pw = pwArea.getText().toString().trim()
-                    // 가입하기 버튼 활성화
-                    joinBtn.isEnabled=true
-                }
-                else{
-                    if(!pwArea.getText().toString().trim().equals(""))
-                        pwAlert.setText("비밀번호가 일치하지 않습니다.")
-                    else if(pwArea.getText().toString().trim().equals(""))
-                        pwAlert.visibility = GONE
-                    // 가입하기 버튼 비활성화
-                    joinBtn.isEnabled=false
-                }
-            }
-        })
     }
 
     fun createUser(email : String, pw : String) {
         mFirebaseAuth.createUserWithEmailAndPassword(email, pw).addOnCompleteListener(this)
         { task ->
             if (task.isSuccessful) {
-                var firebaseUser: FirebaseUser? = mFirebaseAuth.currentUser
-                var account: UserAccount = UserAccount()
-                account.setIdToken(firebaseUser?.uid!!)
-                account.setEmailId(firebaseUser?.email!!)
-                account.setPassword(pw)
-
-                // setValue : database에 insert(삽입) 행위
-                mDatabaseReference.child("UserAccount").child(firebaseUser.uid).setValue(account)
-
                 Toast.makeText(this@JoinActivity, "회원가입 성공!", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            else if (!task.isSuccessful) {
+                try {
+                    throw task.exception!!
+                } catch(e : FirebaseAuthWeakPasswordException) {
+                    Toast.makeText(this@JoinActivity, "비밀번호가 간단합니다.", Toast.LENGTH_LONG).show()
+                } catch(e : FirebaseAuthInvalidCredentialsException) {
+                    Toast.makeText(this@JoinActivity, "이메일 형식에 맞지 않습니다.", Toast.LENGTH_LONG).show()
+                } catch(e : FirebaseAuthUserCollisionException) {
+                    Toast.makeText(this@JoinActivity, "이미 존재하는 이메일입니다.", Toast.LENGTH_LONG).show()
+                } catch(e : Exception) {
+                    Toast.makeText(this@JoinActivity, "정확히 입력했는지 확인하세요.", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
