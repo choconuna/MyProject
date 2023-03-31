@@ -17,6 +17,11 @@
         android:title="@string/bottom_menu_togo" />
 
     <item
+        android:id="@+id/community_tab"
+        android:icon="@drawable/ic_community"
+        android:title="@string/bottom_menu_community" />
+
+    <item
         android:id="@+id/my_tab"
         android:icon="@drawable/ic_my"
         android:title="@string/bottom_menu_my" />

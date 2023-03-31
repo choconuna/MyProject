@@ -5,11 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.preference.PreferenceManager
 import android.view.MotionEvent
-import android.view.View
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +18,6 @@ class  StartActivity : AppCompatActivity() {
     lateinit var joinBtn : Button
     lateinit var emailArea : EditText
     lateinit var pwArea : EditText
-    lateinit var title : ImageView
     lateinit var loginArea : LinearLayout
 
     lateinit var email : String
@@ -32,7 +27,7 @@ class  StartActivity : AppCompatActivity() {
     lateinit var editor : SharedPreferences.Editor
     private val prefUserEmail = "userEmail"
 
-    private val TAG: String = "log"
+    private val TAG: String = StartActivity::class.java.simpleName
 
     private lateinit var mFirebaseAuth : FirebaseAuth // Firebase Auth
 
@@ -40,27 +35,9 @@ class  StartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
 
-        title = findViewById(R.id.titleView)
-        val animOut = AnimationUtils.loadAnimation(this, R.anim.fade_out)
-        title.startAnimation(animOut)
-        val animIn = AnimationUtils.loadAnimation(this, R.anim.fade_in)
-        title.startAnimation(animIn)
-
-        sharedPreferences = getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
-        if(sharedPreferences.getString(prefUserEmail, "").toString().isNotEmpty()) {
-            Log.d(TAG, "자동 로그인 성공")
-            var intent : Intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("userEmail", sharedPreferences.getString(prefUserEmail, "").toString())
-            startActivity(intent)
-            finish()
-        }
+        autoLogin()
 
         loginArea = findViewById(R.id.login)
-
-        Handler().postDelayed({
-            title.visibility = View.GONE
-            loginArea.visibility = View.VISIBLE
-        }, StartActivity.DURATION)
 
         emailArea = findViewById(R.id.emailArea)
         pwArea = findViewById(R.id.pwArea)
@@ -85,17 +62,20 @@ class  StartActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        private const val DURATION : Long = 4000
-    }
-
     public override fun onStart() {
         super.onStart()
         Log.d(TAG, "LoginActivity - onStart() called")
     }
 
-    private fun autoLogin() {
-
+    private fun autoLogin() { // 자동 로그인 처리
+        sharedPreferences = getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
+        if(sharedPreferences.getString(prefUserEmail, "").toString().isNotEmpty()) {
+            Log.d(TAG, "자동 로그인 성공")
+            var intent : Intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("userEmail", sharedPreferences.getString(prefUserEmail, "").toString())
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun login(email : String, pw : String) { // 로그인
@@ -114,6 +94,7 @@ class  StartActivity : AppCompatActivity() {
                     editor.putString(prefUserEmail, email)
                     editor.commit()
                     var intent : Intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     finish()
                 } else {
@@ -123,7 +104,7 @@ class  StartActivity : AppCompatActivity() {
         }
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean { // 다른 영역 터치 시 키보드 숨기기
+    /* override fun dispatchTouchEvent(ev: MotionEvent): Boolean { // 다른 영역 터치 시 키보드 숨기기
         val view = currentFocus
         if (view != null && (ev.action == MotionEvent.ACTION_UP || ev.action == MotionEvent.ACTION_MOVE) && view is EditText && !view.javaClass.name.startsWith(
                 "android.webkit."
@@ -140,5 +121,5 @@ class  StartActivity : AppCompatActivity() {
             )
         }
         return super.dispatchTouchEvent(ev)
-    }
+    } */
 }

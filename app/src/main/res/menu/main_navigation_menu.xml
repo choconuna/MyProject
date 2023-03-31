@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
-        <item android:title="정보">
+        <item android:title="MY">
             <menu>
-                <!-- 커뮤니티 메뉴 !-->
+                <!-- my 메뉴 !-->
                 <item
-                    android:id="@+id/community"
-                    android:icon="@drawable/community"
-                    android:title="커뮤니티"
-                />
-                <!-- 채팅 메뉴 !-->
+                    android:id="@+id/my"
+                    android:icon="@drawable/ic_my"
+                    android:title="MY"
+                    />
+
                 <item
-                    android:id="@+id/chat"
-                    android:icon="@drawable/chat"
-                    android:title="채팅"
-                />
+                    android:id="@+id/logout"
+                    android:icon="@drawable/ic_logout"
+                    android:title="LOGOUT"
+                    />
             </menu>
         </item>
         <item android:title="TOGO">
@@ -22,8 +22,8 @@
                 <!-- 식당 메뉴 !-->
                 <item
                     android:id="@+id/restaurant"
-                    android:icon="@drawable/restaurant"
-                    android:title="동반 식당"
+                    android:icon="@drawable/ic_restaurant"
+                    android:title="동반"
                 />
             </menu>
         </item>

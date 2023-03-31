@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinner">
+        <item>고든 세터</item>
+        <item>꼬똥 드 툴레아</item>
+        <item>골든두들</item>
+        <item>골든 리트리버</item>
+        <item>그레이트 데인</item>
+        <item>그레이트 스위스 마운틴 도그</item>
+        <item>그레이트 피레니즈</item>
+        <item>그레이하운드</item>
+        <item>그린란드견</item>
+        <item>글렌 오브 이말 테리어</item>
+        <item>기슈견</item>
+        <item>나폴리탄 마스티프</item>
+        <item>노르웨지안 부훈트</item>
+        <item>노르웨이 엘크 하운드</item>
+        <item>노리치 테리어</item>
+        <item>노바 스코셔 덕 톨링 레트리버</item>
+        <item>노퍽 테리어</item>
+        <item>뉴펀들랜드</item>
+        <item>닥스훈트</item>
+        <item>달마시안</item>
+        <item>댄디 딘몬트 테리어</item>
+        <item>도고 까나리오</item>
+        <item>도고 아르헨티노</item>
+        <item>도그 드 보르도</item>
+        <item>도베르만 핀셔</item>
+        <item>도사견</item>
+        <item>동경이</item>
+        <item>라고토 로마뇰로</item>
+        <item>라사압소</item>
+        <item>라페이로 도 알렌테조</item>
+        <item>라포니안 허더</item>
+        <item>래브라도 리트리버</item>
+        <item>레온베르거</item>
+        <item>레이크랜드 테리어</item>
+        <item>로디지아 리지백</item>
+        <item>루이지애나 레오파드 도그(카타훌라)</item>
+        <item>로첸</item>
+        <item>로트와일러</item>
+        <item>마스티프</item>
+        <item>맨체스터 테리어</item>
+        <item>말티즈</item>
+        <item>미니어처 불 테리어</item>
+        <item>미니어처 슈나우저</item>
+        <item>미니어처 핀셔</item>
+        <item>말티푸</item>
+        <item>믹스견</item>
+        <item>바센지</item>
+        <item>바셋 하운드</item>
+        <item>버니즈 마운틴 도그</item>
+        <item>베들링턴 테리어</item>
+        <item>발바리</item>
+        <item>벨기에 말리노이즈</item>
+        <item>벨기에 테뷰런</item>
+        <item>벨지안 그리펀</item>
+        <item>벨지언 쉽독 (벨지언 셰퍼드)</item>
+        <item>보더콜리</item>
+        <item>보더 테리어</item>
+        <item>보르도 마스티프</item>
+        <item>보르조이</item>
+        <item>보비에 드 플랜더스</item>
+        <item>보스롱</item>
+        <item>보스턴 테리어</item>
+        <item>복서</item>
+        <item>볼로네즈</item>
+        <item>불개</item>
+        <item>불도그</item>
+        <item>불리 쿠타</item>
+        <item>불 마스티프</item>
+        <item>불 테리어</item>
+        <item>브뤼셀 그리펀</item>
+        <item>브리어드</item>
+        <item>브리타니</item>
+        <item>블랙 러시안 테리어</item>
+        <item>블랙 앤드 탄 쿤하운드</item>
+        <item>블러드 하운드</item>
+        <item>비글</item>
+        <item>비숑 프리제</item>
+        <item>비어디드 콜리</item>
+        <item>비즐라</item>
+        <item>빠삐용(견종)</item>
+        <item>사모예드</item>
+        <item>사플라니낙</item>
+        <item>살루키</item>
+        <item>삽살개</item>
+        <item>샤페이</item>
+        <item>서식스 스패니얼</item>
+        <item>세인트 버나드</item>
+        <item>셰틀랜드 쉽독</item>
+        <item>소프트 코티드 휘튼 테리어</item>
+        <item>솔로이츠 쿠인틀레</item>
+        <item>스무드 폭스 테리어</item>
+        <item>스웨디쉬 발훈트</item>
+        <item>스카이 테리어</item>
+        <item>스코티시 디어하운드</item>
+        <item>스코티시 테리어</item>
+        <item>스키퍼키</item>
+        <item>스태퍼드셔 불 테리어</item>
+        <item>스탠더드 슈나우저</item>
+        <item>스패니쉬 그레이 하운드</item>
+        <item>스패니쉬 마스티프</item>
+        <item>스피노네 이탈리아노</item>
+        <item>스피츠</item>
+        <item>시바 이누</item>
+        <item>시베리언 허스키</item>
+        <item>시츄</item>
+        <item>시코쿠견</item>
+        <item>실리엄 테리어</item>
+        <item>실키 테리어</item>
+        <item>아나톨리아 셰퍼드</item>
+        <item>아메리칸 불도그</item>
+        <item>아메리칸 불리</item>
+        <item>아메리칸 스태퍼드셔 테리어</item>
+        <item>아메리칸 아키다</item>
+        <item>아메리칸 에스키모 도그</item>
+        <item>아메리칸 인디언 도그</item>
+        <item>아메리칸 워터 스패니얼</item>
+        <item>아메리칸 코커 스패니얼</item>
+        <item>아메리칸 폭스하운드</item>
+        <item>아이디</item>
+        <item>아이리시 소프트코티드 휘튼 테리어</item>
+        <item>아이리시 레드 앤드 화이트 세터</item>
+        <item>아이리시 세터</item>
+        <item>아이리시 울프 하운드</item>
+        <item>아이리시 워터 스패니얼</item>
+        <item>아이리시 테리어</item>
+        <item>아키타</item>
+        <item>아펜핀셔</item>
+        <item>아프간 하운드</item>
+        <item>알래스칸 맬러뮤트</item>
+        <item>알래스칸 클리카이</item>
+        <item>에스트렐라 마운틴 독</item>
+        <item>에어데일 테리어</item>
+        <item>오브차카</item>
+        <item>오스트레일리안 실키 테리어</item>
+        <item>오스트레일리안 켈피</item>
+        <item>오스트레일리언 셰퍼드</item>
+        <item>오스트레일리언 캐틀 도그</item>
+        <item>오스트레일리언 테리어</item>
+        <item>오터 하운드</item>
+        <item>올드 잉글리시 쉽독</item>
+        <item>와이머라너</item>
+        <item>와이어 폭스 테리어</item>
+        <item>와이어헤어드 포인팅 그리펀</item>
+        <item>야쿠탄 라이카</item>
+        <item>요크셔 테리어</item>
+        <item>웨스트 하이랜드 화이트테리어</item>
+        <item>웰시 스프링어 스패니얼</item>
+        <item>웰시 코기</item>
+        <item>웰시 테리어</item>
+        <item>이비전 하운드</item>
+        <item>이탤리언 그레이하운드</item>
+        <item>잉글리시 세터</item>
+        <item>잉글리시 스프링어 스패니얼</item>
+        <item>잉글리시 코커 스패니얼</item>
+        <item>잉글리시 토이 스패니얼</item>
+        <item>잉글리시 폭스하운드</item>
+        <item>자이언트 슈나우저</item>
+        <item>재패니즈 친</item>
+        <item>재패니즈 스피츠</item>
+        <item>잭 러셀 테리어</item>
+        <item>저먼 셰퍼드</item>
+        <item>저먼 쇼트헤어드 포인터</item>
+        <item>저먼 와이어헤어드 포인터</item>
+        <item>저먼 핀셔</item>
+        <item>저먼 헌팅 테리어</item>
+        <item>제주개</item>
+        <item>진돗개</item>
+        <item>차우차우</item>
+        <item>차이니즈 샤페이</item>
+        <item>차이니즈 크레스티드</item>
+        <item>체서피크 베이 레트리버</item>
+        <item>체코슬로바키아 늑대개</item>
+        <item>치와와</item>
+        <item>카네 코르소</item>
+        <item>카디건 웰시 코기</item>
+        <item>카발리에 킹 찰스 스파니엘</item>
+        <item>캉갈</item>
+        <item>컬리코티드 레트리버</item>
+        <item>케리 블루 테리어</item>
+        <item>케언 테리어</item>
+        <item>케이넌 도그</item>
+        <item>케이스혼트</item>
+        <item>코리안 마스티프</item>
+        <item>코몬도르</item>
+        <item>코커 스패니얼</item>
+        <item>콜리</item>
+        <item>쿠바스</item>
+        <item>쿠이커혼제</item>
+        <item>클럼버 스패니얼</item>
+        <item>토이 폭스 테리어</item>
+        <item>티베탄 마스티프</item>
+        <item>티베탄 스패니얼</item>
+        <item>티베탄 테리어</item>
+        <item>파라오 하운드</item>
+        <item>파슨 러셀 테리어</item>
+        <item>파피용</item>
+        <item>패터데일 테리어</item>
+        <item>퍼그</item>
+        <item>페키니즈</item>
+        <item>펨브록 웰시 코기</item>
+        <item>포르투기즈 워터 도그</item>
+        <item>포메라니안</item>
+        <item>포인터</item>
+        <item>폭스 테리어</item>
+        <item>폴리시 롤런드 시프도그</item>
+        <item>폼피츠</item>
+        <item>푸들</item>
+        <item>푸미</item>
+        <item>풀리</item>
+        <item>풍산개</item>
+        <item>프렌치 불도그</item>
+        <item>프티 바세 그리퐁 방댕</item>
+        <item>플랫코티드 레트리버</item>
+        <item>플롯 하운드</item>
+        <item>피니시 스피츠</item>
+        <item>피레니안 마스티프</item>
+        <item>피레니안 쉽독</item>
+        <item>피레니언 셰퍼드</item>
+        <item>필드 스패니얼</item>
+        <item>필라 브라질레이로</item>
+        <item>핏 불 테리어</item>
+        <item>해리어</item>
+        <item>하바니즈</item>
+        <item>홋카이도 이누</item>
+        <item>휘핏</item>
+    </string-array>
+
+    <string-array name="mealSpinner">
+        <item>건식</item>
+        <item>습식</item>
+        <item>동결 건조</item>
+        <item>화식</item>
+        <item>생식</item>
+        <item>에어 드라이</item>
+    </string-array>
+
+    <string-array name="snackSpinner">
+        <item>껌</item>
+        <item>동결/건조</item>
+        <item>비스킷/시리얼</item>
+        <item>소시지</item>
+        <item>수제 간식</item>
+        <item>음료</item>
+        <item>저키/트릿</item>
+        <item>캔/파우치</item>
+        <item>파우더</item>
+    </string-array>
+
+    <string-array name="PartSpinner">
+        <item>간</item>
+        <item>노화</item>
+        <item>눈</item>
+        <item>다이어트</item>
+        <item>면역력</item>
+        <item>방광/요로</item>
+        <item>분리 불안 진정</item>
+        <item>뼈/관절</item>
+        <item>소화기</item>
+        <item>신장</item>
+        <item>심장</item>
+        <item>알레르기</item>
+        <item>종합영양제</item>
+        <item>췌장</item>
+        <item>치아</item>
+        <item>피부/모질</item>
+        <item>기타</item>
+    </string-array>
+
+    <string-array name="UnitSpinner">
+        <item>ml</item>
+        <item>개</item>
+        <item>g</item>
+    </string-array>
+</resources>

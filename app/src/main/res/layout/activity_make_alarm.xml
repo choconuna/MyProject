@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".my.MakeAlarmActivity"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="15dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/x"
+            android:layout_marginRight="110dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/textView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:gravity="center"
+            android:text="알림 설정"
+            android:textColor="@color/mainColor"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/timeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="시간"
+                    android:fontFamily="@font/bold"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="15dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/hour"
+                        android:font="@font/regular"
+                        android:textSize="20sp"
+                        android:text="10"
+                        android:textColor="@color/mainColor"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/regular"
+                        android:textSize="20sp"
+                        android:layout_marginTop="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/minute"
+                        android:font="@font/regular"
+                        android:textSize="20sp"
+                        android:text="10"
+                        android:textColor="@color/mainColor"
+                        android:layout_marginTop="5dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="반복"
+                    android:fontFamily="@font/bold"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="15dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp">
+
+                    <CheckBox
+                        android:id="@+id/mon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="월"
+                        android:button="@drawable/custom_checkbox"
+                        android:fontFamily="@font/regular"
+                        android:textColor="@color/mainColor"/>
+
+                    <CheckBox
+                        android:id="@+id/tue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="화"
+                        android:button="@drawable/custom_checkbox"
+                        android:fontFamily="@font/regular"
+                        android:textColor="@color/mainColor"/>
+
+                    <CheckBox
+                        android:id="@+id/wed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="수"
+                        android:button="@drawable/custom_checkbox"
+                        android:fontFamily="@font/regular"
+                        android:textColor="@color/mainColor"/>
+
+                    <CheckBox
+                        android:id="@+id/thu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="목"
+                        android:button="@drawable/custom_checkbox"
+                        android:fontFamily="@font/regular"
+                        android:textColor="@color/mainColor"/>
+
+                    <CheckBox
+                        android:id="@+id/fri"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="금"
+                        android:button="@drawable/custom_checkbox"
+                        android:fontFamily="@font/regular"
+                        android:textColor="@color/mainColor"/>
+
+                    <CheckBox
+                        android:id="@+id/sat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="토"
+                        android:button="@drawable/custom_checkbox"
+                        android:fontFamily="@font/regular"
+                        android:textColor="@color/mainColor"/>
+
+                    <CheckBox
+                        android:id="@+id/sun"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="일"
+                        android:button="@drawable/custom_checkbox"
+                        android:fontFamily="@font/regular"
+                        android:textColor="@color/mainColor"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="분류"
+                    android:fontFamily="@font/bold"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="15dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+
+                    <RadioGroup
+                        android:id="@+id/category"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center">
+
+                        <RadioButton
+                            android:checked="true"
+                            android:id="@+id/eat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/selector_radio_button"
+                            android:textColor="@drawable/selector_radio_text"
+                            android:button="@null"
+                            android:fontFamily="@font/regular"
+                            android:textAlignment="center"
+                            android:text="식사"
+                            android:textSize="10sp"
+                            android:layout_weight="1"/>
+
+                        <RadioButton
+                            android:id="@+id/medicine"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/selector_radio_button"
+                            android:textColor="@drawable/selector_radio_text"
+                            android:button="@null"
+                            android:textAlignment="center"
+                            android:fontFamily="@font/regular"
+                            android:text="복용"
+                            android:textSize="10sp"
+                            android:layout_weight="1"/>
+                        <RadioButton
+                            android:id="@+id/hospital"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/selector_radio_button"
+                            android:textColor="@drawable/selector_radio_text"
+                            android:button="@null"
+                            android:textAlignment="center"
+                            android:fontFamily="@font/regular"
+                            android:text="병원"
+                            android:textSize="10sp"
+                            android:layout_weight="1"/>
+
+                        <RadioButton
+                            android:id="@+id/walk"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/selector_radio_button"
+                            android:textColor="@drawable/selector_radio_text"
+                            android:button="@null"
+                            android:textAlignment="center"
+                            android:fontFamily="@font/regular"
+                            android:text="산책"
+                            android:textSize="10sp"
+                            android:layout_weight="1"/>
+                        <RadioButton
+                            android:id="@+id/etc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/selector_radio_button"
+                            android:textColor="@drawable/selector_radio_text"
+                            android:button="@null"
+                            android:textAlignment="center"
+                            android:fontFamily="@font/regular"
+                            android:text="기타"
+                            android:textSize="10sp"
+                            android:layout_weight="1"/>
+                    </RadioGroup>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="알림 제목"
+                    android:font="@font/bold"
+                    android:fontFamily="@font/bold"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="15dp"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/regular"
+                    android:id="@+id/alarmTitle"
+                    android:hint="알림 제목을 입력해 주세요."
+                    android:textSize="15sp"
+                    android:textColor="@color/mainColor"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@null"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="알림 내용"
+                    android:font="@font/bold"
+                    android:fontFamily="@font/bold"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="15dp"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/regular"
+                    android:id="@+id/alarmContents"
+                    android:hint="알림 내용을 입력해 주세요."
+                    android:textSize="15sp"
+                    android:textColor="@color/mainColor"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@null"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"/>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/saveBtn"
+                android:background="@drawable/round_button_brown"
+                android:text="저장하기"
+                android:textColor="@color/white"
+                android:fontFamily="@font/bold"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="100dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

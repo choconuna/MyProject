@@ -14,31 +14,58 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import org.techtown.myproject.my.MyFragment
+import org.techtown.myproject.community.CommunityFragment
+import org.techtown.myproject.my.MyActivity
+import org.techtown.myproject.note.NoteFragment
+import org.techtown.myproject.receipt.ReceiptFragment
+import org.techtown.myproject.utils.FBRef
+import org.techtown.myproject.walk.WalkFragment
+import com.google.firebase.database.DataSnapshot as DataSnapshot1
 
+class MainActivity : AppCompatActivity() {
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
-    private val TAG : String = "로그"
+    private val TAG : String = MainActivity::class.java.simpleName
 
     lateinit var navMenu : ImageView
     lateinit var navigationView : NavigationView
     lateinit var drawerLayout: DrawerLayout
     lateinit var navHeaderView : View
-    lateinit var headerEmailText : TextView
+    private lateinit var headerEmailText : TextView
+    private lateinit var headerDogName : TextView
     lateinit var toolbar : Toolbar
 
     lateinit var sharedPreferences: SharedPreferences
+    lateinit var mDatabaseReference: DatabaseReference
+    lateinit var mAuth : FirebaseAuth
+    lateinit var uid : String
     private val prefUserEmail = "userEmail"
     lateinit var email : String
+    lateinit var dogName : String
+    lateinit var userName : String
+
+    lateinit var profileFile : String
 
     lateinit var bnv_main : BottomNavigationView
 
     private val noteFragment by lazy { NoteFragment() }
     private val receiptFragment by lazy { ReceiptFragment() }
     private val walkFragment by lazy { WalkFragment() }
+    private val communityFragment by lazy { CommunityFragment() }
     private val myFragment by lazy { MyFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,66 +74,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         Log.d(TAG, "MainActivity - onCreate() called")
 
-        toolbar  = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        setToolbar()
+        mAuth = FirebaseAuth.getInstance()
+        uid = mAuth.currentUser?.uid.toString()
 
-        initNavigationMenu()
+        mDatabaseReference = FBRef.userRef.child(uid)
 
         bnv_main = findViewById(R.id.bottom_menu)
         initNavigationBar()
     }
 
-    private fun setToolbar() {
-        setSupportActionBar(toolbar)
+    /* private fun getUserDB() {
+        mDatabaseReference = Firebase.database.reference.child("Users").child(uid)
 
-        supportActionBar!!.setDisplayShowTitleEnabled(true)
-        supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_menu)
-        supportActionBar!!.setDisplayShowTitleEnabled(false) // 타이틀 안 보이게 하기
-    }
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot1) {
+                val post = dataSnapshot.getValue(UserInfo::class.java)
+                dogName = post!!.dogName
+                Log.d(TAG, "dogName: $dogName")
+            }
 
-    private fun initNavigationMenu() { // 초기 네비베이션 메뉴 설정
-        drawerLayout = findViewById(R.id.drawer_layout)
-        navigationView = findViewById(R.id.nav_view)
-
-        navigationView.setNavigationItemSelectedListener(this)
-
-        navHeaderView = navigationView.getHeaderView(0)
-
-        // 네비게이션 헤더바 로그인한 계정 정보로 설정
-        sharedPreferences = this.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
-        email = sharedPreferences.getString(prefUserEmail, "").toString()
-
-        headerEmailText = navHeaderView.findViewById(R.id.email)
-        headerEmailText.text = email
-
-        navMenu = findViewById(R.id.iv_menu)
-        navMenu.setOnClickListener {
-            drawerLayout.openDrawer(GravityCompat.START)
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
         }
-    }
+        mDatabaseReference.addValueEventListener(postListener)
+    } */
 
-    // 툴바 메뉴 버튼이 클릭됐을 때 콜백
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        Log.d(TAG, "MainActivity - onNavigationItemSelected() called")
-        when(item!!.itemId) {
-            R.id.community -> Snackbar.make(toolbar, "Community menu pressed", Snackbar.LENGTH_LONG).show()
-            R.id.chat -> Snackbar.make(toolbar, "Chat menu pressed", Snackbar.LENGTH_LONG).show()
-            R.id.restaurant -> Snackbar.make(toolbar, "Restaurant menu pressed", Snackbar.LENGTH_LONG).show()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onBackPressed() { // 뒤로 가기 시 drawerLayout 닫기
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawers()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-    // 하단 탭에 맞는 fragment 띄우기
-    private fun initNavigationBar() {
+    private fun initNavigationBar() { // 하단 탭에 맞는 fragment 띄우기
         bnv_main.run {
             setOnNavigationItemSelectedListener {
                 when (it.itemId) {
@@ -119,6 +114,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     R.id.walk_tab -> {
                         changeFragment(walkFragment)
                     }
+                    R.id.community_tab -> {
+                        changeFragment(communityFragment)
+                    }
                     R.id.my_tab -> {
                         changeFragment(myFragment)
                     }
@@ -129,7 +127,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    fun changeFragment(fragment: Fragment) {
+    private fun changeFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame, fragment).commit()
     }
@@ -141,7 +139,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (requestCode == 1000) {
             if (resultCode == RESULT_OK) {
                 val userEmail = data?.getStringExtra("userEmail");
-                Toast.makeText(this, "USER EMAIL: " + userEmail, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "USER EMAIL: $userEmail", Toast.LENGTH_LONG).show();
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "로그인 오류 발생", Toast.LENGTH_LONG).show()
             } else {

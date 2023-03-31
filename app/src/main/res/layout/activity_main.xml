@@ -13,10 +13,6 @@
         android:orientation="vertical"
         android:layout_weight="1">
 
-        <include
-            layout="@layout/top_toolbar"
-            android:id="@+id/toolbar"/>
-
         <FrameLayout
             android:id="@+id/frame"
             android:layout_width="match_parent"
@@ -36,16 +32,6 @@
             app:menu="@menu/bottom_menu" />
 
     </LinearLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start|left"
-        app:itemTextAppearance="@style/MyItemFont"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/main_navigation_menu"/>
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

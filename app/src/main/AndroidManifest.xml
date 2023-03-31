@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.techtown.myproject">
-
-    <!-- 인터넷 사용 권한 설정-->
+    <!-- 인터넷 사용 권한 설정 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -13,16 +17,87 @@
         android:roundIcon="@mipmap/ic_launcher_appicon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyProject">
-
         <activity
-            android:name=".MainActivity" />
-
-        <activity android:name=".JoinActivity"
+            android:name=".note.DogWaterEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.PlusWaterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.DogTonicEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.DogSnackEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.DogMealEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.PlusTonicActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.PlusSnackActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.PlusMealActivity"
+            android:exported="false" />
+        <activity
+            android:name=".comment.CommentEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".community.SpecificCommunityEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".community.SpecificCommunityInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".community.WriteSpecificCommunityActivity"
             android:exported="false"
-            android:parentActivityName=".StartActivity"/>
-
+            android:label="@string/title_activity_write_specific_community"
+            android:theme="@style/Theme.MyProject.NoActionBar" />
         <activity
-            android:name=".StartActivity"
+            android:name=".my.ChoiceMainDogActivity"
+            android:exported="false" />
+        <activity
+            android:name=".my.DogProfileEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".my.DogProfileInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".my.WriteDogProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".my.MakeAlarmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".my.AlarmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".my.ProfileEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".my.MyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LogoutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".community.CommunityEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".community.CommunityInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".community.WriteCommunityActivity"
+            android:exported="false" />
+        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".JoinActivity"
+            android:exported="false"
+            android:parentActivityName=".StartActivity" />
+        <activity
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +105,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".StartActivity" />
+
+        <receiver android:name=".my.AlarmReceiver" />
     </application>
 
 </manifest>
