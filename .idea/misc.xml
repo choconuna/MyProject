@@ -11,6 +11,9 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/button_ok.xml" value="0.146" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_button.xml" value="0.25" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_button_brown.xml" value="0.25" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_inner.xml" value="0.1685" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_outer.xml" value="0.1685" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_white.xml" value="0.243" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/click_circle.xml" value="0.1315" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/custom_checkbox.xml" value="0.118" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/custom_progress_bar.xml" value="0.2435" />
@@ -43,12 +46,15 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_community_edit.xml" value="0.2" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_community_in.xml" value="0.2" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_community_inside.xml" value="0.10648148148148148" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_dung_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_meal_edit.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_pee_edit.xml" value="0.4" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_prodile_edit.xml" value="0.4" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_profile_edit.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_profile_in.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_snack_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_tonic_edit.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_vomit_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_water_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_intro.xml" value="0.1527777777777778" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_join.xml" value="0.264" />
@@ -56,9 +62,13 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_make_alarm.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_my.xml" value="0.2" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_plus_dung.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_plus_heart.xml" value="0.25052083333333336" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_plus_meal.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_plus_pee.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_plus_snack.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_plus_tonic.xml" value="0.2" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_plus_vomit.xml" value="0.28104956268221576" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_plus_water.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_profile_edit.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_specific_community_edit.xml" value="0.25104166666666666" />
@@ -76,6 +86,8 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/custom_dialog.xml" value="0.4" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/dog_list_item.xml" value="0.4" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/dog_list_item_two.xml" value="0.4" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/dung_list_item.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/eat_dialog.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/eat_image_dialog.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_all.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_chat.xml" value="0.25104166666666666" />
@@ -95,16 +107,22 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_review.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_statistics.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_walk.xml" value="0.1" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/heart_delete_dialog.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/heart_dialog.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/heart_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/image_item_list.xml" value="0.4" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/meal_dialog.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/meal_list_ite.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/meal_list_item.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/nav_header.xml" value="0.1" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/pee_item_list.xml" value="0.4" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/pee_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/profile_image_dialog.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/snack_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/start_toolbar.xml" value="0.2" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/tonic_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/top_toolbar.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/vomit_list_item.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/water_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/menu/bottom_menu.xml" value="0.25052083333333336" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/menu/main_navigation_menu.xml" value="0.264" />

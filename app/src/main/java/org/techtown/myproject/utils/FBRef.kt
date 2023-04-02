@@ -25,6 +25,14 @@ class FBRef {
 
         val waterRef = database.getReference("water") // 반려견의 물 데이터를 DB에 삽입하는 경로
 
+        val peeRef = database.getReference("pee") // 반려견의 소변 데이터를 DB에 삽입하는 경로
+
+        val dungRef = database.getReference("dung") // 반려견의 대변 데이터를 DB에 삽입하는 경로
+
+        val vomitRef = database.getReference("vomit") // 반려견의 구토 데이터를 DB에 삽입하는 경로
+
+        val heartRef = database.getReference("heart") // 반려견의 호흡수 데이터를 DB에 삽입하는 경로
+
         val alarmRef = database.getReference("alarm") // 알림 데이터를 DB에 삽입하는 경로
    }
 

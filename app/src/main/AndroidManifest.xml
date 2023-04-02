@@ -18,6 +18,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyProject">
         <activity
+            android:name=".note.PlusHeartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.DogVomitEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.PlusVomitActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.DogDungEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.PlusDungActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.DogPeeEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.PlusPeeActivity"
+            android:exported="false" />
+        <activity
             android:name=".note.DogWaterEditActivity"
             android:exported="false" />
         <activity

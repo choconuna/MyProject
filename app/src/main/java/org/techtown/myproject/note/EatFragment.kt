@@ -190,7 +190,7 @@ class EatFragment() : Fragment() {
     }
 
     private fun showDialog(v : View, category : String, id : String) { // 기록 수정/삭제를 위한 다이얼로그 띄우기
-        val mDialogView = LayoutInflater.from(v.context).inflate(R.layout.custom_dialog, null)
+        val mDialogView = LayoutInflater.from(v.context).inflate(R.layout.eat_dialog, null)
         val mBuilder = AlertDialog.Builder(v.context).setView(mDialogView)
 
         val alertDialog = mBuilder.show()

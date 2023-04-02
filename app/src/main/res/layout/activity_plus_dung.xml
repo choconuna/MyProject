@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".note.PlusDungActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/xx"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="120dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:gravity="center"
+            android:text="대변"
+            android:textColor="@color/mainColor"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="날짜"
+                android:fontFamily="@font/regular"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:layout_marginTop="15dp"
+                android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#CD853F" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="보통 변"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="적정한 수분을 보유하고 있는 정상인 상태"
+                            android:layout_margin="10dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/regularMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/regularCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/regularPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#DEB887" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:fontFamily="@font/regular"
+                            android:text="묽은 변"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:fontFamily="@font/regular"
+                            android:text="변의 경도는 수분 섭취량에 따라 일시적으로 대변이 무르거나 딱딱할 수 있습니다."
+                            android:textColor="#999999"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="80dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/wateryMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/round_button"
+                        android:fontFamily="@font/regular"
+                        android:text="-"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/wateryCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:backgroundTint="@color/mainColor"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/regular"
+                        android:text="회"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/wateryPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/round_button"
+                        android:fontFamily="@font/regular"
+                        android:text="+"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#CD853F" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="설사"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="변의 경도는 수분 섭취량에 따라 일시적으로 대변이 무를 수 있지만, 지속적인 실사는 장에 세균성 감염이 원인일 수 있으므로 가까운 동물 병원에 내원하셔야 합니다."
+                            android:layout_margin="10dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/diarrheaMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/diarrheaCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/diarrheaPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#A0522D" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="짙고 딱딱한 변"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="변비 기미가 있거나, 신장에 문제가 있을 경우에 볼 수 있습니다.\n또한 사료양이 적을 때도 나타날 수 있습니다."
+                            android:layout_margin="10dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/hardMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/hardCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/hardPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#8B0000" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="붉은색 변"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="이런 변은 소화기, 특히 상복부 소화기에 출혈이 있음을 알 수 있는 경우로 빠른 시간 내로 수의사의 진찰을 받는 것이 중요합니다."
+                            android:layout_margin="10dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/redMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/redCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/redPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#696969" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="검은색 변"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="검은색 변은 상부 소화기의 출혈이 생겼거나, 수분이 부족해 나타날 수 있습니다.\n의심이 되는 경우 수의사의 진찰을 받는 것이 중요합니다."
+                            android:layout_margin="10dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/blackMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/blackCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/blackPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#CD853F" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="하얀색 점이 있는 변"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="변에 보이는 하얀색 점을 기생충 감염을 의미할 수 있으므로\n정확한 진단이 필요한 상태"
+                            android:layout_margin="10dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/whiteMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/whiteCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/whitePlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/plusBtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/round_button_brown"
+                android:fontFamily="@font/bold"
+                android:text="추가하기"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

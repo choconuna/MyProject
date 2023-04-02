@@ -1,0 +1,1106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".note.PlusVomitActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/xx"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="120dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:gravity="center"
+            android:text="대변"
+            android:textColor="@color/mainColor"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="날짜"
+                android:fontFamily="@font/regular"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="아래와 같은 구토는 한동안 상태를 지켜본 후,"
+                android:fontFamily="@font/bold"
+                android:textColor="#6495ED"
+                android:textSize="15sp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="반복된다면 병원으로 가셔야 합니다!"
+                android:fontFamily="@font/bold"
+                android:textColor="#6495ED"
+                android:textSize="15sp"
+                android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/circle_white" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="투명한 무색 구토"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="물, 위액, 침이 역류한 것입니다. 한 번 정도 증상을 보이는 것은 문제가 없을 경우가 많으니 하루 정도 지켜봐 주세요."
+                            android:layout_margin="10dp"
+                            android:textSize="12sp"
+                            android:paddingRight="20dp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/transparentMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/transparentCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/transparentPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/bubble" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:fontFamily="@font/regular"
+                            android:text="흰색 거품이 섞인 구토"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:fontFamily="@font/regular"
+                            android:text="토가 역류할 때 공기를 삼켜 거품이 된 것입니다. 큰 문제가 없는 경우가 많으니 지켜봐 주세요."
+                            android:paddingRight="20dp"
+                            android:textColor="#999999"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="80dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/bubbleMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/round_button"
+                        android:fontFamily="@font/regular"
+                        android:text="-"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/bubbleCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:backgroundTint="@color/mainColor"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/regular"
+                        android:text="회"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/bubblePlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/round_button"
+                        android:fontFamily="@font/regular"
+                        android:text="+"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#CD853F" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="음식이 섞인 구토"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="사료나 간식을 급하게 먹거나, 과식하는 경우 소화불량으로 구토하는 경우. 소화가 잘 되게 작게 잘라 주거나, 사료를 물에 불려 급여해 주세요."
+                            android:layout_margin="10dp"
+                            android:paddingRight="20dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/foodMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/foodCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/foodPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#FFE4B5" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="노란색 구토"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="주로 불규칙한 식습관과 식사 간격이 문제될 때 발생하며, 공북의 상태가 길어질 경우 담즙(소화액)이 위를 자극해 거품과 함께 구토하는 경우가 많습니다."
+                            android:layout_margin="10dp"
+                            android:paddingRight="20dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/yellowMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/yellowCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/yellowPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/leaf" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="잎사귀가 섞인 초록색 구토"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="위장 상태가 나쁠 때 일부러 잎사귀를 먹고 위 속을 토해냅니다. 구토 후 기력이 없지 않은지 지켜봐 주세요. 이상이 있을 경우 바로 병원에 데려가는 게 좋습니다."
+                            android:layout_margin="10dp"
+                            android:paddingRight="20dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/leafMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/leafCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/leafPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#FFC0CB" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="분홍색 구토"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="입 안 또는 식도, 위, 장에 부정적인 출혈이 생겼을 수 있으니 지켜봐 주세요. 가끔 일어나는 증상일 경우 문제가 없을 수 있으나, 여러 번 반복하여 하는 경우 병원에 방문해 주세요."
+                            android:layout_margin="10dp"
+                            android:paddingRight="20dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/pinkMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/pinkCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/pinkPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="5dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="아래와 같은 구토는 위험한 상태로"
+                android:fontFamily="@font/bold"
+                android:textColor="#FF0000"
+                android:textSize="15sp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="반드시 병원으로 가셔야 합니다!"
+                android:fontFamily="@font/bold"
+                android:textColor="#FF0000"
+                android:textSize="15sp"
+                android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#8B4513" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="짙은 갈색 구토"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="상부 소화기에 출혈이 생긴 경우가 있으며, 질병을 의심할 수 있습니다. 출혈이 많을 경우 위험한 상황이 발생할 수 있어, 반드시 병원에 방문하세요!"
+                            android:layout_margin="10dp"
+                            android:paddingRight="20dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/brownMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/brownCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/brownPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#228B22" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="녹색 구토"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="주로 식습관과 식사 간격이 문제될 때 발생하며, 공복의 사태가 길어질 경우 담즙(소화액)이 위를 자극해 거품과 함께 구토하는 경우가 많습니다. 반복적인 녹색 구토는 췌장염이나 장폐색 같은 응급 질환과 관련 있을 가능성이 있으므로 반드시 병원에 내원하세요!"
+                            android:layout_margin="10dp"
+                            android:paddingRight="20dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/greenMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/greenCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/greenPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/snow" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="이물질이 섞인 구토"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="이물질이 역류하여 장이나 위에 상처가 생길 수 있습니다. 구토하는 도중 식도가 막히면 위험한 상황이 발생할 수 있으니 반드시 병원에 방문하세요!"
+                            android:layout_margin="10dp"
+                            android:paddingRight="20dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/substanceMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/substanceCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/substancePlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="#B22222" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="붉은색 구토"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="입 속, 식도, 위, 장에 출혈이 크게 생겼을 수 있습니다. 출혈량이 많다면 위험한 상황일 수 있으니 병원에 꼭 내원하세요!"
+                            android:layout_margin="10dp"
+                            android:paddingRight="20dp"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#999999"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="80dp"
+                    tools:ignore="MissingConstraints">
+
+                    <Button
+                        android:id="@+id/redMinusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/redCnt"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/mainColor"
+                        android:textSize="15sp"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:text="회" />
+
+                    <Button
+                        android:id="@+id/redPlusBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/round_button"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/regular"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/plusBtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/round_button_brown"
+                android:fontFamily="@font/bold"
+                android:text="추가하기"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
