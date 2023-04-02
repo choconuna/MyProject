@@ -112,9 +112,7 @@ class PlusHeartActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * 카운트다운 시작 기능
-     */
+    // 카운트다운 시작 기능
     private fun startCountDownTimer() {
         countDownTimer = object : CountDownTimer(timeCountInMilliSeconds.toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -130,20 +128,16 @@ class PlusHeartActivity : AppCompatActivity() {
     }
 
 
-    /**
-     * 원형 프로그레스 바에 값 세팅
-     */
+    // 원형 프로그레스 바에 값 세팅
     private fun setProgressBarValues() {
         progressBarCircle.max = timeCountInMilliSeconds / 1000
         progressBarCircle.progress = timeCountInMilliSeconds / 1000
     }
 
-    /**
-     * 밀리언 초를 시간으로 포멧해주는 기능
-     *
-     * @param milliSeconds
-     * @return HH:mm:ss 시간 포멧
-     */
+
+     // 밀리언 초를 시간으로 포멧해주는 기능
+     // @param milliSeconds
+     // @return HH:mm:ss 시간 포멧
     @SuppressLint("DefaultLocale")
     private fun hmsTimeFormatter(milliSeconds: Long): String? {
         return java.lang.String.format(
