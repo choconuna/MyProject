@@ -33,6 +33,10 @@ class FBRef {
 
         val heartRef = database.getReference("heart") // 반려견의 호흡수 데이터를 DB에 삽입하는 경로
 
+        val medicinePlanRef = database.getReference("medicinePlan") // 반려견의 투약 일정 데이터를 DB에 삽입하는 경로
+
+        val medicineRef = database.getReference("medicine") // 반려견의 투약 기록 데이터를 DB에 삽입하는 경로
+
         val alarmRef = database.getReference("alarm") // 알림 데이터를 DB에 삽입하는 경로
    }
 

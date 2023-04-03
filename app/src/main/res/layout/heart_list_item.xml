@@ -28,16 +28,6 @@
                     android:layout_marginTop="15dp"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_gravity="center"
-                        android:text=""
-                        android:textColor="#999999"
-                        android:textSize="15sp"
-                        android:background="@drawable/heart"
-                        android:fontFamily="@font/regular" />
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

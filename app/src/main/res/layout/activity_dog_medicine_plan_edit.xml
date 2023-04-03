@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".note.DogMedicinePlanEditActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/xx"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="90dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:gravity="center"
+            android:text="투약 일정 수정하기"
+            android:textColor="@color/mainColor"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="약 이름"
+                android:fontFamily="@font/regular"
+                android:layout_marginTop="20dp"
+                android:textSize="15sp"
+                android:layout_gravity="center" />
+
+            <EditText
+                android:id="@+id/medicineNameArea"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint = "@color/mainColor"
+                android:fontFamily="@font/bold"
+                android:hint="약 이름 입력"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textSize="15sp"
+                android:inputType="text"
+                android:singleLine="true"
+                android:lines="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="주기"
+                android:fontFamily="@font/regular"
+                android:textSize="15sp"
+                android:layout_marginTop="15dp"
+                android:layout_gravity="center"/>
+
+            <RadioGroup
+                android:id="@+id/repeatGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:checked="true"
+                    android:id="@+id/oneDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_radio_button"
+                    android:textColor="@drawable/selector_radio_text"
+                    android:button="@null"
+                    android:textAlignment="center"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
+                    android:fontFamily="@font/bold"
+                    android:text="하루"
+                    android:textSize="15sp"
+                    android:layout_weight="1"/>
+
+                <RadioButton
+                    android:id="@+id/everyDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_radio_button"
+                    android:textColor="@drawable/selector_radio_text"
+                    android:button="@null"
+                    android:textAlignment="center"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
+                    android:fontFamily="@font/bold"
+                    android:text="매일"
+                    android:textSize="15sp"
+                    android:layout_weight="1"/>
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/startDateName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/regular"
+                android:text="날짜"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/startYearArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint = "@color/mainColor"
+                    android:fontFamily="@font/bold"
+                    android:hint="2023"
+                    android:textAlignment="center"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textSize="15sp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:maxLength="4"
+                    android:lines="1"/>
+
+                <TextView
+                    android:text="년"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/bold"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/fui_transparent"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <EditText
+                    android:id="@+id/startMonthArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint = "@color/mainColor"
+                    android:fontFamily="@font/bold"
+                    android:hint="12"
+                    android:textAlignment="center"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textSize="15sp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:maxLength="2"
+                    android:lines="1"/>
+
+                <TextView
+                    android:text="월"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/bold"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/fui_transparent"
+                    android:textAlignment="center"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/startDayArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint = "@color/mainColor"
+                    android:fontFamily="@font/bold"
+                    android:hint="31"
+                    android:textAlignment="center"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textSize="15sp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:maxLength="2"
+                    android:lines="1"/>
+
+                <TextView
+                    android:text="일"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/bold"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/fui_transparent"
+                    android:textAlignment="center"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/endDateArea"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/regular"
+                    android:text="종료 날짜"
+                    android:textSize="15sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/endYearArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint = "@color/mainColor"
+                        android:fontFamily="@font/bold"
+                        android:hint="2023"
+                        android:textAlignment="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textSize="15sp"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:maxLength="4"
+                        android:lines="1"/>
+
+                    <TextView
+                        android:text="년"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/bold"
+                        android:textColor="@color/black"
+                        android:backgroundTint="@color/fui_transparent"
+                        android:textAlignment="center"
+                        android:textSize="15sp" />
+
+                    <EditText
+                        android:id="@+id/endMonthArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint = "@color/mainColor"
+                        android:fontFamily="@font/bold"
+                        android:hint="12"
+                        android:textAlignment="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textSize="15sp"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:maxLength="2"
+                        android:lines="1"/>
+
+                    <TextView
+                        android:text="월"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/bold"
+                        android:textColor="@color/black"
+                        android:backgroundTint="@color/fui_transparent"
+                        android:textAlignment="center"
+                        android:textSize="15sp" />
+
+                    <EditText
+                        android:id="@+id/endDayArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint = "@color/mainColor"
+                        android:fontFamily="@font/bold"
+                        android:hint="31"
+                        android:textAlignment="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textSize="15sp"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:maxLength="2"
+                        android:lines="1"/>
+
+                    <TextView
+                        android:text="일"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/bold"
+                        android:textColor="@color/black"
+                        android:backgroundTint="@color/fui_transparent"
+                        android:textAlignment="center"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/timeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="시간"
+                    android:fontFamily="@font/bold"
+                    android:textSize="15sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/hour"
+                        android:font="@font/regular"
+                        android:textSize="20sp"
+                        android:text="10"
+                        android:textColor="@color/mainColor"
+                        android:layout_marginTop="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/regular"
+                        android:textSize="20sp"
+                        android:layout_marginTop="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/minute"
+                        android:font="@font/regular"
+                        android:textSize="20sp"
+                        android:text="10"
+                        android:textColor="@color/mainColor"
+                        android:layout_marginTop="5dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/editBtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/round_button_brown"
+                android:fontFamily="@font/bold"
+                android:text="수정하기"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

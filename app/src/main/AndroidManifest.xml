@@ -18,6 +18,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyProject">
         <activity
+            android:name=".note.DogMedicineEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.PlusMedicineActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.DogMedicinePlanEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.PlusMedicinePlanActivity"
+            android:exported="false" />
+        <activity
             android:name=".note.PlusHeartActivity"
             android:exported="false" />
         <activity
