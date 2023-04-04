@@ -32,6 +32,7 @@ import org.techtown.myproject.my.MyFragment
 import org.techtown.myproject.community.CommunityFragment
 import org.techtown.myproject.my.MyActivity
 import org.techtown.myproject.note.NoteFragment
+import org.techtown.myproject.note.RecordFragment
 import org.techtown.myproject.receipt.ReceiptFragment
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.walk.WalkFragment
@@ -63,6 +64,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var bnv_main : BottomNavigationView
 
     private val noteFragment by lazy { NoteFragment() }
+    private val recordFragment by lazy { RecordFragment() }
     private val receiptFragment by lazy { ReceiptFragment() }
     private val walkFragment by lazy { WalkFragment() }
     private val communityFragment by lazy { CommunityFragment() }
@@ -106,7 +108,8 @@ class MainActivity : AppCompatActivity() {
             setOnNavigationItemSelectedListener {
                 when (it.itemId) {
                     R.id.note_tab -> {
-                        changeFragment(noteFragment)
+                        // changeFragment(noteFragment)
+                        changeFragment(recordFragment)
                     }
                     R.id.receipt_tab -> {
                         changeFragment(receiptFragment)

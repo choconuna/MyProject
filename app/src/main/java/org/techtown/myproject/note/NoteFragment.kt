@@ -3,31 +3,19 @@ package org.techtown.myproject.note
 import android.app.Activity
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.CalendarMode
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import org.techtown.myproject.R
-import org.techtown.myproject.community.PagerFragmentStateAdapter
-import org.techtown.myproject.utils.DogModel
 import org.techtown.myproject.utils.FBRef
 
 
@@ -47,9 +35,6 @@ class NoteFragment: Fragment() {
     lateinit var uid : String // 사용자 uid
 
     lateinit var mainDogId : String // 대표 반려견 id
-    lateinit var dogProfileImageArea : ImageView
-    lateinit var dogProfileImage : String
-    lateinit var dogNameArea : TextView
 
     lateinit var noteGroup : RadioGroup
     private var noteCategory : String = "식단"
@@ -65,7 +50,7 @@ class NoteFragment: Fragment() {
     private val healthFragment by lazy { HealthFragment() }
     private val medicineFragment by lazy { MedicineFragment() }
     private val checkUpFragment by lazy { CheckUpFragment() }
-    private val statisticsFragment by lazy { StatisticsFragment() }
+    private val memoFragment by lazy { MemoFragment() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,10 +63,6 @@ class NoteFragment: Fragment() {
         mDatabaseReference = FBRef.userRef.child(uid)
         sharedPreferences = v!!.context.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
         mainDogId = sharedPreferences.getString(uid, "").toString()
-
-        dogNameArea = v!!.findViewById(R.id.dogNameArea)
-        dogProfileImageArea = v!!.findViewById(R.id.dogProfileImage)
-        setHeader(v)
 
         calendarView = v!!.findViewById(R.id.calendarView)
         setCalendarSet(v, calendarView)
@@ -118,32 +99,6 @@ class NoteFragment: Fragment() {
         return v
     }
 
-    private fun setHeader(v : View) {
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val post = dataSnapshot.getValue(DogModel::class.java)
-                dogNameArea.text = post!!.dogName
-
-                dogProfileImage = post!!.dogProfileFile
-
-                val profileFile =
-                    Firebase.storage.reference.child(dogProfileImage).downloadUrl.addOnCompleteListener(
-                        OnCompleteListener { task ->
-                            if(task.isSuccessful) {
-                                Glide.with(v.context).load(task.result).into(dogProfileImageArea!!)
-                            } else {
-                                v.findViewById<ImageView>(R.id.dogProfileImage)!!.isVisible = false
-                            }
-                        })
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.dogRef.child(uid).child(mainDogId).addValueEventListener(postListener)
-    }
 
     private fun setCalendarSet(v : View, calendarView: MaterialCalendarView) { // 달력을 현재 날짜에 맞게 세팅
         calendarView.selectedDate = CalendarDay.today()
@@ -183,10 +138,10 @@ class NoteFragment: Fragment() {
                     changeFragment(checkUpFragment)
                     noteGroup.check(v.findViewById<RadioButton>(R.id.checkUp).id)
                 }
-                R.id.statistics -> {
-                    noteCategory = "통계"
-                    changeFragment(statisticsFragment)
-                    noteGroup.check(v.findViewById<RadioButton>(R.id.statistics).id)
+                R.id.memo -> {
+                    noteCategory = "메모"
+                    changeFragment(memoFragment)
+                    noteGroup.check(v.findViewById<RadioButton>(R.id.memo).id)
                 } else -> {
                 noteCategory = "식단"
                 noteGroup.check(v.findViewById<RadioButton>(R.id.eat).id)
@@ -212,9 +167,9 @@ class NoteFragment: Fragment() {
                 noteGroup.check(v.findViewById<RadioButton>(R.id.checkUp).id)
                 changeFragment(checkUpFragment)
             }
-            "통계" -> {
-                noteGroup.check(v.findViewById<RadioButton>(R.id.statistics).id)
-                changeFragment(statisticsFragment)
+            "메모" -> {
+                noteGroup.check(v.findViewById<RadioButton>(R.id.memo).id)
+                changeFragment(memoFragment)
             }
             else -> {
                 noteCategory = "식단"
@@ -255,11 +210,11 @@ class NoteFragment: Fragment() {
                 checkUpFragment.arguments = bundle
                 changeFragment(checkUpFragment)
             }
-            "통계" -> {
-                noteGroup.check(v.findViewById<RadioButton>(R.id.statistics).id)
-                val statisticsFragment = StatisticsFragment()
-                statisticsFragment.arguments = bundle
-                changeFragment(statisticsFragment)
+            "메모" -> {
+                noteGroup.check(v.findViewById<RadioButton>(R.id.memo).id)
+                val memoFragment = MemoFragment()
+                memoFragment.arguments = bundle
+                changeFragment(memoFragment)
             }
             else -> {
                 noteCategory = "식단"

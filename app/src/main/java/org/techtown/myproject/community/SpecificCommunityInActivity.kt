@@ -26,6 +26,8 @@ import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
 import org.techtown.myproject.comment.CommentModel
 import org.techtown.myproject.comment.CommentReVAdapter
+import org.techtown.myproject.note.ImageDetailActivity
+import org.techtown.myproject.note.MemoImageAdapter
 import org.techtown.myproject.utils.FBRef
 import java.text.SimpleDateFormat
 import java.util.*
@@ -81,6 +83,15 @@ class SpecificCommunityInActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         imageListView.layoutManager = layoutManager
         imageListView.adapter = communityImageVAdapter
+
+        communityImageVAdapter.setItemClickListener(object: CommunityImageAdapter.OnItemClickListener{
+            override fun onClick(v: View, position: Int) {
+                // 클릭 시 이벤트 작성
+                val intent = Intent(applicationContext, CommunityImageDetailActivity::class.java)
+                intent.putExtra("image", imageDataList[position]) // 사진 링크 넘기기
+                startActivity(intent)
+            }
+        })
 
         communitySetIcon = findViewById(R.id.communitySet)
         communitySetIcon.setOnClickListener {

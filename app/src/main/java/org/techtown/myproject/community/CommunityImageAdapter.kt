@@ -44,6 +44,10 @@ class CommunityImageAdapter(val imageList : MutableList<String>) :
                 holder.view?.findViewById<ImageView>(R.id.galleryView)!!.isVisible = false
             }
         })
+
+        holder.itemView.setOnClickListener {
+            itemClickListener.onClick(it, position)
+        }
     }
 
     override fun getItemCount(): Int {

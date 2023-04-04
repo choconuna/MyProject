@@ -18,6 +18,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyProject">
         <activity
+            android:name=".community.CommunityImageDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.ImageDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.DogMemoInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.DogMemoEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.PlusMemoActivity"
+            android:exported="false" />
+        <activity
             android:name=".note.DogMedicineEditActivity"
             android:exported="false" />
         <activity

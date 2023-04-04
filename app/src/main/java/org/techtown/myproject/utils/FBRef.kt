@@ -37,6 +37,8 @@ class FBRef {
 
         val medicineRef = database.getReference("medicine") // 반려견의 투약 기록 데이터를 DB에 삽입하는 경로
 
+        val memoRef = database.getReference("memo") // 반려견의 메모 데이터를 DB에 삽입하는 경로
+
         val alarmRef = database.getReference("alarm") // 알림 데이터를 DB에 삽입하는 경로
    }
 
