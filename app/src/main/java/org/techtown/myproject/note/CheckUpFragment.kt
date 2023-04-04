@@ -17,8 +17,6 @@ class CheckUpFragment : Fragment() {
         // Inflate the layout for this fragment
         var v : View? = inflater.inflate(R.layout.fragment_check_up, container, false)
 
-        v!!.findViewById<TextView>(R.id.date).text = arguments?.getString("nowDate")
-
         return v
     }
 }

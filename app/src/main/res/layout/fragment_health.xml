@@ -60,15 +60,6 @@
                     android:layout_height="15dp"
                     android:background="@drawable/add"
                     android:layout_marginRight="20dp"
-                    app:layout_constraintRight_toRightOf="@+id/blank"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <TextView
-                    android:id="@+id/blank"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" "
-                    app:layout_constraintRight_toRightOf="@+id/peePlusBtn"
                     app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -120,15 +111,6 @@
                     android:layout_height="15dp"
                     android:background="@drawable/add"
                     android:layout_marginRight="20dp"
-                    app:layout_constraintRight_toRightOf="@+id/blank2"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <TextView
-                    android:id="@+id/blank2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" "
-                    app:layout_constraintRight_toRightOf="@+id/dungPlusBtn"
                     app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -179,15 +161,6 @@
                     android:layout_height="15dp"
                     android:background="@drawable/add"
                     android:layout_marginRight="20dp"
-                    app:layout_constraintRight_toRightOf="@+id/blank3"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <TextView
-                    android:id="@+id/blank3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" "
-                    app:layout_constraintRight_toRightOf="@+id/vomitPlusBtn"
                     app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -239,15 +212,6 @@
                     android:layout_height="15dp"
                     android:background="@drawable/add"
                     android:layout_marginRight="20dp"
-                    app:layout_constraintRight_toRightOf="@+id/blank4"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <TextView
-                    android:id="@+id/blank4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" "
-                    app:layout_constraintRight_toRightOf="@+id/heartPlusBtn"
                     app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
