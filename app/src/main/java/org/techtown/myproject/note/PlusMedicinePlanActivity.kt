@@ -113,7 +113,7 @@ class PlusMedicinePlanActivity : AppCompatActivity() {
                         Toast.makeText(this, "시작 날짜를 정확하게 입력하세요!", Toast.LENGTH_LONG).show()
                     startYearArea.setSelection(0)
                 }
-            } else if(repeat == "매일" && (endYearArea.text.toString() == "" || endMonthArea.text.toString() == "" || endDayArea.text.toString() == "" || endMonthArea.text.toString().toInt() < 1 || endMonthArea.text.toString().toInt() > 12 || endDayArea.text.toString().toInt() < 1 || endDayArea.text.toString().toInt() > 31)) {
+            }  else if(repeat == "매일" && (endYearArea.text.toString() == "" || endMonthArea.text.toString() == "" || endDayArea.text.toString() == "" || endMonthArea.text.toString().toInt() < 1 || endMonthArea.text.toString().toInt() > 12 || endDayArea.text.toString().toInt() < 1 || endDayArea.text.toString().toInt() > 31)) {
                 val em = endMonthArea.text.toString().toInt()
                 val ed = endDayArea.text.toString().toInt()
                 if(((em == 1 || em == 3 || em == 5 || em == 7 || em == 8 || em == 10 || em == 12) && ed > 31) || ((em == 2 || em == 4 || em == 6 || em == 9 || em == 11) && ed > 30)) {

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/nameArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="항목명"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:fontFamily="@font/bold" />
+
+            <ImageView
+                android:id="@+id/stateImg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/minus"
+                android:layout_marginLeft="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/resultArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="수치값"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:fontFamily="@font/bold" />
+
+            <TextView
+                android:id="@+id/minArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="최소 수치"
+                android:layout_marginLeft="15dp"
+                android:textColor="#999999"
+                android:textSize="15sp"
+                android:fontFamily="@font/regular" />
+
+            <TextView
+                android:id="@+id/maxArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="최대 수치"
+                android:layout_marginLeft="15dp"
+                android:textColor="#999999"
+                android:textSize="15sp"
+                android:fontFamily="@font/regular" />
+
+            <TextView
+                android:id="@+id/state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Normal"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/mainColor"
+                android:textSize="15sp"
+                android:fontFamily="@font/bold" />
+        </LinearLayout>
+
+        <TextView
+            android:text=""
+            android:textSize="10sp"
+            android:textColor="#999999"
+            android:fontFamily="@font/regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="#999999"/>
+    </LinearLayout>
+</LinearLayout>

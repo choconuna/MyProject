@@ -3,14 +3,12 @@ package org.techtown.myproject.note
 import android.app.Activity
 import android.app.TimePickerDialog
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.DogMedicineModel
-import org.techtown.myproject.utils.DogMedicinePlanModel
 import org.techtown.myproject.utils.FBRef
 import java.util.*
 
@@ -69,7 +67,7 @@ class PlusMedicineActivity : AppCompatActivity() {
                 if(((month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) && day > 31) || ((month == 2 || month == 4 || month == 6 || month == 9 || month == 11) && day > 30)) {
                     Toast.makeText(this, "날짜를 정확하게 입력하세요!", Toast.LENGTH_LONG).show()
                     yearArea.setSelection(0)
-                } else {
+                }  else {
                     Toast.makeText(this, "날짜를 정확하게 입력하세요!", Toast.LENGTH_LONG).show()
                     yearArea.setSelection(0)
                 }
