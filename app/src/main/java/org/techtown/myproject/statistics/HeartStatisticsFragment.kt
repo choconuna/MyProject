@@ -452,9 +452,11 @@ class HeartStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#DC143C")
         depenses.valueFormatter = CustomFormatter()
+        depenses.notifyDataSetChanged()
 
         val data = BarData(depenses)
         data.barWidth = 0.8f
+        data.notifyDataChanged()
 
         barChart.run {
             this.data = data
@@ -657,9 +659,11 @@ class HeartStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#DC143C")
         depenses.valueFormatter = CustomFormatter()
+        depenses.notifyDataSetChanged()
 
         val data = BarData(depenses)
         data.barWidth = 0.5f
+        data.notifyDataChanged()
 
         barChart.run {
             this.data = data
@@ -858,9 +862,11 @@ class HeartStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#DC143C")
         depenses.valueFormatter = CustomFormatter()
+        depenses.notifyDataSetChanged()
 
         val data = BarData(depenses)
         data.barWidth = 0.8f
+        data.notifyDataChanged()
 
         barChart.run {
             notifyDataSetChanged()
@@ -1072,8 +1078,10 @@ class HeartStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#DC143C")
         depenses.valueFormatter = CustomFormatter()
+        depenses.notifyDataSetChanged()
 
         val data = BarData(depenses)
+        data.notifyDataChanged()
         data.barWidth = 0.8f
 
         barChart.run {
@@ -1402,9 +1410,11 @@ class HeartStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#DC143C")
         depenses.valueFormatter = CustomFormatter()
+        depenses.notifyDataSetChanged()
 
         val data = BarData(depenses)
         data.barWidth = 0.5f
+        data.notifyDataChanged()
 
         barChart.run {
             notifyDataSetChanged()
@@ -1967,9 +1977,11 @@ class HeartStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#DC143C")
         depenses.valueFormatter = CustomFormatter()
+        depenses.notifyDataSetChanged()
 
         val data = BarData(depenses)
         data.barWidth = 0.5f
+        data.notifyDataChanged()
 
         barChart.run {
             notifyDataSetChanged()

@@ -38,7 +38,7 @@ class PeeReVAdapter(val dogPeeList : ArrayList<DogPeeModel>):
         when (dogPeeList[position].peeType) {
             "transparent" -> {
                 holder.peeTypeArea!!.text = "투명한 무색 소변"
-                holder.peeColor!!.setBackgroundColor(Color.parseColor("#000000"))
+                holder.peeColor!!.setBackgroundColor(Color.parseColor("#FFFFFF"))
             }
             "lightYellow" -> {
                 holder.peeTypeArea!!.text = "투명한 노란색 소변"

@@ -32,7 +32,6 @@ import org.techtown.myproject.utils.FBRef
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class WaterStatisticsFragment : Fragment() {
 
     private val TAG = WaterStatisticsFragment::class.java.simpleName

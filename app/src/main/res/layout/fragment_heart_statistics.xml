@@ -17,65 +17,65 @@
         android:theme="@style/dateSpinner">
     </Spinner>
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="330dp"
-        android:layout_marginTop="10dp">
+        android:layout_height="match_parent">
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart_one_day"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:visibility="visible"/>
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart_week"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:visibility="gone"/>
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_one_day"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart_one_month"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:visibility="gone"/>
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_week"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart_three_month"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:visibility="gone"/>
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_one_month"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart_six_month"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:visibility="gone"/>
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_three_month"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart_year"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:visibility="gone"/>
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_six_month"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
 
-    </FrameLayout>
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_year"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
+
+        </FrameLayout>
+    </ScrollView>
 
 </LinearLayout>
