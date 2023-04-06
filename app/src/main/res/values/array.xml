@@ -274,4 +274,13 @@
         <item>개</item>
         <item>g</item>
     </string-array>
+
+    <string-array name="DateSpinner">
+        <item>오늘</item>
+        <item>1주일</item>
+        <item>1개월</item>
+        <item>3개월</item>
+        <item>6개월</item>
+        <item>1년</item>
+    </string-array>
 </resources>

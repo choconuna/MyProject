@@ -24,9 +24,9 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import org.techtown.myproject.R
 import org.techtown.myproject.community.PagerFragmentStateAdapter
+import org.techtown.myproject.statistics.StatisticsFragment
 import org.techtown.myproject.utils.DogModel
 import org.techtown.myproject.utils.FBRef
 

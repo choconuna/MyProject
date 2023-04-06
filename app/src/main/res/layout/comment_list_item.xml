@@ -51,7 +51,7 @@
                     android:layout_height="25dp"
                     android:src="@drawable/ic_write_menu"
                     android:visibility="invisible"
-                    android:layout_marginLeft="190dp" />
+                    android:layout_marginLeft="200dp" />
 
             </LinearLayout>
 

@@ -1,24 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".note.StatisticsFragment">
+    android:orientation="vertical"
+    tools:context=".statistics.StatisticsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/bold"
-        android:text="통계"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:tabIndicatorColor="@color/mainColor"
+        app:tabIndicatorGravity="bottom"
+        app:tabTextColor="#000000"
+        app:tabSelectedTextColor="@color/mainColor"
+        app:tabBackground="@color/white"
+        tools:ignore="MissingConstraints"
+        app:tabTextAppearance="@style/TabText"
+        app:tabMode="scrollable"
+        app:tabGravity="start">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/eat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사료"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/snack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="간식" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tonic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="영양제"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/water"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="물"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/pee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="소변"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/dung"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="대변"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/vomit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="구토"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/heart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="호흡수"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/checkUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="검사"/>
+
+    </com.google.android.material.tabs.TabLayout>
+
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

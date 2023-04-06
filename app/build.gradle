@@ -73,4 +73,7 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0' // 원형 imageView
 
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
+
+
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

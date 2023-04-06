@@ -38,25 +38,6 @@ class CommunityFragment : Fragment() {
         viewPager = v!!.findViewById(R.id.viewpager)
         tab_main = v!!.findViewById(R.id.tabs)
 
-        /* communityRVAdapter = CommunityListVAdapter(communityDataList)
-        communityListView = v!!.findViewById(R.id.communityListView)
-        communityListView.adapter = communityRVAdapter
-
-        // 각각의 게시물 클릭 시 그 게시물 보이기
-        communityListView.setOnItemClickListener { parent, view, position, id ->
-            val intent = Intent(context, CommunityInActivity::class.java)
-            intent.putExtra("key", communityKeyList[position])
-            startActivity(intent)
-        }
-
-        writeBtn = v!!.findViewById(R.id.writeBtn)
-        writeBtn.setOnClickListener {
-            val intent = Intent(context, WriteCommunityActivity::class.java)
-            startActivity(intent)
-        }
-
-        getFBCommunityData() // 커뮤니티 데이터 목록 가져오기 */
-
         return v
     }
 
@@ -85,58 +66,4 @@ class CommunityFragment : Fragment() {
             tab.text = tabTitles[position]
         }.attach()
     }
-
-    /* private fun initTopLayout() { // 상단 탭에 맞는 fragment 띄우기
-        tab_main.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                when(tab?.text.toString()) {
-                    "전체" -> changeFragment(allFragment)
-                    "정보" -> changeFragment(informationFragment)
-                    "후기" -> changeFragment(reviewFragment)
-                    "자유" -> changeFragment(freeFragment)
-                    "질문" -> changeFragment(questionFragment)
-                    "거래" -> changeFragment(dealFragment)
-                }
-            }
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-
-        })
-    }
-
-    private fun changeFragment(fragment: Fragment) {
-        childFragmentManager.beginTransaction().replace(R.id.frame, fragment).commit()
-    }
-
-    private fun getFBCommunityData() { // 파이어베이스로부터 커뮤니티 데이터 불러오기
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                communityDataList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
-
-                for(dataModel in dataSnapshot.children) {
-                    Log.d(TAG, dataModel.toString())
-                    // dataModel.key
-                    val item = dataModel.getValue(CommunityModel::class.java)
-                    communityDataList.add(item!!)
-                    communityKeyList.add(dataModel.key.toString())
-                }
-
-                communityKeyList.reverse() // 키 값을 최신순으로 정렬
-                communityDataList.reverse() // 게시물을 최신순으로 정렬
-                communityRVAdapter.notifyDataSetChanged() // 동기화
-
-                Log.d(TAG, communityDataList.toString())
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.communityRef.addValueEventListener(postListener)
-    } */
 }

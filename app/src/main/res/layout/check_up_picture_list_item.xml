@@ -6,15 +6,37 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <TextView
-        android:id="@+id/dateArea"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/bold"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:layout_margin="20dp"
-        android:text="2023.4.4" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/dateArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:text="2023.4.4" />
+
+        <TextView
+            android:id="@+id/hospitalArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="동물병원" />
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/imageView"
@@ -23,17 +45,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:id="@+id/hospitalArea"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/bold"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:layout_margin="20dp"
-        android:text="동물병원" />
+        android:layout_marginBottom="20dp"/>
 
     <TextView
         android:id="@+id/contentArea"
@@ -42,9 +54,7 @@
         android:fontFamily="@font/bold"
         android:textColor="#778899"
         android:textSize="15sp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_margin="20dp"
         android:text="내용" />
 
     <LinearLayout
