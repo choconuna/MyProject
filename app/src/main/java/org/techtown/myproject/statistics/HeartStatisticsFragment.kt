@@ -33,7 +33,7 @@ import java.util.*
 
 class HeartStatisticsFragment : Fragment() {
 
-    private val TAG = WaterStatisticsFragment::class.java.simpleName
+    private val TAG = HeartStatisticsFragment::class.java.simpleName
 
     lateinit var sharedPreferences: SharedPreferences
     private lateinit var myUid : String

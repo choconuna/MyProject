@@ -30,7 +30,7 @@ import java.util.*
 
 class DungStatisticsFragment : Fragment() {
 
-    private val TAG = WaterStatisticsFragment::class.java.simpleName
+    private val TAG = DungStatisticsFragment::class.java.simpleName
 
     lateinit var sharedPreferences: SharedPreferences
     private lateinit var myUid : String

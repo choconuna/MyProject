@@ -11,31 +11,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
-import androidx.core.content.ContextCompat
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.collection.LLRBNode
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.DogPeeModel
-import org.techtown.myproject.utils.DogWaterModel
 import org.techtown.myproject.utils.FBRef
 import java.text.SimpleDateFormat
 import java.util.*
 
 class PeeStatisticsFragment : Fragment() {
 
-    private val TAG = WaterStatisticsFragment::class.java.simpleName
+    private val TAG = PeeStatisticsFragment::class.java.simpleName
 
     lateinit var sharedPreferences: SharedPreferences
     private lateinit var myUid : String
