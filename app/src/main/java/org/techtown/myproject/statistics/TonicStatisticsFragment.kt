@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
@@ -24,6 +26,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import org.techtown.myproject.R
+import org.techtown.myproject.note.MedicinePlanReVAdapter
+import org.techtown.myproject.utils.DogMedicinePlanModel
 import org.techtown.myproject.utils.DogSnackModel
 import org.techtown.myproject.utils.DogTonicModel
 import org.techtown.myproject.utils.FBRef
@@ -71,37 +75,48 @@ class TonicStatisticsFragment : Fragment() {
     private var sixMonthPieMap : MutableMap<String, Float> = mutableMapOf()
     private var yearPieMap : MutableMap<String, Float> = mutableMapOf()
 
-    private lateinit var oneDayChart : BarChart
-    private lateinit var weekChart : BarChart
-    private lateinit var oneMonthChart : BarChart
-    private lateinit var threeMonthChart : BarChart
-    private lateinit var sixMonthChart : BarChart
-    private lateinit var yearChart : BarChart
+    private lateinit var oneDayRecyclerView: RecyclerView
+    private lateinit var weekRecyclerView : RecyclerView
+    private lateinit var oneMonthRecyclerView : RecyclerView
+    private lateinit var threeMonthRecyclerView : RecyclerView
+    private lateinit var sixMonthRecyclerView : RecyclerView
+    private lateinit var yearRecyclerView : RecyclerView
 
-    private var oneDayBarMap : MutableMap<String, Float> = mutableMapOf()
+    private var oneDayMap : MutableMap<String, Int> = mutableMapOf()
     private var labelList : ArrayList<String> = ArrayList()
-    private var valueList : ArrayList<Float> = ArrayList()
+    private val oneDayDataList = ArrayList<String>() // 오늘 영양제 목록 리스트
+    lateinit var tonicStatisticsRVAdapter : TonicStatisticsReVAdapter
+    lateinit var layoutManager : RecyclerView.LayoutManager
 
     private var weekLabelList : ArrayList<String> = ArrayList()
-    private var weekValueList : ArrayList<Float> = ArrayList()
-    private var weekLabelMap : MutableMap<Int, String> = mutableMapOf()
-    private var weekMap : MutableMap<Int, Float> = mutableMapOf()
+    private var weekMap : MutableMap<String, Int> = mutableMapOf()
+    private val weekDataList = ArrayList<String>() // 1주일 영양제 목록 리스트
+    lateinit var weekTonicStatisticsRVAdapter : TonicStatisticsReVAdapter
+    lateinit var wLayoutManager : RecyclerView.LayoutManager
 
     private var oneMonthLabelList : ArrayList<String> = ArrayList()
-    private var oneMonthValueList : ArrayList<Float> = ArrayList()
-    private var oneMonthMap : MutableMap<Int, Float> = mutableMapOf()
+    private var oneMonthMap : MutableMap<String, Int> = mutableMapOf()
+    private val oneMonthDataList = ArrayList<String>() // 1개월 영양제 목록 리스트
+    lateinit var oneMonthTonicStatisticsRVAdapter : TonicStatisticsReVAdapter
+    lateinit var oLayoutManager : RecyclerView.LayoutManager
 
     private var threeMonthLabelList : ArrayList<String> = ArrayList()
-    private var threeMonthValueList : ArrayList<Float> = ArrayList()
-    private var threeMonthMap : MutableMap<Int, Float> = mutableMapOf()
+    private var threeMonthMap : MutableMap<String, Int> = mutableMapOf()
+    private val threeMonthDataList = ArrayList<String>() // 3개월 영양제 목록 리스트
+    lateinit var threeMonthTonicStatisticsRVAdapter : TonicStatisticsReVAdapter
+    lateinit var tLayoutManager : RecyclerView.LayoutManager
 
     private var sixMonthLabelList : ArrayList<String> = ArrayList()
-    private var sixMonthValueList : ArrayList<Float> = ArrayList()
-    private var sixMonthMap : MutableMap<Int, Float> = mutableMapOf()
+    private var sixMonthMap : MutableMap<String, Int> = mutableMapOf()
+    private val sixMonthDataList = ArrayList<String>() // 6개월 영양제 목록 리스트
+    lateinit var sixMonthTonicStatisticsRVAdapter : TonicStatisticsReVAdapter
+    lateinit var sLayoutManager : RecyclerView.LayoutManager
 
     private var yearLabelList : ArrayList<String> = ArrayList()
-    private var yearValueList : ArrayList<Float> = ArrayList()
-    private var yearMap : MutableMap<Int, Float> = mutableMapOf()
+    private var yearMap : MutableMap<String, Int> = mutableMapOf()
+    private val yearDataList = ArrayList<String>() // 1년 영양제 목록 리스트
+    lateinit var yearTonicStatisticsRVAdapter : TonicStatisticsReVAdapter
+    lateinit var yLayoutManager : RecyclerView.LayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -136,20 +151,76 @@ class TonicStatisticsFragment : Fragment() {
         sixMonthPieChart = v.findViewById(R.id.pieChart_six_month)
         yearPieChart = v.findViewById(R.id.pieChart_year)
 
-        oneDayChart = v.findViewById(R.id.chart_one_day)
-        weekChart = v.findViewById(R.id.chart_week)
-        oneMonthChart = v.findViewById(R.id.chart_one_month)
-        threeMonthChart = v.findViewById(R.id.chart_three_month)
-        sixMonthChart = v.findViewById(R.id.chart_six_month)
-        yearChart = v.findViewById(R.id.chart_year)
+        oneDayRecyclerView = v.findViewById(R.id.oneDayRecyclerView)
+        weekRecyclerView = v.findViewById(R.id.weekRecyclerView)
+        oneMonthRecyclerView = v.findViewById(R.id.oneMonthRecyclerView)
+        threeMonthRecyclerView = v.findViewById(R.id.threeMonthRecyclerView)
+        sixMonthRecyclerView = v.findViewById(R.id.sixMonthRecyclerView)
+        yearRecyclerView = v.findViewById(R.id.yearRecyclerView)
+
+        tonicStatisticsRVAdapter = TonicStatisticsReVAdapter(oneDayDataList)
+        oneDayRecyclerView = v!!.findViewById(R.id.oneDayRecyclerView)
+        oneDayRecyclerView.setItemViewCacheSize(20)
+        oneDayRecyclerView.setHasFixedSize(true)
+        layoutManager = LinearLayoutManager(v.context, LinearLayoutManager.VERTICAL, false)
+        oneDayRecyclerView.layoutManager = layoutManager
+        oneDayRecyclerView.adapter = tonicStatisticsRVAdapter
+
+        weekTonicStatisticsRVAdapter = TonicStatisticsReVAdapter(weekDataList)
+        weekRecyclerView = v!!.findViewById(R.id.weekRecyclerView)
+        weekRecyclerView.setItemViewCacheSize(20)
+        weekRecyclerView.setHasFixedSize(true)
+        wLayoutManager = LinearLayoutManager(v.context, LinearLayoutManager.VERTICAL, false)
+        weekRecyclerView.layoutManager = wLayoutManager
+        weekRecyclerView.adapter = weekTonicStatisticsRVAdapter
+
+        oneMonthTonicStatisticsRVAdapter = TonicStatisticsReVAdapter(oneMonthDataList)
+        oneMonthRecyclerView = v!!.findViewById(R.id.oneMonthRecyclerView)
+        oneMonthRecyclerView.setItemViewCacheSize(20)
+        oneMonthRecyclerView.setHasFixedSize(true)
+        oLayoutManager = LinearLayoutManager(v.context, LinearLayoutManager.VERTICAL, false)
+        oneMonthRecyclerView.layoutManager = oLayoutManager
+        oneMonthRecyclerView.adapter = oneMonthTonicStatisticsRVAdapter
+
+        threeMonthTonicStatisticsRVAdapter = TonicStatisticsReVAdapter(threeMonthDataList)
+        threeMonthRecyclerView = v!!.findViewById(R.id.threeMonthRecyclerView)
+        threeMonthRecyclerView.setItemViewCacheSize(20)
+        threeMonthRecyclerView.setHasFixedSize(true)
+        tLayoutManager = LinearLayoutManager(v.context, LinearLayoutManager.VERTICAL, false)
+        threeMonthRecyclerView.layoutManager = tLayoutManager
+        threeMonthRecyclerView.adapter = threeMonthTonicStatisticsRVAdapter
+
+        sixMonthTonicStatisticsRVAdapter = TonicStatisticsReVAdapter(sixMonthDataList)
+        sixMonthRecyclerView = v!!.findViewById(R.id.sixMonthRecyclerView)
+        sixMonthRecyclerView.setItemViewCacheSize(20)
+        sixMonthRecyclerView.setHasFixedSize(true)
+        sLayoutManager = LinearLayoutManager(v.context, LinearLayoutManager.VERTICAL, false)
+        sixMonthRecyclerView.layoutManager = sLayoutManager
+        sixMonthRecyclerView.adapter = sixMonthTonicStatisticsRVAdapter
+
+        yearTonicStatisticsRVAdapter = TonicStatisticsReVAdapter(yearDataList)
+        yearRecyclerView = v!!.findViewById(R.id.yearRecyclerView)
+        yearRecyclerView.setItemViewCacheSize(20)
+        yearRecyclerView.setHasFixedSize(true)
+        yLayoutManager = LinearLayoutManager(v.context, LinearLayoutManager.VERTICAL, false)
+        yearRecyclerView.layoutManager = yLayoutManager
+        yearRecyclerView.adapter = yearTonicStatisticsRVAdapter
 
         spinner = v.findViewById(R.id.spinner)
 
         setTodayPieChartReady()
         setTodayPieChart()
         pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
-//        barTodayChartGraph(v, oneDayChart, oneDayBarMap)
         setShowChart(v, "오늘")
+
+        for((key, value) in oneDayMap.entries) {
+            labelList.add(key)
+        }
+
+        for(i in 0 until labelList.size)
+            oneDayDataList.add(labelList[i])
+
+        tonicStatisticsRVAdapter.notifyDataSetChanged()
     }
 
     private fun getDate() { // 오늘, 일주일 전, 1개월 전, 3개월 전, 6개월 전, 1년 전 날짜 구하기
@@ -224,189 +295,124 @@ class TonicStatisticsFragment : Fragment() {
         when(selectedDate) {
             "오늘" -> {
                 oneDayPieChart.visibility = View.VISIBLE
-                oneDayChart.visibility = View.VISIBLE
+                oneDayRecyclerView.visibility = View.VISIBLE
                 weekPieChart.visibility = View.GONE
-                weekChart.visibility = View.GONE
+                weekRecyclerView.visibility = View.GONE
                 oneMonthPieChart.visibility = View.GONE
-                oneMonthChart.visibility = View.GONE
+                oneMonthRecyclerView.visibility = View.GONE
                 threeMonthPieChart.visibility = View.GONE
-                threeMonthChart.visibility = View.GONE
+                threeMonthRecyclerView.visibility = View.GONE
                 sixMonthPieChart.visibility = View.GONE
-                sixMonthChart.visibility = View.GONE
+                sixMonthRecyclerView.visibility = View.GONE
                 yearPieChart.visibility = View.GONE
-                yearChart.visibility = View.GONE
+                yearRecyclerView.visibility = View.GONE
 
                 Log.d("oneDayPieMap", "$oneDayPieMap")
                 setTodayPieChartReady()
                 setTodayPieChart()
                 pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
-                // barTodayChartGraph(v, oneDayChart, oneDayBarMap)
+                setTodayTonic()
+                Log.d("tonicList", labelList.toString())
             }
             "1주일" -> {
                 oneDayPieChart.visibility = View.GONE
-                oneDayChart.visibility = View.GONE
+                oneDayRecyclerView.visibility = View.GONE
                 weekPieChart.visibility = View.VISIBLE
-                weekChart.visibility = View.VISIBLE
+                weekRecyclerView.visibility = View.VISIBLE
                 oneMonthPieChart.visibility = View.GONE
-                oneMonthChart.visibility = View.GONE
+                oneMonthRecyclerView.visibility = View.GONE
                 threeMonthPieChart.visibility = View.GONE
-                threeMonthChart.visibility = View.GONE
+                threeMonthRecyclerView.visibility = View.GONE
                 sixMonthPieChart.visibility = View.GONE
-                sixMonthChart.visibility = View.GONE
+                sixMonthRecyclerView.visibility = View.GONE
                 yearPieChart.visibility = View.GONE
-                yearChart.visibility = View.GONE
+                yearRecyclerView.visibility = View.GONE
 
                 setWeekPieChartReady()
                 setWeekPieChart()
-//
-//                val sortedWeekLabelMap = sortMapByKey1(weekLabelMap)
-//                // key(String)에 따른 정렬
-//                for((key, value) in sortedWeekLabelMap.entries) {
-//                    weekLabelList.add(value)
-//                }
-//
-//                val sortedWeekMap = sortMapByKey2(weekMap)
-//                // key(String)에 따른 정렬
-//                for((key, value) in sortedWeekMap.entries) {
-//                    weekValueList.add(value)
-//                }
-//
                 pieWeekChartGraph(v, weekPieChart, weekPieMap)
-//                barWeekChartGraph(v, weekChart, weekValueList, weekLabelList)
+                setWeekTonic()
+                Log.d("tonicList", weekLabelList.toString())
             }
             "1개월" -> {
                 oneDayPieChart.visibility = View.GONE
-                oneDayChart.visibility = View.GONE
+                oneDayRecyclerView.visibility = View.GONE
                 weekPieChart.visibility = View.GONE
-                weekChart.visibility = View.GONE
+                weekRecyclerView.visibility = View.GONE
                 oneMonthPieChart.visibility = View.VISIBLE
-                oneMonthChart.visibility = View.VISIBLE
+                oneMonthRecyclerView.visibility = View.VISIBLE
                 threeMonthPieChart.visibility = View.GONE
-                threeMonthChart.visibility = View.GONE
+                threeMonthRecyclerView.visibility = View.GONE
                 sixMonthPieChart.visibility = View.GONE
-                sixMonthChart.visibility = View.GONE
+                sixMonthRecyclerView.visibility = View.GONE
                 yearPieChart.visibility = View.GONE
-                yearChart.visibility = View.GONE
+                yearRecyclerView.visibility = View.GONE
 
                 setOneMonthPieChartReady()
                 setOneMonthPieChart()
-//
-//                oneMonthLabelList.add("1주차")
-//                oneMonthLabelList.add("2주차")
-//                oneMonthLabelList.add("3주차")
-//                oneMonthLabelList.add("4주차")
-//
-//                val sortedMonthMap = sortMapByKey2(oneMonthMap)
-//                // key(String)에 따른 정렬
-//                for((key, value) in sortedMonthMap.entries) {
-//                    oneMonthValueList.add(value / 7)
-//                }
-//
                 pieOneMonthPieChartGraph(v, oneMonthPieChart, oneMonthPieMap)
-//                barOneMonthChartGraph(v, oneMonthChart, oneMonthValueList, oneMonthLabelList)
+                setOneMonthTonic()
+                Log.d("tonicList", oneMonthLabelList.toString())
             }
             "3개월" -> {
                 oneDayPieChart.visibility = View.GONE
-                oneDayChart.visibility = View.GONE
+                oneDayRecyclerView.visibility = View.GONE
                 weekPieChart.visibility = View.GONE
-                weekChart.visibility = View.GONE
+                weekRecyclerView.visibility = View.GONE
                 oneMonthPieChart.visibility = View.GONE
-                oneMonthChart.visibility = View.GONE
+                oneMonthRecyclerView.visibility = View.GONE
                 threeMonthPieChart.visibility = View.VISIBLE
-                threeMonthChart.visibility = View.VISIBLE
+                threeMonthRecyclerView.visibility = View.VISIBLE
                 sixMonthPieChart.visibility = View.GONE
-                sixMonthChart.visibility = View.GONE
+                sixMonthRecyclerView.visibility = View.GONE
                 yearPieChart.visibility = View.GONE
-                yearChart.visibility = View.GONE
+                yearRecyclerView.visibility = View.GONE
 
                 setThreeMonthBarChartReady()
                 setThreeMonthBarChart()
-//
-//                threeMonthLabelList.add("1개월")
-//                threeMonthLabelList.add("2개월")
-//                threeMonthLabelList.add("3개월")
-//
-//                val sortedThreeMonthMap = sortMapByKey2(threeMonthMap)
-//                // key(String)에 따른 정렬
-//                for((key, value) in sortedThreeMonthMap.entries) {
-//                    threeMonthValueList.add(value / 30)
-//                }
-//
                 pieThreeMonthBarChartGraph(v, threeMonthPieChart, threeMonthPieMap)
-//                barThreeMonthChartGraph(v, threeMonthChart, threeMonthValueList, threeMonthLabelList)
+                setThreeMonthTonic()
+                Log.d("tonicList", threeMonthLabelList.toString())
             }
             "6개월" -> {
                 oneDayPieChart.visibility = View.GONE
-                oneDayChart.visibility = View.GONE
+                oneDayRecyclerView.visibility = View.GONE
                 weekPieChart.visibility = View.GONE
-                weekChart.visibility = View.GONE
+                weekRecyclerView.visibility = View.GONE
                 oneMonthPieChart.visibility = View.GONE
-                oneMonthChart.visibility = View.GONE
+                oneMonthRecyclerView.visibility = View.GONE
                 threeMonthPieChart.visibility = View.GONE
-                threeMonthChart.visibility = View.GONE
+                threeMonthRecyclerView.visibility = View.GONE
                 sixMonthPieChart.visibility = View.VISIBLE
-                sixMonthChart.visibility = View.VISIBLE
+                sixMonthRecyclerView.visibility = View.VISIBLE
                 yearPieChart.visibility = View.GONE
-                yearChart.visibility = View.GONE
+                yearRecyclerView.visibility = View.GONE
 
                 setSixPieMonthChartReady()
                 setSixPieMonthChart()
-//
-//                sixMonthLabelList.add("1개월")
-//                sixMonthLabelList.add("2개월")
-//                sixMonthLabelList.add("3개월")
-//                sixMonthLabelList.add("4개월")
-//                sixMonthLabelList.add("5개월")
-//                sixMonthLabelList.add("6개월")
-//
-//                val sortedSixMonthMap = sortMapByKey2(sixMonthMap)
-//                // key(String)에 따른 정렬
-//                for((key, value) in sortedSixMonthMap.entries) {
-//                    sixMonthValueList.add(value / 30)
-//                }
-//
                 pieSixMonthChartGraph(v, sixMonthPieChart, sixMonthPieMap)
-//                barSixMonthChartGraph(v, sixMonthChart, sixMonthValueList, sixMonthLabelList)
+                setSixMonthTonic()
+                Log.d("tonicList", sixMonthLabelList.toString())
             }
             "1년" -> {
                 oneDayPieChart.visibility = View.GONE
-                oneDayChart.visibility = View.GONE
+                oneDayRecyclerView.visibility = View.GONE
                 weekPieChart.visibility = View.GONE
-                weekChart.visibility = View.GONE
+                weekRecyclerView.visibility = View.GONE
                 oneMonthPieChart.visibility = View.GONE
-                oneMonthChart.visibility = View.GONE
+                oneMonthRecyclerView.visibility = View.GONE
                 threeMonthPieChart.visibility = View.GONE
-                threeMonthChart.visibility = View.GONE
+                threeMonthRecyclerView.visibility = View.GONE
                 sixMonthPieChart.visibility = View.GONE
-                sixMonthChart.visibility = View.GONE
+                sixMonthRecyclerView.visibility = View.GONE
                 yearPieChart.visibility = View.VISIBLE
-                yearChart.visibility = View.VISIBLE
+                yearRecyclerView.visibility = View.VISIBLE
 
                 setYearPieChartReady()
                 setYearPieChart()
-//
-//                yearLabelList.add("1개월")
-//                yearLabelList.add("2개월")
-//                yearLabelList.add("3개월")
-//                yearLabelList.add("4개월")
-//                yearLabelList.add("5개월")
-//                yearLabelList.add("6개월")
-//                yearLabelList.add("7개월")
-//                yearLabelList.add("8개월")
-//                yearLabelList.add("9개월")
-//                yearLabelList.add("10개월")
-//                yearLabelList.add("11개월")
-//                yearLabelList.add("12개월")
-//
-//                val sortedSixMonthMap = sortMapByKey2(yearMap)
-//                // key(String)에 따른 정렬
-//                for((key, value) in sortedSixMonthMap.entries) {
-//                    yearValueList.add(value / 30)
-//                }
-
-                Log.d("yearPieMap", yearPieMap.toString())
                 pieYearChartGraph(v, yearPieChart, yearPieMap)
-//                barYearChartGraph(v, yearChart, yearValueList, yearLabelList)
+                yearTonic()
+                Log.d("tonicList", yearLabelList.toString())
             }
         }
     }
@@ -421,10 +427,10 @@ class TonicStatisticsFragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-                    // labelList.clear()
-                    // valueList.clear()
+                    oneDayMap.clear()
                     oneDayPieMap.clear()
-                    // oneDayBarMap.clear()
+                    oneDayDataList.clear()
+                    labelList.clear()
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogTonicModel::class.java)
@@ -436,7 +442,7 @@ class TonicStatisticsFragment : Fragment() {
 
                         if(year == nowYear && month == nowMonth && day == nowDay) {
                             oneDayPieMap[item!!.tonicPart] = 0.toFloat()
-                            // oneDayBarMap[item!!.timeSlot] = 0.toFloat()
+                            oneDayMap[item!!.tonicName] = 0
                         }
                     }
                 } catch (e: Exception) {
@@ -472,7 +478,6 @@ class TonicStatisticsFragment : Fragment() {
 
                         if(year == nowYear && month == nowMonth && day == nowDay) {
                             oneDayPieMap[item!!.tonicPart] = oneDayPieMap[item!!.tonicPart]!! + 1.toFloat()
-                            // oneDayBarMap[item!!.timeSlot] = oneDayBarMap[item!!.timeSlot]!! + item!!.mealWeight.toFloat()
                         }
                     }
                 } catch (e: Exception) {
@@ -544,73 +549,16 @@ class TonicStatisticsFragment : Fragment() {
         }
     }
 
-    /*  private fun barTodayChartGraph(v : View, barChart : BarChart, valList : MutableMap<String, Float>) {
+    private fun setTodayTonic() {
+        for((key, value) in oneDayMap.entries) {
+            labelList.add(key)
+        }
 
-         barChart.extraBottomOffset = 15f // 간격
-         barChart.description.isEnabled = false // chart 밑에 description 표시 유무
-         barChart.setTouchEnabled(false)
-         barChart.setDrawBarShadow(false)
-         barChart.setDrawGridBackground(false)
+        for(i in 0 until labelList.size)
+            oneDayDataList.add(labelList[i])
 
-         for ((key, value) in valList.entries) {
-             labelList.add(key)
-             valueList.add(value)
-         }
-
-         barChart.run {
-             description.isEnabled = false
-             setPinchZoom(false)
-             setDrawBarShadow(false)
-             setDrawGridBackground(false)
-
-             axisLeft.run {
-                 axisMinimum = 0f
-                 granularity = 50f
-                 setDrawLabels(true)
-                 setDrawGridLines(true)
-                 setDrawAxisLine(false)
-                 axisLineColor = ContextCompat.getColor(v.context, R.color.mainColor)
-                 textSize = 14f
-             }
-
-             xAxis.run {
-                 position = XAxis.XAxisPosition.BOTTOM
-                 granularity = 1f
-                 setDrawAxisLine(true)
-                 setDrawGridLines(false)
-                 textSize = 14f
-                 valueFormatter = IndexAxisValueFormatter(labelList)
-             }
-
-             axisRight.isEnabled = false
-             setTouchEnabled(false)
-             animateY(100)
-             legend.isEnabled = false
-         }
-
-         var entries : ArrayList<BarEntry> = ArrayList()
-         for (i in 0 until valueList.size) {
-             entries.add(BarEntry(i.toFloat(), valueList[i]))
-         }
-
-         val colors: ArrayList<Int> = ArrayList()
-         for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
-
-         var depenses = BarDataSet(entries, "사료량")
-         depenses.axisDependency = YAxis.AxisDependency.LEFT
-         // depenses.color = Color.parseColor("#87CEEB")
-         depenses.valueFormatter = MealStatisticsFragment.CustomFormatter()
-         depenses.colors = colors
-
-         val data = BarData(depenses)
-         data.barWidth = 0.6f
-
-         barChart.run {
-             this.data = data
-             setFitBars(true)
-             invalidate()
-         }
-     } */
+        tonicStatisticsRVAdapter.notifyDataSetChanged()
+    }
 
     private fun setWeekPieChartReady() {
         val nowSp = nowDate.split(".") // 오늘 날짜
@@ -632,7 +580,7 @@ class TonicStatisticsFragment : Fragment() {
                     weekPieMap.clear()
                     weekLabelList.clear()
                     weekMap.clear()
-                    weekValueList.clear()
+                    weekDataList.clear()
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogTonicModel::class.java)
@@ -657,27 +605,23 @@ class TonicStatisticsFragment : Fragment() {
                             if(month == nowMonth && month == weekMonth) { // 일주일 전이 같은 달일 경우
                                 if(day in weekDay..nowDay) {
                                     weekPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // weekLabelMap[dayNum.toInt()] = date
-                                    // weekMap[dayNum.toInt()] = 0.toFloat()
+                                    weekMap[item!!.tonicName] = 0
                                 }
                             } else if(month < nowMonth && month == weekMonth) { // 일주일 전이 전달일 경우
                                 if(day >= weekDay) {
                                     weekPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // weekLabelMap[dayNum.toInt()] = date
-                                    // weekMap[dayNum.toInt()] = 0.toFloat()
+                                    weekMap[item!!.tonicName] = 0
                                 }
                             } else if(month == nowMonth && month > weekMonth) { // 일주일 전이 이번달일 경우
                                 if(day <= nowDay) {
                                     weekPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // weekLabelMap[dayNum.toInt()] = date
-                                    // weekMap[dayNum.toInt()] = 0.toFloat()
+                                    weekMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if(year < nowYear && year == weekYear) { // 일주일 전이 전년도일 경우
                             if(weekMonth == month && day >= weekDay) {
                                 weekPieMap[item!!.tonicPart] = 0.toFloat()
-                                // weekLabelMap[dayNum.toInt()] = date
-                                // weekMap[dayNum.toInt()] = 0.toFloat()
+                                weekMap[item!!.tonicName] = 0
                             }
                         }
                     }
@@ -825,66 +769,15 @@ class TonicStatisticsFragment : Fragment() {
         }
     }
 
-    private fun barWeekChartGraph(v : View, barChart : BarChart, valList : ArrayList<Float>, labelList : ArrayList<String>) {
-
-        barChart.extraBottomOffset = 15f // 간격
-        barChart.description.isEnabled = false // chart 밑에 description 표시 유무
-        barChart.setTouchEnabled(false)
-        barChart.setDrawBarShadow(false)
-        barChart.setDrawGridBackground(false)
-
-        barChart.run {
-            description.isEnabled = false
-            setPinchZoom(false)
-            setDrawBarShadow(false)
-            setDrawGridBackground(false)
-
-            axisLeft.run {
-                axisMinimum = 0f
-                granularity = 50f
-                setDrawLabels(true)
-                setDrawGridLines(true)
-                setDrawAxisLine(false)
-                textSize = 10f
-            }
-
-            xAxis.run {
-                position = XAxis.XAxisPosition.BOTTOM
-                granularity = 1f
-                setDrawAxisLine(true)
-                setDrawGridLines(false)
-                textSize = 10f
-                valueFormatter = IndexAxisValueFormatter(labelList)
-            }
-
-            axisRight.isEnabled = false
-            setTouchEnabled(false)
-            animateY(100)
-            legend.isEnabled = false
+    private fun setWeekTonic() {
+        for((key, value) in weekMap.entries) {
+            weekLabelList.add(key)
         }
 
-        var entries : ArrayList<BarEntry> = ArrayList()
-        for (i in 0 until valList.size) {
-            entries.add(BarEntry(i.toFloat(), valList[i]))
-        }
+        for(i in 0 until weekLabelList.size)
+            weekDataList.add(weekLabelList[i])
 
-        val colors: ArrayList<Int> = ArrayList()
-        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
-
-        var depenses = BarDataSet(entries, "사료량 (g)")
-        depenses.axisDependency = YAxis.AxisDependency.LEFT
-        // depenses.color = Color.parseColor("#87CEEB")
-        depenses.valueFormatter = CustomFormatter()
-        depenses.colors = colors
-
-        val data = BarData(depenses)
-        data.barWidth = 0.5f
-
-        barChart.run {
-            this.data = data
-            setFitBars(true)
-            invalidate()
-        }
+        weekTonicStatisticsRVAdapter.notifyDataSetChanged()
     }
 
     private fun setOneMonthPieChartReady() {
@@ -920,12 +813,9 @@ class TonicStatisticsFragment : Fragment() {
                 try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
                     oneMonthPieMap.clear()
-                    oneMonthValueList.clear()
-
-                    oneMonthMap[1] = 0.toFloat()
-                    oneMonthMap[2] = 0.toFloat()
-                    oneMonthMap[3] = 0.toFloat()
-                    oneMonthMap[4] = 0.toFloat()
+                    oneMonthMap.clear()
+                    oneMonthDataList.clear()
+                    oneMonthLabelList.clear()
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogTonicModel::class.java)
@@ -939,23 +829,23 @@ class TonicStatisticsFragment : Fragment() {
                             if(month == nowMonth && month == weekMonth) { // 일주일 전이 같은 달일 경우
                                 if(day in weekDay..nowDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[4] = oneMonthMap[4]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             } else if(month < nowMonth && month == weekMonth) { // 일주일 전이 이전 달일 경우
                                 if(day >= weekDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[4] = oneMonthMap[4]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             } else if(month == nowMonth && month > weekMonth) { // 일주일 전이 이번 달일 경우
                                 if(day <= nowDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[4] = oneMonthMap[4]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if(year < nowYear && year == weekYear) { // 일주일 전이 전년도일 경우
                             if(weekMonth == month && day >= weekDay) {
                                 oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                // oneMonthMap[4] = oneMonthMap[4]!! + item!!.mealWeight.toFloat()
+                                oneMonthMap[item!!.tonicName] = 0
                             }
                         }
 
@@ -963,23 +853,23 @@ class TonicStatisticsFragment : Fragment() {
                             if(month == weekMonth && month == twoWeekMonth) { // 2주일 전이 같은 달일 경우
                                 if(day in twoWeekDay until weekDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[3] = oneMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             } else if(month < weekMonth && month == twoWeekMonth) { // 2주일 전이 이전 달일 경우
                                 if(day >= twoWeekDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[3] = oneMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             } else if(month == weekMonth && month > twoWeekMonth) { // 2주일 전이 이번 달일 경우
                                 if(day < weekDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[3] = oneMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if(year < weekYear && year == twoWeekYear) { // 2주일 전이 전년도일 경우
                             if(twoWeekMonth == month && day >= twoWeekDay) {
                                 oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                // oneMonthMap[3] = oneMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                oneMonthMap[item!!.tonicName] = 0
                             }
                         }
 
@@ -987,23 +877,23 @@ class TonicStatisticsFragment : Fragment() {
                             if(month == twoWeekMonth && month == threeWeekMonth) { // 3주일 전이 같은 달일 경우
                                 if(day in threeWeekDay until twoWeekDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[2] = oneMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             } else if(month < twoWeekMonth && month == threeWeekMonth) { // 3주일 전이 이전 달일 경우
                                 if(day >= threeWeekDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[2] = oneMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             } else if(month == twoWeekMonth && month > threeWeekMonth) { // 3주일 전이 이번 달일 경우
                                 if(day < twoWeekDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[2] = oneMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if(year < twoWeekYear && year == threeWeekYear) { // 3주일 전이 전년도일 경우
                             if(threeWeekMonth == month && day >= threeWeekDay) {
                                 oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                // oneMonthMap[2] = oneMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                oneMonthMap[item!!.tonicName] = 0
                             }
                         }
 
@@ -1011,23 +901,23 @@ class TonicStatisticsFragment : Fragment() {
                             if(month == threeWeekMonth && month == oneMonthMonth) { // 한달 전이 같은 달일 경우
                                 if(day in oneMonthDay until threeWeekDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[1] = oneMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             } else if(month < threeWeekMonth && month == oneMonthMonth) { // 한달 전이 이전 달일 경우
                                 if(day >= oneMonthDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[1] = oneMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             } else if(month == threeWeekMonth && month > oneMonthMonth) { // 한달 전이 이번 달일 경우
                                 if(day < threeWeekDay) {
                                     oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // oneMonthMap[1] = oneMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    oneMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if(year < threeWeekYear && year == oneMonthYear) { // 한달 전이 전년도일 경우
                             if(oneMonthMonth == month && day >= oneMonthDay) {
                                 oneMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                // oneMonthMap[1] = oneMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                oneMonthMap[item!!.tonicName] = 0
                             }
                         }
                     }
@@ -1235,67 +1125,15 @@ class TonicStatisticsFragment : Fragment() {
         }
     }
 
-    private fun barOneMonthChartGraph(v : View, barChart : BarChart, valList : ArrayList<Float>, labelList : ArrayList<String>) {
-
-        barChart.extraBottomOffset = 15f // 간격
-        barChart.description.isEnabled = false // chart 밑에 description 표시 유무
-        barChart.setTouchEnabled(false)
-        barChart.setDrawBarShadow(false)
-        barChart.setDrawGridBackground(false)
-
-        barChart.run {
-            description.isEnabled = false
-            setPinchZoom(false)
-            setDrawBarShadow(false)
-            setDrawGridBackground(false)
-
-            axisLeft.run {
-                axisMinimum = 0f
-                granularity = 10f
-                setDrawLabels(true)
-                setDrawGridLines(true)
-                setDrawAxisLine(false)
-                textSize = 10f
-            }
-
-            xAxis.run {
-                position = XAxis.XAxisPosition.BOTTOM
-                granularity = 1f
-                setDrawAxisLine(true)
-                setDrawGridLines(false)
-                textSize = 10f
-                valueFormatter = IndexAxisValueFormatter(labelList)
-            }
-
-            axisRight.isEnabled = false
-            setTouchEnabled(false)
-            animateY(100)
-            legend.isEnabled = false
+    private fun setOneMonthTonic() {
+        for((key, value) in oneMonthMap.entries) {
+            oneMonthLabelList.add(key)
         }
 
-        var entries : ArrayList<BarEntry> = ArrayList()
-        for (i in 0 until valList.size) {
-            entries.add(BarEntry(i.toFloat(), valList[i]))
-        }
+        for(i in 0 until oneMonthLabelList.size)
+            oneMonthDataList.add(oneMonthLabelList[i])
 
-        val colors: ArrayList<Int> = ArrayList()
-        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
-
-        var depenses = BarDataSet(entries, "사료량 (g)")
-        depenses.axisDependency = YAxis.AxisDependency.LEFT
-        // depenses.color = Color.parseColor("#87CEEB")
-        depenses.valueFormatter = CustomFormatter()
-        depenses.colors = colors
-
-        val data = BarData(depenses)
-        data.barWidth = 0.8f
-
-        barChart.run {
-            notifyDataSetChanged()
-            this.data = data
-            setFitBars(true)
-            invalidate()
-        }
+        oneMonthTonicStatisticsRVAdapter.notifyDataSetChanged()
     }
 
     private fun setThreeMonthBarChartReady() {
@@ -1325,11 +1163,9 @@ class TonicStatisticsFragment : Fragment() {
                 try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
                     threeMonthPieMap.clear()
-                    threeMonthValueList.clear()
-
-                    threeMonthMap[1] = 0.toFloat()
-                    threeMonthMap[2] = 0.toFloat()
-                    threeMonthMap[3] = 0.toFloat()
+                    threeMonthMap.clear()
+                    threeMonthDataList.clear()
+                    threeMonthLabelList.clear()
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogTonicModel::class.java)
@@ -1343,31 +1179,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == nowMonth && month == oneMonthMonth) { // 1개월 전이 같은 달일 경우
                                 if (day in oneMonthDay..nowDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[3] = threeMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
                                 if (day >= oneMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[3] = threeMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
                                 if (day <= nowDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[3] = threeMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
                             if (month == oneMonthMonth) { // 1개월 전이 전달일 경우
                                 if (day >= oneMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[3] = threeMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if (month == nowMonth) { // 1개월 전이 이번달일 경우
                                 if (day <= nowDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[3] = threeMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -1376,31 +1212,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 같은 달일 경우
                                 if (day in twoMonthDay until oneMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[2] = threeMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
                                 if (day >= twoMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[2] = threeMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
                                 if (day < oneMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[2] = threeMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == twoMonthMonth) { // 2개월 전이 전달일 경우
                                 if (day >= twoMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[2] = threeMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if (month == oneMonthMonth) { // 2개월 전이 이번달일 경우
                                 if (day < oneMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[2] = threeMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -1409,31 +1245,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 같은 달일 경우
                                 if (day in threeMonthDay until twoMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[1] = threeMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
                                 if (day >= threeMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[1] = threeMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
                                 if (day < twoMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[1] = threeMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == threeMonthMonth) { // 3개월 전이 전달일 경우
                                 if (day >= threeMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[1] = threeMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == twoMonthMonth) {
                                 if (day < twoMonthDay) {
                                     threeMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // threeMonthMap[1] = threeMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    threeMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -1640,68 +1476,16 @@ class TonicStatisticsFragment : Fragment() {
         }
     }
 
-    /* private fun barThreeMonthChartGraph(v : View, barChart : BarChart, valList : ArrayList<Float>, labelList : ArrayList<String>) {
-
-        barChart.extraBottomOffset = 15f // 간격
-        barChart.description.isEnabled = false // chart 밑에 description 표시 유무
-        barChart.setTouchEnabled(false)
-        barChart.setDrawBarShadow(false)
-        barChart.setDrawGridBackground(false)
-
-        barChart.run {
-            description.isEnabled = false
-            setPinchZoom(false)
-            setDrawBarShadow(false)
-            setDrawGridBackground(false)
-
-            axisLeft.run {
-                axisMinimum = 0f
-                granularity = 10f
-                setDrawLabels(true)
-                setDrawGridLines(true)
-                setDrawAxisLine(false)
-                textSize = 10f
-            }
-
-            xAxis.run {
-                position = XAxis.XAxisPosition.BOTTOM
-                granularity = 1f
-                setDrawAxisLine(true)
-                setDrawGridLines(false)
-                textSize = 10f
-                valueFormatter = IndexAxisValueFormatter(labelList)
-            }
-
-            axisRight.isEnabled = false
-            setTouchEnabled(false)
-            animateY(100)
-            legend.isEnabled = false
+    private fun setThreeMonthTonic() {
+        for((key, value) in threeMonthMap.entries) {
+            threeMonthLabelList.add(key)
         }
 
-        var entries : ArrayList<BarEntry> = ArrayList()
-        for (i in 0 until valList.size) {
-            entries.add(BarEntry(i.toFloat(), valList[i]))
-        }
+        for(i in 0 until threeMonthLabelList.size)
+            threeMonthDataList.add(threeMonthLabelList[i])
 
-        val colors: ArrayList<Int> = ArrayList()
-        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
-
-        var depenses = BarDataSet(entries, "사료량 (g)")
-        depenses.axisDependency = YAxis.AxisDependency.LEFT
-        // depenses.color = Color.parseColor("#87CEEB")
-        depenses.valueFormatter = MealStatisticsFragment.CustomFormatter()
-        depenses.colors = colors
-
-        val data = BarData(depenses)
-        data.barWidth = 0.8f
-
-        barChart.run {
-            notifyDataSetChanged()
-            this.data = data
-            setFitBars(true)
-            invalidate()
-        }
-    } */
+        threeMonthTonicStatisticsRVAdapter.notifyDataSetChanged()
+    }
 
     private fun setSixPieMonthChartReady() {
         val nowSp = nowDate.split(".") // 오늘 날짜
@@ -1745,14 +1529,9 @@ class TonicStatisticsFragment : Fragment() {
                 try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
                     sixMonthPieMap.clear()
-                    sixMonthValueList.clear()
-
-                    sixMonthMap[1] = 0.toFloat()
-                    sixMonthMap[2] = 0.toFloat()
-                    sixMonthMap[3] = 0.toFloat()
-                    sixMonthMap[4] = 0.toFloat()
-                    sixMonthMap[5] = 0.toFloat()
-                    sixMonthMap[6] = 0.toFloat()
+                    sixMonthMap.clear()
+                    sixMonthDataList.clear()
+                    sixMonthLabelList.clear()
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogTonicModel::class.java)
@@ -1766,31 +1545,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == nowMonth && month == oneMonthMonth) { // 1개월 전이 같은 달일 경우
                                 if (day in oneMonthDay..nowDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[6] = sixMonthMap[6]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
                                 if (day >= oneMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[6] = sixMonthMap[6]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
                                 if (day <= nowDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[6] = sixMonthMap[6]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
                             if (month == oneMonthMonth) { // 1개월 전이 전달일 경우
                                 if (day >= oneMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[6] = sixMonthMap[6]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if (month == nowMonth) { // 1개월 전이 이번달일 경우
                                 if (day <= nowDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[6] = sixMonthMap[6]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -1799,31 +1578,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 같은 달일 경우
                                 if (day in twoMonthDay until oneMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[5] = sixMonthMap[5]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
                                 if (day >= twoMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[5] = sixMonthMap[5]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
                                 if (day < oneMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[5] = sixMonthMap[5]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == twoMonthMonth) { // 2개월 전이 전달일 경우
                                 if (day >= twoMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[5] = sixMonthMap[5]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if (month == oneMonthMonth) { // 2개월 전이 이번달일 경우
                                 if (day < oneMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[5] = sixMonthMap[5]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -1832,31 +1611,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 같은 달일 경우
                                 if (day in threeMonthDay until twoMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[4] = sixMonthMap[4]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
                                 if (day >= threeMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[4] = sixMonthMap[4]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
                                 if (day < twoMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[4] = sixMonthMap[4]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == threeMonthMonth) { // 3개월 전이 전달일 경우
                                 if (day >= threeMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[4] = sixMonthMap[4]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == twoMonthMonth) {
                                 if (day < twoMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[4] = sixMonthMap[4]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -1865,31 +1644,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 같은 달일 경우
                                 if (day in fourMonthDay until threeMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[3] = sixMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month < threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 전달일 경우
                                 if (day >= fourMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[3] = sixMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month == threeMonthMonth && month > fourMonthMonth) { // 4개월 전이 이번달일 경우
                                 if (day < threeMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[3] = sixMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < threeMonthYear && year == fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == fourMonthMonth) { // 4개월 전이 전달일 경우
                                 if (day >= fourMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[3] = sixMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == threeMonthYear && year > fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == threeMonthMonth) {
                                 if (day < threeMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[3] = sixMonthMap[3]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -1898,31 +1677,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 같은 달일 경우
                                 if (day in fiveMonthDay until fourMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[2] = sixMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month < fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 전달일 경우
                                 if (day >= fourMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[2] = sixMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month == fourMonthMonth && month > fiveMonthMonth) { // 5개월 전이 이번달일 경우
                                 if (day < fiveMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[2] = sixMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < fourMonthYear && year == fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == fiveMonthMonth) { // 4개월 전이 전달일 경우
                                 if (day >= fiveMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[2] = sixMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == fourMonthYear && year > fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == fourMonthMonth) {
                                 if (day < fourMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[2] = sixMonthMap[2]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -1931,30 +1710,30 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 같은 달일 경우
                                 if (day in sixMonthDay until fiveMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[1] = sixMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month < fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 전달일 경우
                                 if (day >= sixMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[1] = sixMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             } else if (month == fiveMonthMonth && month > sixMonthMonth) { // 6개월 전이 이번달일 경우
                                 if (day < fiveMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[1] = sixMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < fiveMonthYear && year == sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == sixMonthMonth) { // 6개월 전이 전달일 경우
                                 if (day >= sixMonthDay) {
                                     sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // sixMonthMap[1] = sixMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                    sixMonthMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == fiveMonthYear && year > sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(day < fiveMonthDay) {
                                 sixMonthPieMap[item!!.tonicPart] = 0.toFloat()
-                                // sixMonthMap[1] = sixMonthMap[1]!! + item!!.mealWeight.toFloat()
+                                sixMonthMap[item!!.tonicName] = 0
                             }
                         }
 
@@ -2259,67 +2038,15 @@ class TonicStatisticsFragment : Fragment() {
         }
     }
 
-    private fun barSixMonthChartGraph(v : View, barChart : BarChart, valList : ArrayList<Float>, labelList : ArrayList<String>) {
-
-        barChart.extraBottomOffset = 15f // 간격
-        barChart.description.isEnabled = false // chart 밑에 description 표시 유무
-        barChart.setTouchEnabled(false)
-        barChart.setDrawBarShadow(false)
-        barChart.setDrawGridBackground(false)
-
-        barChart.run {
-            description.isEnabled = false
-            setPinchZoom(false)
-            setDrawBarShadow(false)
-            setDrawGridBackground(false)
-
-            axisLeft.run {
-                axisMinimum = 0f
-                granularity = 10f
-                setDrawLabels(true)
-                setDrawGridLines(true)
-                setDrawAxisLine(false)
-                textSize = 10f
-            }
-
-            xAxis.run {
-                position = XAxis.XAxisPosition.BOTTOM
-                granularity = 1f
-                setDrawAxisLine(true)
-                setDrawGridLines(false)
-                textSize = 10f
-                valueFormatter = IndexAxisValueFormatter(labelList)
-            }
-
-            axisRight.isEnabled = false
-            setTouchEnabled(false)
-            animateY(100)
-            legend.isEnabled = false
+    private fun setSixMonthTonic() {
+        for((key, value) in sixMonthMap.entries) {
+            sixMonthLabelList.add(key)
         }
 
-        var entries : ArrayList<BarEntry> = ArrayList()
-        for (i in 0 until valList.size) {
-            entries.add(BarEntry(i.toFloat(), valList[i]))
-        }
+        for(i in 0 until sixMonthLabelList.size)
+            sixMonthDataList.add(sixMonthLabelList[i])
 
-        val colors: ArrayList<Int> = ArrayList()
-        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
-
-        var depenses = BarDataSet(entries, "사료량 (g)")
-        depenses.axisDependency = YAxis.AxisDependency.LEFT
-        // depenses.color = Color.parseColor("#87CEEB")
-        depenses.valueFormatter = CustomFormatter()
-        depenses.colors = colors
-
-        val data = BarData(depenses)
-        data.barWidth = 0.5f
-
-        barChart.run {
-            notifyDataSetChanged()
-            this.data = data
-            setFitBars(true)
-            invalidate()
-        }
+        sixMonthTonicStatisticsRVAdapter.notifyDataSetChanged()
     }
 
     private fun setYearPieChartReady() {
@@ -2394,20 +2121,9 @@ class TonicStatisticsFragment : Fragment() {
                 try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
                     yearPieMap.clear()
-                    yearValueList.clear()
-
-                    yearMap[1] = 0.toFloat()
-                    yearMap[2] = 0.toFloat()
-                    yearMap[3] = 0.toFloat()
-                    yearMap[4] = 0.toFloat()
-                    yearMap[5] = 0.toFloat()
-                    yearMap[6] = 0.toFloat()
-                    yearMap[7] = 0.toFloat()
-                    yearMap[8] = 0.toFloat()
-                    yearMap[9] = 0.toFloat()
-                    yearMap[10] = 0.toFloat()
-                    yearMap[11] = 0.toFloat()
-                    yearMap[12] = 0.toFloat()
+                    yearMap.clear()
+                    yearDataList.clear()
+                    yearLabelList.clear()
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogTonicModel::class.java)
@@ -2421,31 +2137,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == nowMonth && month == oneMonthMonth) { // 1개월 전이 같은 달일 경우
                                 if (day in oneMonthDay..nowDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    // yearMap[12] = yearMap[12]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
                                 if (day >= oneMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[12] = yearMap[12]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
                                 if (day <= nowDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[12] = yearMap[12]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
                             if (month == oneMonthMonth) { // 1개월 전이 전달일 경우
                                 if (day >= oneMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[12] = yearMap[12]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if (month == nowMonth) { // 1개월 전이 이번달일 경우
                                 if (day <= nowDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[12] = yearMap[12]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2454,31 +2170,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 같은 달일 경우
                                 if (day in twoMonthDay until oneMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[11] = yearMap[11]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
                                 if (day >= twoMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[11] = yearMap[11]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
                                 if (day < oneMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[11] = yearMap[11]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == twoMonthMonth) { // 2개월 전이 전달일 경우
                                 if (day >= twoMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[11] = yearMap[11]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if (month == oneMonthMonth) { // 2개월 전이 이번달일 경우
                                 if (day < oneMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[11] = yearMap[11]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2487,31 +2203,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 같은 달일 경우
                                 if (day in threeMonthDay until twoMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[10] = yearMap[10]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
                                 if (day >= threeMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[10] = yearMap[10]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
                                 if (day < twoMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[10] = yearMap[10]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == threeMonthMonth) { // 3개월 전이 전달일 경우
                                 if (day >= threeMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[10] = yearMap[10]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == twoMonthMonth) {
                                 if (day < twoMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[10] = yearMap[10]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2520,31 +2236,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 같은 달일 경우
                                 if (day in fourMonthDay until threeMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[9] = yearMap[9]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 전달일 경우
                                 if (day >= fourMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[9] = yearMap[9]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == threeMonthMonth && month > fourMonthMonth) { // 4개월 전이 이번달일 경우
                                 if (day < threeMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[9] = yearMap[9]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < threeMonthYear && year == fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == fourMonthMonth) { // 4개월 전이 전달일 경우
                                 if (day >= fourMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[9] = yearMap[9]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == threeMonthYear && year > fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == threeMonthMonth) {
                                 if (day < threeMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[9] = yearMap[9]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2553,31 +2269,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 같은 달일 경우
                                 if (day in fiveMonthDay until fourMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[8] = yearMap[8]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 전달일 경우
                                 if (day >= fourMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[8] = yearMap[8]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == fourMonthMonth && month > fiveMonthMonth) { // 5개월 전이 이번달일 경우
                                 if (day < fiveMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[8] = yearMap[8]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < fourMonthYear && year == fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == fiveMonthMonth) { // 5개월 전이 전달일 경우
                                 if (day >= fiveMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[8] = yearMap[8]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == fourMonthYear && year > fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == fourMonthMonth) {
                                 if (day < fourMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[8] = yearMap[8]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2586,31 +2302,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 같은 달일 경우
                                 if (day in sixMonthDay until fiveMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[7] = yearMap[7]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 전달일 경우
                                 if (day >= sixMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[7] = yearMap[7]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == fiveMonthMonth && month > sixMonthMonth) { // 6개월 전이 이번달일 경우
                                 if (day < fiveMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[7] = yearMap[7]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < fiveMonthYear && year == sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == sixMonthMonth) { // 6개월 전이 전달일 경우
                                 if (day >= sixMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[7] = yearMap[7]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == fiveMonthYear && year > sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == fiveMonthMonth) {
                                 if (day < fiveMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[7] = yearMap[7]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2619,31 +2335,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == sixMonthMonth && month == sevenMonthMonth) { // 7개월 전이 같은 달일 경우
                                 if (day in sevenMonthDay until sixMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[6] = yearMap[6]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < sixMonthMonth && month == sevenMonthMonth) { // 7개월 전이 전달일 경우
                                 if (day >= sevenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[6] = yearMap[6]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == sixMonthMonth && month > sevenMonthMonth) { // 7개월 전이 이번달일 경우
                                 if (day < sixMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[6] = yearMap[6]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < sixMonthYear && year == sevenMonthYear) { // 7개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == sevenMonthMonth) { // 7개월 전이 전달일 경우
                                 if (day >= sevenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[6] = yearMap[6]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == sixMonthYear && year > sevenMonthYear) { // 7개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == sixMonthMonth) {
                                 if (day < sixMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[6] = yearMap[6]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2652,31 +2368,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == sevenMonthMonth && month == eightMonthMonth) { // 8개월 전이 같은 달일 경우
                                 if (day in eightMonthDay until sevenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[5] = yearMap[5]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < sevenMonthMonth && month == eightMonthMonth) { // 8개월 전이 전달일 경우
                                 if (day >= eightMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[5] = yearMap[5]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == sevenMonthMonth && month > eightMonthMonth) { // 8개월 전이 이번달일 경우
                                 if (day < sevenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[5] = yearMap[5]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < sevenMonthYear && year == eightMonthYear) { // 8개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == eightMonthMonth) { // 8개월 전이 전달일 경우
                                 if (day >= eightMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[5] = yearMap[5]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == sevenMonthYear && year > eightMonthYear) { // 8개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == sevenMonthMonth) {
                                 if (day < sevenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[5] = yearMap[5]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2685,31 +2401,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == eightMonthMonth && month == nineMonthMonth) { // 9개월 전이 같은 달일 경우
                                 if (day in nineMonthDay until eightMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[4] = yearMap[4]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < eightMonthMonth && month == nineMonthMonth) { // 9개월 전이 전달일 경우
                                 if (day >= nineMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[4] = yearMap[4]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == eightMonthMonth && month > nineMonthMonth) { // 9개월 전이 이번달일 경우
                                 if (day < eightMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[4] = yearMap[4]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < eightMonthYear && year == nineMonthYear) { // 9개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == nineMonthMonth) { // 9개월 전이 전달일 경우
                                 if (day >= nineMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[4] = yearMap[4]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == eightMonthYear && year > nineMonthYear) { // 9개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == eightMonthMonth) {
                                 if (day < eightMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[4] = yearMap[4]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2718,31 +2434,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == nineMonthMonth && month == tenMonthMonth) { // 10개월 전이 같은 달일 경우
                                 if (day in tenMonthDay until nineMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[3] = yearMap[3]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < nineMonthMonth && month == tenMonthMonth) { // 10개월 전이 전달일 경우
                                 if (day >= tenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[3] = yearMap[3]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == nineMonthMonth && month > tenMonthMonth) { // 10개월 전이 이번달일 경우
                                 if (day < nineMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[3] = yearMap[3]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < nineMonthYear && year == tenMonthYear) { // 10개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == tenMonthMonth) { // 10개월 전이 전달일 경우
                                 if (day >= tenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[3] = yearMap[3]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == nineMonthYear && year > tenMonthYear) { // 10개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == nineMonthMonth) {
                                 if (day < nineMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[3] = yearMap[3]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2751,31 +2467,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == tenMonthMonth && month == elevenMonthMonth) { // 11개월 전이 같은 달일 경우
                                 if (day in elevenMonthDay until tenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[2] = yearMap[2]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < tenMonthMonth && month == elevenMonthMonth) { // 11개월 전이 전달일 경우
                                 if (day >= elevenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[2] = yearMap[2]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == tenMonthMonth && month > elevenMonthMonth) { // 11개월 전이 이번달일 경우
                                 if (day < tenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[2] = yearMap[2]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < tenMonthYear && year == elevenMonthYear) { // 11개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == elevenMonthMonth) { // 11개월 전이 전달일 경우
                                 if (day >= elevenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[2] = yearMap[2]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == tenMonthYear && year > elevenMonthYear) { // 11개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == tenMonthMonth) {
                                 if (day < tenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[2] = yearMap[2]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -2784,31 +2500,31 @@ class TonicStatisticsFragment : Fragment() {
                             if (month == elevenMonthMonth && month == yearMonth) { // 1년 전이 같은 달일 경우
                                 if (day in yearDay until elevenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[1] = yearMap[1]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month < elevenMonthMonth && month == yearMonth) { // 1년 전이 전달일 경우
                                 if (day >= yearDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[1] = yearMap[1]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             } else if (month == elevenMonthMonth && month > yearMonth) { // 1년 전이 이번달일 경우
                                 if (day < elevenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[1] = yearMap[1]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year < elevenMonthYear && year == yearYear) { // 1년 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
                             if (month == yearMonth) { // 1년 전이 전달일 경우
                                 if (day >= yearDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[1] = yearMap[1]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         } else if (year == elevenMonthYear && year > yearYear) { // 1년 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(month == elevenMonthMonth) {
                                 if (day < elevenMonthDay) {
                                     yearPieMap[item!!.tonicPart] = 0.toFloat()
-                                    //yearMap[1] = yearMap[1]!! + item!!.mealWeight.toFloat()
+                                    yearMap[item!!.tonicName] = 0
                                 }
                             }
                         }
@@ -3314,93 +3030,15 @@ class TonicStatisticsFragment : Fragment() {
         }
     }
 
-    /* private fun barYearChartGraph(v : View, barChart : BarChart, valList : ArrayList<Float>, labelList : ArrayList<String>) {
-
-        barChart.extraBottomOffset = 15f // 간격
-        barChart.description.isEnabled = false // chart 밑에 description 표시 유무
-        barChart.setTouchEnabled(false)
-        barChart.setDrawBarShadow(false)
-        barChart.setDrawGridBackground(false)
-
-        barChart.run {
-            description.isEnabled = false
-            setPinchZoom(false)
-            setDrawBarShadow(false)
-            setDrawGridBackground(false)
-
-            axisLeft.run {
-                axisMinimum = 0f
-                granularity = 1f
-                setDrawLabels(true)
-                setDrawGridLines(true)
-                setDrawAxisLine(false)
-                textSize = 10f
-            }
-
-            xAxis.run {
-                position = XAxis.XAxisPosition.BOTTOM
-                granularity = 1f
-                setDrawAxisLine(true)
-                setDrawGridLines(false)
-                textSize = 8f
-                valueFormatter = IndexAxisValueFormatter(labelList)
-            }
-
-            axisRight.isEnabled = false
-            setTouchEnabled(false)
-            animateY(100)
-            legend.isEnabled = false
+    private fun yearTonic() {
+        for((key, value) in yearMap.entries) {
+            yearLabelList.add(key)
         }
 
-        var entries : ArrayList<BarEntry> = ArrayList()
-        for (i in 0 until valList.size) {
-            entries.add(BarEntry(i.toFloat(), valList[i]))
-        }
+        for(i in 0 until yearLabelList.size)
+            yearDataList.add(yearLabelList[i])
 
-        val colors: ArrayList<Int> = ArrayList()
-        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
-
-        var depenses = BarDataSet(entries, "사료량 (g)")
-        depenses.axisDependency = YAxis.AxisDependency.LEFT
-        // depenses.color = Color.parseColor("#87CEEB")
-        depenses.valueFormatter = CustomFormatter()
-        depenses.colors = colors
-
-        val data = BarData(depenses)
-        data.barWidth = 0.5f
-
-        barChart.run {
-            notifyDataSetChanged()
-            this.data = data
-            setFitBars(true)
-            invalidate()
-        }
-    } */
-
-    private fun sortMapByKey1(map: MutableMap<Int, String>): LinkedHashMap<Int, String> {
-        val entries = LinkedList(map.entries)
-
-        entries.sortBy { it.key }
-
-        val result = LinkedHashMap<Int, String>()
-        for(entry in entries) {
-            result[entry.key] = entry.value
-        }
-
-        return result
-    }
-
-    private fun sortMapByKey2(map: MutableMap<Int, Float>): LinkedHashMap<Int, Float> {
-        val entries = LinkedList(map.entries)
-
-        entries.sortBy { it.key }
-
-        val result = LinkedHashMap<Int, Float>()
-        for(entry in entries) {
-            result[entry.key] = entry.value
-        }
-
-        return result
+        yearTonicStatisticsRVAdapter.notifyDataSetChanged()
     }
 
     class CustomFormatter : ValueFormatter() {
