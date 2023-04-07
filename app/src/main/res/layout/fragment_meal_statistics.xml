@@ -6,7 +6,6 @@
     android:orientation="vertical"
     tools:context=".statistics.MealStatisticsFragment">
 
-
     <Spinner
         android:id="@+id/spinner"
         android:entries="@array/DateSpinner"

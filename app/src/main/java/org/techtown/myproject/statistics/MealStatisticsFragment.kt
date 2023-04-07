@@ -147,9 +147,10 @@ class MealStatisticsFragment : Fragment() {
 
         spinner = v.findViewById(R.id.spinner)
 
+        setTodayPieChartReady()
         setTodayPieChart()
-        Log.d("oneDayPieMap", oneDayPieMap.toString())
         pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
+        barTodayChartGraph(v, oneDayChart, oneDayBarMap)
         setShowChart(v, "오늘")
     }
 
@@ -238,6 +239,7 @@ class MealStatisticsFragment : Fragment() {
                 yearChart.visibility = View.GONE
 
                 Log.d("oneDayPieMap", "$oneDayPieMap")
+                Log.d("oneDayBarMap", "$oneDayBarMap")
                 setTodayPieChartReady()
                 setTodayPieChart()
                 pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
@@ -544,6 +546,9 @@ class MealStatisticsFragment : Fragment() {
         barChart.setTouchEnabled(false)
         barChart.setDrawBarShadow(false)
         barChart.setDrawGridBackground(false)
+
+        labelList.clear()
+        valueList.clear()
 
         for ((key, value) in valList.entries) {
             labelList.add(key)
