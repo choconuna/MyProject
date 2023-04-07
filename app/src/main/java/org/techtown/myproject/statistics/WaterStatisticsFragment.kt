@@ -297,7 +297,7 @@ class WaterStatisticsFragment : Fragment() {
                 val sortedThreeMonthMap = sortMapByKey2(threeMonthMap)
                 // key(String)에 따른 정렬
                 for((key, value) in sortedThreeMonthMap.entries) {
-                    threeMonthValueList.add(value / 31)
+                    threeMonthValueList.add(value / 30)
                 }
 
                 Log.d("threeMonthDay", "$threeMonthLabelList $threeMonthValueList")
@@ -329,7 +329,7 @@ class WaterStatisticsFragment : Fragment() {
                 val sortedSixMonthMap = sortMapByKey2(sixMonthMap)
                 // key(String)에 따른 정렬
                 for((key, value) in sortedSixMonthMap.entries) {
-                    sixMonthValueList.add(value / 31)
+                    sixMonthValueList.add(value / 30)
                 }
 
                 Log.d("sixMonthDay", "$sixMonthLabelList $sixMonthValueList")
@@ -364,7 +364,7 @@ class WaterStatisticsFragment : Fragment() {
                 val sortedSixMonthMap = sortMapByKey2(yearMap)
                 // key(String)에 따른 정렬
                 for((key, value) in sortedSixMonthMap.entries) {
-                    yearValueList.add(value / 31)
+                    yearValueList.add(value / 30)
                 }
 
                 Log.d("yearDay", "$yearLabelList $yearValueList")
@@ -1081,19 +1081,6 @@ class WaterStatisticsFragment : Fragment() {
             setFitBars(true)
             invalidate()
         }
-    }
-
-    fun sortMapByKey1(map: MutableMap<Int, String>): LinkedHashMap<Int, String> {
-        val entries = LinkedList(map.entries)
-
-        entries.sortBy { it.key }
-
-        val result = LinkedHashMap<Int, String>()
-        for(entry in entries) {
-            result[entry.key] = entry.value
-        }
-
-        return result
     }
 
     private fun setSixMonthChartReady() {
@@ -1986,7 +1973,20 @@ class WaterStatisticsFragment : Fragment() {
         }
     }
 
-    fun sortMapByKey2(map: MutableMap<Int, Float>): LinkedHashMap<Int, Float> {
+    private fun sortMapByKey1(map: MutableMap<Int, String>): LinkedHashMap<Int, String> {
+        val entries = LinkedList(map.entries)
+
+        entries.sortBy { it.key }
+
+        val result = LinkedHashMap<Int, String>()
+        for(entry in entries) {
+            result[entry.key] = entry.value
+        }
+
+        return result
+    }
+
+    private fun sortMapByKey2(map: MutableMap<Int, Float>): LinkedHashMap<Int, Float> {
         val entries = LinkedList(map.entries)
 
         entries.sortBy { it.key }

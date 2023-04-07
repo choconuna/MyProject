@@ -5,16 +5,18 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
+import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -24,6 +26,7 @@ import org.techtown.myproject.utils.DogPeeModel
 import org.techtown.myproject.utils.FBRef
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class PeeStatisticsFragment : Fragment() {
 
@@ -264,9 +267,6 @@ class PeeStatisticsFragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try { // 소변 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-                    labelList.clear()
-                    valueList.clear()
-
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogPeeModel::class.java)
                         val date = item!!.date
@@ -302,7 +302,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
@@ -319,14 +319,18 @@ class PeeStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#F9AC3A")
+        // depenses.color = Color.parseColor("#F9AC3A")
 
         val data = PieData(depenses)
         with(data) {
@@ -339,10 +343,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "소변"
-            des.textSize = 12f
-            description = des
+            centerText = "소변"
         }
     }
 
@@ -432,7 +433,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
@@ -451,14 +452,18 @@ class PeeStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#F9AC3A")
+        // depenses.color = Color.parseColor("#F9AC3A")
 
         val data = PieData(depenses)
         with(data) {
@@ -471,10 +476,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "소변"
-            des.textSize = 12f
-            description = des
+            centerText = "소변"
         }
     }
 
@@ -627,7 +629,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
@@ -646,14 +648,18 @@ class PeeStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#F9AC3A")
+        // depenses.color = Color.parseColor("#F9AC3A")
 
         val data = PieData(depenses)
         with(data) {
@@ -666,10 +672,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "소변"
-            des.textSize = 12f
-            description = des
+            centerText = "소변"
         }
     }
 
@@ -820,7 +823,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
@@ -839,14 +842,18 @@ class PeeStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#F9AC3A")
+        // depenses.color = Color.parseColor("#F9AC3A")
 
         val data = PieData(depenses)
         with(data) {
@@ -859,10 +866,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "소변"
-            des.textSize = 12f
-            description = des
+            centerText = "소변"
         }
     }
 
@@ -1111,7 +1115,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
@@ -1130,14 +1134,18 @@ class PeeStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#F9AC3A")
+        // depenses.color = Color.parseColor("#F9AC3A")
 
         val data = PieData(depenses)
         with(data) {
@@ -1150,10 +1158,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "소변"
-            des.textSize = 12f
-            description = des
+            centerText = "소변"
         }
     }
 
@@ -1602,7 +1607,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
@@ -1621,14 +1626,18 @@ class PeeStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#F9AC3A")
+        // depenses.color = Color.parseColor("#F9AC3A")
 
         val data = PieData(depenses)
         with(data) {
@@ -1641,10 +1650,7 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "소변"
-            des.textSize = 12f
-            description = des
+            centerText = "소변"
         }
     }
 

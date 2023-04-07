@@ -340,10 +340,7 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "구토"
-            des.textSize = 12f
-            description = des
+            centerText = "구토"
         }
     }
 
@@ -482,10 +479,7 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "구토"
-            des.textSize = 12f
-            description = des
+            centerText = "구토"
         }
     }
 
@@ -687,10 +681,7 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "구토"
-            des.textSize = 12f
-            description = des
+            centerText = "구토"
         }
     }
 
@@ -890,10 +881,7 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "구토"
-            des.textSize = 12f
-            description = des
+            centerText = "구토"
         }
     }
 
@@ -1191,10 +1179,7 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "구토"
-            des.textSize = 12f
-            description = des
+            centerText = "구토"
         }
     }
 
@@ -1692,10 +1677,7 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "구토"
-            des.textSize = 12f
-            description = des
+            centerText = "구토"
         }
     }
 

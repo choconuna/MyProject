@@ -300,7 +300,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
@@ -339,10 +339,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "대변"
-            des.textSize = 12f
-            description = des
+            centerText = "대변"
         }
     }
 
@@ -434,7 +431,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
@@ -475,10 +472,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "대변"
-            des.textSize = 12f
-            description = des
+            centerText = "대변"
         }
     }
 
@@ -633,7 +627,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
@@ -674,10 +668,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "대변"
-            des.textSize = 12f
-            description = des
+            centerText = "대변"
         }
     }
 
@@ -830,7 +821,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
@@ -871,10 +862,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "대변"
-            des.textSize = 12f
-            description = des
+            centerText = "대변"
         }
     }
 
@@ -1125,7 +1113,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
@@ -1166,10 +1154,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "대변"
-            des.textSize = 12f
-            description = des
+            centerText = "대변"
         }
     }
 
@@ -1620,7 +1605,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
 
             setTouchEnabled(false)
-            legend.isEnabled = false
+            legend.isEnabled = true
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
@@ -1661,10 +1646,7 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            val des = Description()
-            des.text = "대변"
-            des.textSize = 12f
-            description = des
+            centerText = "대변"
         }
     }
 
