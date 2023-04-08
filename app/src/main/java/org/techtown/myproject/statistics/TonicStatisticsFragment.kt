@@ -550,6 +550,9 @@ class TonicStatisticsFragment : Fragment() {
     }
 
     private fun setTodayTonic() {
+        labelList.clear()
+        oneDayDataList.clear()
+
         for((key, value) in oneDayMap.entries) {
             labelList.add(key)
         }
@@ -770,6 +773,9 @@ class TonicStatisticsFragment : Fragment() {
     }
 
     private fun setWeekTonic() {
+        weekLabelList.clear()
+        weekDataList.clear()
+
         for((key, value) in weekMap.entries) {
             weekLabelList.add(key)
         }
@@ -1126,6 +1132,9 @@ class TonicStatisticsFragment : Fragment() {
     }
 
     private fun setOneMonthTonic() {
+        oneMonthLabelList.clear()
+        oneMonthDataList.clear()
+
         for((key, value) in oneMonthMap.entries) {
             oneMonthLabelList.add(key)
         }
@@ -1477,6 +1486,9 @@ class TonicStatisticsFragment : Fragment() {
     }
 
     private fun setThreeMonthTonic() {
+        threeMonthLabelList.clear()
+        threeMonthDataList.clear()
+
         for((key, value) in threeMonthMap.entries) {
             threeMonthLabelList.add(key)
         }
@@ -2039,6 +2051,9 @@ class TonicStatisticsFragment : Fragment() {
     }
 
     private fun setSixMonthTonic() {
+        sixMonthLabelList.clear()
+        sixMonthDataList.clear()
+
         for((key, value) in sixMonthMap.entries) {
             sixMonthLabelList.add(key)
         }
@@ -3031,6 +3046,9 @@ class TonicStatisticsFragment : Fragment() {
     }
 
     private fun yearTonic() {
+        yearLabelList.clear()
+        yearDataList.clear()
+
         for((key, value) in yearMap.entries) {
             yearLabelList.add(key)
         }

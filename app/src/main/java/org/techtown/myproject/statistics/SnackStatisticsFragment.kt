@@ -551,6 +551,9 @@ class SnackStatisticsFragment : Fragment() {
     }
 
     private fun setTodaySnack() {
+        labelList.clear()
+        oneDayDataList.clear()
+
         for((key, value) in oneDayMap.entries) {
             labelList.add(key)
         }
@@ -767,7 +770,10 @@ class SnackStatisticsFragment : Fragment() {
     }
 
     private fun setWeekSnack() {
-        for((key, value) in weekMap.entries) {
+        weekLabelList.clear()
+        weekDataList.clear()
+
+              for((key, value) in weekMap.entries) {
             weekLabelList.add(key)
         }
 
@@ -1123,6 +1129,9 @@ class SnackStatisticsFragment : Fragment() {
     }
 
     private fun setOneMonthSnack() {
+        oneMonthLabelList.clear()
+        oneMonthDataList.clear()
+
         for((key, value) in oneMonthMap.entries) {
             oneMonthLabelList.add(key)
         }
@@ -1474,6 +1483,9 @@ class SnackStatisticsFragment : Fragment() {
     }
 
     private fun setThreeMonthSnack() {
+        threeMonthLabelList.clear()
+        threeMonthDataList.clear()
+
         for((key, value) in threeMonthMap.entries) {
             threeMonthLabelList.add(key)
         }
@@ -2036,6 +2048,9 @@ class SnackStatisticsFragment : Fragment() {
     }
 
     private fun setSixMonthSnack() {
+        sixMonthLabelList.clear()
+        sixMonthDataList.clear()
+
         for((key, value) in sixMonthMap.entries) {
             sixMonthLabelList.add(key)
         }
@@ -3028,6 +3043,9 @@ class SnackStatisticsFragment : Fragment() {
     }
 
     private fun yearSnack() {
+        yearLabelList.clear()
+        yearDataList.clear()
+
         for((key, value) in yearMap.entries) {
             yearLabelList.add(key)
         }
