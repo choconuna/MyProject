@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Display
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
+import org.techtown.myproject.ZoomImageView
 import java.util.Collections.max
 import java.util.Collections.min
 
@@ -25,7 +27,7 @@ class ImageDetailActivity : AppCompatActivity() {
     private var scaleFactor = 1.0f
 
     lateinit var image : String
-    lateinit var imageView : ImageView
+    lateinit var imageView : ZoomImageView
     lateinit var backBtn : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,12 +37,14 @@ class ImageDetailActivity : AppCompatActivity() {
         image = intent.getStringExtra("image").toString()
 
         imageView = findViewById(R.id.imageView)
-        imageView.scaleType = ImageView.ScaleType.MATRIX; // 스케일 타입을 매트릭스로 해줘야 움직인다.
-
-
-        mScaleGestureDetector = ScaleGestureDetector(this, ScaleListener())
+        imageView.debugInfoVisible = true
 
         getImage()
+
+        imageView.swipeToDismissEnabled = true
+        imageView.onDismiss = {
+            finish()
+        }
 
         backBtn = findViewById(R.id.backBtn)
         backBtn.setOnClickListener {
@@ -58,29 +62,5 @@ class ImageDetailActivity : AppCompatActivity() {
                 imageView!!.isVisible = false
             }
         })
-    }
-
-    // 제스처 이벤트가 발생하면 실행되는 메소드
-    override fun onTouchEvent(motionEvent: MotionEvent?): Boolean {
-
-        // 제스처 이벤트를 처리하는 메소드를 호출
-        mScaleGestureDetector!!.onTouchEvent(motionEvent)
-        return true
-    }
-
-    // 제스처 이벤트를 처리하는 클래스
-    inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
-
-            scaleFactor *= scaleGestureDetector.scaleFactor
-
-            // 최소 0.5, 최대 2배
-            scaleFactor = Math.max(0.5f, Math.min(scaleFactor, 2.0f))
-
-            // 이미지에 적용
-            imageView.scaleX = scaleFactor
-            imageView.scaleY = scaleFactor
-            return true
-        }
     }
 }
