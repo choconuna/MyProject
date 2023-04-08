@@ -291,4 +291,11 @@
         <item>6개월</item>
         <item>1년</item>
     </string-array>
+
+    <string-array name="checkUpCategorySpinner">
+        <item>초음파</item>
+        <item>X-ray</item>
+        <item>혈액 검사</item>
+        <item>기타</item>
+    </string-array>
 </resources>

@@ -14,7 +14,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.DogCheckUpPictureModel
-import org.techtown.myproject.utils.DogMemoModel
 
 class CheckUpPictureReVAdapter(val dogCheckUpPictureList : ArrayList<DogCheckUpPictureModel>):
     RecyclerView.Adapter<CheckUpPictureReVAdapter.CheckUpPictureViewHolder>() {
@@ -37,6 +36,7 @@ class CheckUpPictureReVAdapter(val dogCheckUpPictureList : ArrayList<DogCheckUpP
         val myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid//
 
         holder.date!!.text = dogCheckUpPictureList[position].date
+        holder.checkUpCategoryArea!!.text = dogCheckUpPictureList[position].checkUpCategory
         holder.hospitalArea!!.text = dogCheckUpPictureList[position].hospitalName
         holder.contentArea!!.text = dogCheckUpPictureList[position].content
 
@@ -72,6 +72,7 @@ class CheckUpPictureReVAdapter(val dogCheckUpPictureList : ArrayList<DogCheckUpP
     inner class CheckUpPictureViewHolder(view: View?) : RecyclerView.ViewHolder(view!!) {
         val view = view
         val date = view?.findViewById<TextView>(R.id.dateArea)
+        val checkUpCategoryArea = view?.findViewById<TextView>(R.id.checkUpCategoryArea)
         val hospitalArea = view?.findViewById<TextView>(R.id.hospitalArea)
         val contentArea = view?.findViewById<TextView>(R.id.contentArea)
         val imageView = view?.findViewById<ImageView>(R.id.imageView)

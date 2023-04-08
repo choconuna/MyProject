@@ -32,6 +32,9 @@ class PlusCheckUpPictureActivity : AppCompatActivity() {
 
     private lateinit var date : String
 
+    lateinit var checkUpCategorySpinner : Spinner
+    lateinit var checkUpCategoryType : String
+
     private lateinit var yearArea : EditText
     private lateinit var monthArea : EditText
     private lateinit var dayArea : EditText
@@ -60,6 +63,15 @@ class PlusCheckUpPictureActivity : AppCompatActivity() {
         yearArea = findViewById(R.id.yearArea)
         monthArea = findViewById(R.id.monthArea)
         dayArea = findViewById(R.id.dayArea)
+
+        checkUpCategorySpinner = findViewById(R.id.checkUpCategorySpinner)
+        checkUpCategoryType = checkUpCategorySpinner.getItemAtPosition(0).toString()
+        checkUpCategorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                checkUpCategoryType = parent.getItemAtPosition(position).toString()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
 
         nameArea = findViewById(R.id.hospitalArea)
         contentArea = findViewById(R.id.contentArea)
@@ -118,7 +130,7 @@ class PlusCheckUpPictureActivity : AppCompatActivity() {
 
                 val key = FBRef.checkUpPictureRef.child(userId).child(dogId).push().key.toString() // 키 값을 먼저 받아옴
 
-                FBRef.checkUpPictureRef.child(userId).child(dogId).child(key).setValue(DogCheckUpPictureModel(key, dogId, date, nameArea.text.toString().trim(), contentArea.text.toString().trim(), count.toString())) // 반려견 검사 기록 정보 데이터베이스에 저장
+                FBRef.checkUpPictureRef.child(userId).child(dogId).child(key).setValue(DogCheckUpPictureModel(key, dogId, date, checkUpCategoryType, nameArea.text.toString().trim(), contentArea.text.toString().trim(), count.toString())) // 반려견 검사 기록 정보 데이터베이스에 저장
 
                 Toast.makeText(this, "검사 사진 추가 완료!", Toast.LENGTH_SHORT).show()
 

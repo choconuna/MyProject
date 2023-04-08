@@ -36,6 +36,7 @@ class DogCheckUpPictureInActivity : AppCompatActivity() {
     private lateinit var date : String
 
     private lateinit var nameArea : TextView
+    private lateinit var checkUpCategoryArea : TextView
     private lateinit var dateArea : TextView
     private lateinit var contentArea : TextView
     lateinit var checkUpPictureSetIcon : ImageView
@@ -64,6 +65,7 @@ class DogCheckUpPictureInActivity : AppCompatActivity() {
         imageListView.adapter = memoImageVAdapter
 
         nameArea = findViewById(R.id.hospitalArea)
+        checkUpCategoryArea = findViewById(R.id.checkUpCategoryArea)
         dateArea = findViewById(R.id.dateArea)
         contentArea = findViewById(R.id.contentArea)
 
@@ -151,6 +153,7 @@ class DogCheckUpPictureInActivity : AppCompatActivity() {
                 try {
                     val dataModel = dataSnapshot.getValue(DogCheckUpPictureModel::class.java)
 
+                    checkUpCategoryArea.text = dataModel!!.checkUpCategory
                     nameArea.text = dataModel!!.hospitalName
                     dateArea.text = dataModel!!.date
                     contentArea.text = dataModel!!.content

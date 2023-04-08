@@ -151,10 +151,20 @@
 
                 </LinearLayout>
 
+                <Spinner
+                    android:id="@+id/checkUpCategorySpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="10dp"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    android:entries="@array/checkUpCategorySpinner"
+                    android:theme="@style/mySpinner">
+                </Spinner>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
                     android:background="@color/white">
                     <EditText
                         android:id="@+id/hospitalArea"
