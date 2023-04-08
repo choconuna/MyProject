@@ -3248,7 +3248,7 @@ class MealStatisticsFragment : Fragment() {
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value >= 1) {
-                entries.add(PieEntry(value / 180, key))
+                entries.add(PieEntry(value / 365, key))
             }
         }
 

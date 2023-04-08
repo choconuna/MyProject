@@ -2029,7 +2029,7 @@ class SnackStatisticsFragment : Fragment() {
             valueTextSize = 5f
             setColors(colors)
         }
-        depenses.valueFormatter = MealStatisticsFragment.CustomFormatter()
+        depenses.valueFormatter = CustomFormatter()
         // depenses.color = Color.parseColor("#F9AC3A")
 
         val data = PieData(depenses)
