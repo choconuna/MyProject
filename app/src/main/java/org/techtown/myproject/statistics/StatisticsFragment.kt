@@ -26,6 +26,7 @@ class StatisticsFragment : Fragment() {
     private val vomitStatisticsFragment by lazy { VomitStatisticsFragment() }
     private val heartStatisticsFragment by lazy { HeartStatisticsFragment() }
     private val checkUpStatisticsFragment by lazy { CheckUpStatisticsFragment() }
+    private val checkUpPictureStatisticsFragment by lazy { CheckUpPictureStatisticsFragment() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +45,7 @@ class StatisticsFragment : Fragment() {
 
         val pagerAdapter = PagerFragmentStateAdapter(requireActivity())
 
-        // 9개의 fragment add
+        // 10개의 fragment add
         pagerAdapter.addFragment(mealStatisticsFragment)
         pagerAdapter.addFragment(snackStatisticsFragment)
         pagerAdapter.addFragment(tonicStatisticsFragment)
@@ -54,6 +55,7 @@ class StatisticsFragment : Fragment() {
         pagerAdapter.addFragment(vomitStatisticsFragment)
         pagerAdapter.addFragment(heartStatisticsFragment)
         pagerAdapter.addFragment(checkUpStatisticsFragment)
+        pagerAdapter.addFragment(checkUpPictureStatisticsFragment)
 
         // adapter
         viewPager.adapter = pagerAdapter
@@ -64,7 +66,7 @@ class StatisticsFragment : Fragment() {
             }
         })
         // tablayout attach
-        val tabTitles = listOf<String>("사료", "간식", "영양제", "물", "소변", "대변", "구토", "호흡수", "검사")
+        val tabTitles = listOf<String>("사료", "간식", "영양제", "물", "소변", "대변", "구토", "호흡수", "검사지표", "검사사진")
         TabLayoutMediator(tab_main, viewPager){ tab, position ->
             tab.text = tabTitles[position]
         }.attach()

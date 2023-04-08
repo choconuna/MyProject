@@ -1,6 +1,7 @@
 package org.techtown.myproject.statistics
 
 import android.app.Activity
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -9,45 +10,45 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.core.view.size
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import org.techtown.myproject.R
+import org.techtown.myproject.note.CheckUpInputReVAdapter
+import org.techtown.myproject.note.DogCheckUpPictureInActivity
 import org.techtown.myproject.utils.DogCheckUpInputModel
+import org.techtown.myproject.utils.DogCheckUpPictureModel
 import org.techtown.myproject.utils.FBRef
 import java.util.*
 
-class CheckUpStatisticsFragment : Fragment() {
+class CheckUpPictureStatisticsFragment : Fragment() {
 
-    private val TAG = CheckUpStatisticsFragment::class.java.simpleName
+    private val TAG = CheckUpPictureStatisticsFragment::class.java.simpleName
 
     lateinit var sharedPreferences: SharedPreferences
     private lateinit var myUid : String
     private lateinit var dogId : String
 
     lateinit var spinner : Spinner
-    private var checkUpNameList : MutableMap<String, Int> = mutableMapOf()
-    var selectedCheckUpInputItem : String = ""
+    lateinit var selectedCheckUpInputItem : String
 
-    private lateinit var checkUpInputProgressRecyclerView: RecyclerView
+    private lateinit var checkUpPictureProgressRecyclerView: RecyclerView
 
-    private var checkUpInputMap : MutableMap<DogCheckUpInputModel, Int> = mutableMapOf()
-    private val checkUpInputList = ArrayList<DogCheckUpInputModel>() // 검사 목록 리스트
-    lateinit var checkUpInputStatisticsRVAdapter : CheckUpInputStatisticsReVAdapter
+    private var checkUpPictureMap : MutableMap<DogCheckUpPictureModel, Int> = mutableMapOf()
+    private val checkUpPictureList = ArrayList<DogCheckUpPictureModel>() // 검사 목록 리스트
+    lateinit var checkUpPictureStatisticsRVAdapter : CheckUpPictureStatisticsReVAdapter
     lateinit var layoutManager : RecyclerView.LayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val v : View? = inflater.inflate(R.layout.fragment_check_up_statistics, container, false)
+        val v = inflater.inflate(R.layout.fragment_check_up_picture_statistics, container, false)
 
         myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
         sharedPreferences = v!!.context.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
@@ -64,33 +65,40 @@ class CheckUpStatisticsFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
+        checkUpPictureStatisticsRVAdapter.setItemClickListener(object: CheckUpPictureStatisticsReVAdapter.OnItemClickListener{
+            override fun onClick(v: View, position: Int) {
+                val intent = Intent(context, CheckUpPictureStatisticsInActivity::class.java)
+                intent.putExtra("date", checkUpPictureList[position].date)
+                intent.putExtra("id", checkUpPictureList[position].dogCheckUpPictureId)
+                startActivity(intent)
+            }
+        })
+
         return v
     }
 
     private fun setData(v : View) {
-        checkUpInputProgressRecyclerView = v.findViewById(R.id.checkUpInputProgressRecyclerView)
-        checkUpInputStatisticsRVAdapter = CheckUpInputStatisticsReVAdapter(checkUpInputList)
-        checkUpInputProgressRecyclerView.setItemViewCacheSize(20)
-        checkUpInputProgressRecyclerView.setHasFixedSize(true)
+        checkUpPictureProgressRecyclerView = v.findViewById(R.id.checkUpPictureProgressRecyclerView)
+        checkUpPictureStatisticsRVAdapter = CheckUpPictureStatisticsReVAdapter(checkUpPictureList)
+        checkUpPictureProgressRecyclerView.setItemViewCacheSize(20)
+        checkUpPictureProgressRecyclerView.setHasFixedSize(true)
         layoutManager = LinearLayoutManager(v.context, LinearLayoutManager.VERTICAL, false)
-        checkUpInputProgressRecyclerView.layoutManager = layoutManager
-        checkUpInputProgressRecyclerView.adapter = checkUpInputStatisticsRVAdapter
+        checkUpPictureProgressRecyclerView.layoutManager = layoutManager
+        checkUpPictureProgressRecyclerView.adapter = checkUpPictureStatisticsRVAdapter
 
         spinner = v.findViewById(R.id.spinner)
 
         getCheckInInputData(myUid, dogId)
-        dynamicSpinner(v, spinner, checkUpNameList)
 
-        val sortedCheckUpInputMap = sortMapByKey(checkUpInputMap)
-        if(spinner.size > 0)
-            setCheckInInputData(spinner.getItemAtPosition(0).toString(), sortedCheckUpInputMap)
+        val sortedCheckUpInputMap = sortMapByKey(checkUpPictureMap)
+        setCheckInInputData(spinner.getItemAtPosition(0).toString(), sortedCheckUpInputMap)
     }
 
     private fun setShowChart(v : View, selectedCheckUpInputItem : String) {
 
         getCheckInInputData(myUid, dogId)
 
-        val sortedCheckUpInputMap = sortMapByKey(checkUpInputMap)
+        val sortedCheckUpInputMap = sortMapByKey(checkUpPictureMap)
         setCheckInInputData(selectedCheckUpInputItem, sortedCheckUpInputMap)
     }
 
@@ -98,11 +106,10 @@ class CheckUpStatisticsFragment : Fragment() {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
-                    checkUpNameList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
-                    checkUpInputMap.clear()
+                    checkUpPictureMap.clear()
 
                     for(dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogCheckUpInputModel::class.java)
+                        val item = dataModel.getValue(DogCheckUpPictureModel::class.java)
 
                         val date = item!!.date
                         val sp = date.split(".")
@@ -118,8 +125,7 @@ class CheckUpStatisticsFragment : Fragment() {
                             dayNum = sp[0] + sp[1] + sp[2]
                         }
 
-                        checkUpInputMap[item!!] = dayNum.toInt()
-                        checkUpNameList[item!!.name] = 0
+                        checkUpPictureMap[item!!] = dayNum.toInt()
                     }
                 } catch (e: Exception) {
                     Log.d(TAG, "검사 수치 기록 삭제 완료")
@@ -131,44 +137,31 @@ class CheckUpStatisticsFragment : Fragment() {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        FBRef.checkUpInputRef.child(userId).child(dogId).addValueEventListener(postListener)
+        FBRef.checkUpPictureRef.child(userId).child(dogId).addValueEventListener(postListener)
     }
 
-    private fun setCheckInInputData(selectedCheckUpInputItem : String, checkUpInputMap : MutableMap<DogCheckUpInputModel, Int>) { // 파이어베이스로부터 검사 수치 기록 데이터 불러오기
-        checkUpInputList.clear()
+    private fun setCheckInInputData(selectedCheckUpPictureItem : String, checkUpPictureMap : MutableMap<DogCheckUpPictureModel, Int>) { // 파이어베이스로부터 검사 수치 기록 데이터 불러오기
+        checkUpPictureList.clear()
 
-        for((key, value) in checkUpInputMap.entries) {
-            if(key.name == selectedCheckUpInputItem) {
-                checkUpInputList.add(key)
+        for((key, value) in checkUpPictureMap.entries) {
+            if(key.checkUpCategory == selectedCheckUpInputItem) {
+                checkUpPictureList.add(key)
             }
         }
 
-        checkUpInputStatisticsRVAdapter.notifyDataSetChanged()
+        checkUpPictureStatisticsRVAdapter.notifyDataSetChanged()
     }
 
-    private fun sortMapByKey(map: MutableMap<DogCheckUpInputModel, Int>): LinkedHashMap<DogCheckUpInputModel, Int> { // 시간순으로 정렬
+    private fun sortMapByKey(map: MutableMap<DogCheckUpPictureModel, Int>): LinkedHashMap<DogCheckUpPictureModel, Int> { // 시간순으로 정렬
         val entries = LinkedList(map.entries)
 
         entries.sortByDescending { it.value }
 
-        val result = LinkedHashMap<DogCheckUpInputModel, Int>()
+        val result = LinkedHashMap<DogCheckUpPictureModel, Int>()
         for(entry in entries) {
             result[entry.key] = entry.value
         }
 
         return result
-    }
-
-    private fun dynamicSpinner(v : View, spinner : Spinner, spinnerName : MutableMap<String, Int>) {
-        var spinnerNameList : ArrayList<String> = ArrayList()
-
-        for((key, value) in spinnerName.entries) {
-            spinnerNameList.add(key)
-        }
-
-        val adapter = ArrayAdapter(v.context, android.R.layout.simple_list_item_1, spinnerNameList)
-        Log.d("spinnerNameList", spinnerNameList.toString())
-
-        spinner.adapter = adapter
     }
 }
