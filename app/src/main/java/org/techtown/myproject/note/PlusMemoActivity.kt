@@ -92,8 +92,8 @@ class PlusMemoActivity : AppCompatActivity() {
 
         writeBtn = findViewById(R.id.writeBtn)
         writeBtn.setOnClickListener {
-            val title = findViewById<TextView>(R.id.titleArea).text.toString()
-            val content = findViewById<TextView>(R.id.contentArea).text.toString()
+            val title = findViewById<TextView>(R.id.titleArea).text.toString().trim()
+            val content = findViewById<TextView>(R.id.contentArea).text.toString().trim()
 
             Log.d(TAG, title)
             Log.d(TAG, content)

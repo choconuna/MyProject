@@ -373,6 +373,7 @@
                     android:layout_height="40dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
+                    android:backgroundTint="@color/mainColor"
                     android:entries="@array/spinner"
                     android:theme="@style/mySpinner">
                 </Spinner>

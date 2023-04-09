@@ -85,11 +85,11 @@ class PlusTonicActivity : AppCompatActivity() {
 
         val plusBtn = findViewById<Button>(R.id.plusBtn)
         plusBtn.setOnClickListener {
-            if(tonicNameArea.text.toString() == "") {
+            if(tonicNameArea.text.toString().trim() == "") {
                 Toast.makeText(this, "영양제 이름을 입력하세요!", Toast.LENGTH_LONG).show()
                 tonicNameArea.setSelection(0)
             }
-            else if(tonicWeightArea.text.toString() == "") {
+            else if(tonicWeightArea.text.toString().trim() == "") {
                 Toast.makeText(this, "영양제 양을 입력하세요!", Toast.LENGTH_LONG).show()
                 tonicWeightArea.setSelection(0)
             } else {

@@ -88,11 +88,11 @@ class PlusSnackActivity : AppCompatActivity() {
 
         val plusBtn = findViewById<Button>(R.id.plusBtn)
         plusBtn.setOnClickListener {
-            if(snackNameArea.text.toString() == "") {
+            if(snackNameArea.text.toString().trim() == "") {
                 Toast.makeText(this, "간식 이름을 입력하세요!", Toast.LENGTH_LONG).show()
                 snackNameArea.setSelection(0)
             }
-            else if(snackWeightArea.text.toString() == "") {
+            else if(snackWeightArea.text.toString().trim() == "") {
                 Toast.makeText(this, "간식 양을 입력하세요!", Toast.LENGTH_LONG).show()
                 snackWeightArea.setSelection(0)
             } else {

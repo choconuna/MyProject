@@ -27,9 +27,26 @@
         <item name="android:textColorPrimary">#171717</item>
     </style>
 
+    <style name="MySpinnerDatePickerStyle" parent="Theme.AppCompat.Light.Dialog">
+        <!-- 상단 색 변경 -->
+        <item name="colorAccent">@color/mainColor</item>
+        <!-- 선택한 날짜를 표시할 색상 -->
+        <item name="colorControlActivated">@color/mainColor</item>
+        <item name="colorControlHighlight">@color/white</item>
+        <!-- 취소/확인버튼 색상 -->
+        <item name="android:textColor">@color/mainColor</item>
+        <item name="android:fontFamily">@font/regular</item>
+        <item name="android:labelTextSize">15sp</item>
+    </style>
+
     <style name="mySpinner" parent="Widget.AppCompat.DropDownItem.Spinner">
         <item name="android:fontFamily">@font/regular</item>
         <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="receiptSpinner" parent="Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:fontFamily">@font/regular</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="dateSpinner" parent="Widget.AppCompat.DropDownItem.Spinner">

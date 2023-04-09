@@ -93,15 +93,15 @@ class PlusMealActivity : AppCompatActivity() {
 
         val plusBtn = findViewById<Button>(R.id.plusBtn)
         plusBtn.setOnClickListener {
-            if(mealNameArea.text.toString() == "") {
+            if(mealNameArea.text.toString().trim() == "") {
                 Toast.makeText(this, "사료 이름을 입력하세요!", Toast.LENGTH_LONG).show()
                 mealNameArea.setSelection(0)
             }
-            else if(mealWeightArea.text.toString() == "") {
+            else if(mealWeightArea.text.toString().trim() == "") {
                 Toast.makeText(this, "사료 양을 입력하세요!", Toast.LENGTH_LONG).show()
                 mealWeightArea.setSelection(0)
             } else {
-                plusMealNote(nowDate, timeSlot,hourArea.text.toString() + ":" + minuteArea.text.toString(), mealType, mealNameArea.text.toString(), mealWeightArea.text.toString())
+                plusMealNote(nowDate, timeSlot,hourArea.text.toString().trim() + ":" + minuteArea.text.toString().trim(), mealType, mealNameArea.text.toString().trim(), mealWeightArea.text.toString().trim())
                 Toast.makeText(this, "사료 추가 완료!", Toast.LENGTH_SHORT).show()
                 finish()
             }

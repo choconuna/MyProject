@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyProject">
         <activity
+            android:name=".receipt.PlusReceiptRecordActivity"
+            android:exported="false" />
+        <activity
             android:name=".statistics.CheckUpPictureStatisticsInActivity"
             android:exported="false" />
         <activity

@@ -554,6 +554,8 @@ class SnackStatisticsFragment : Fragment() {
         labelList.clear()
         oneDayDataList.clear()
 
+        Log.d("oneDayMap", oneDayMap.toString())
+
         for((key, value) in oneDayMap.entries) {
             labelList.add(key)
         }

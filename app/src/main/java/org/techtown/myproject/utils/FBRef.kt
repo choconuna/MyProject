@@ -45,6 +45,8 @@ class FBRef {
 
         val checkUpPictureRef = database.getReference("checkUpPicture") // 반려견의 검사 사진 데이터를 DB에 삽입하는 경로
 
+        val receiptRef = database.getReference("receipt") // 가계부 데이터를 DB에 삽입하는 경로
+
         val alarmRef = database.getReference("alarm") // 알림 데이터를 DB에 삽입하는 경로
    }
 

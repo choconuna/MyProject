@@ -148,17 +148,21 @@ class DogTonicEditActivity : AppCompatActivity() {
                 val profileFile =
                     FBRef.tonicRef.child(userId).child(dogId).child(dogTonicId)
                         .child("tonicImageFile").get().addOnSuccessListener {
-                            val storageReference =
-                                Firebase.storage.reference.child(it.value.toString()) // 영양제 사진을 DB의 storage로부터 가져옴
+                            if(it.value != "") {
+                                val storageReference =
+                                    Firebase.storage.reference.child(it.value.toString()) // 영양제 사진을 DB의 storage로부터 가져옴
 
-                            storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    Glide.with(applicationContext).load(task.result)
-                                        .into(tonicImage) // 영양제 사진을 표시함
-                                } else {
-                                    findViewById<ImageView>(R.id.tonicImage).isVisible = false
-                                }
-                            })
+                                storageReference.downloadUrl.addOnCompleteListener(
+                                    OnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            Glide.with(applicationContext).load(task.result)
+                                                .into(tonicImage) // 영양제 사진을 표시함
+                                        } else {
+                                            findViewById<ImageView>(R.id.tonicImage).isVisible =
+                                                false
+                                        }
+                                    })
+                            }
                         }
 
                 when (timeSlot) {

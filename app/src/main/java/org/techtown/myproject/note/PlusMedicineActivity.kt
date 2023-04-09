@@ -59,11 +59,11 @@ class PlusMedicineActivity : AppCompatActivity() {
             val month = monthArea.text.toString().toInt()
             val day = dayArea.text.toString().toInt()
 
-            if(medicineNameArea.text.toString() == "") {
+            if(medicineNameArea.text.toString().trim() == "") {
                 Toast.makeText(this, "투약한 약의 이름을 입력하세요!", Toast.LENGTH_LONG).show()
                 medicineNameArea.setSelection(0)
             }
-            else if(yearArea.text.toString() == "" || monthArea.text.toString() == "" || dayArea.text.toString() == "" || month < 1 || month > 12 || day < 1 || day > 31) {
+            else if(yearArea.text.toString().trim() == "" || monthArea.text.toString().trim() == "" || dayArea.text.toString().trim() == "" || month < 1 || month > 12 || day < 1 || day > 31) {
                 if(((month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) && day > 31) || ((month == 2 || month == 4 || month == 6 || month == 9 || month == 11) && day > 30)) {
                     Toast.makeText(this, "날짜를 정확하게 입력하세요!", Toast.LENGTH_LONG).show()
                     yearArea.setSelection(0)
@@ -72,9 +72,9 @@ class PlusMedicineActivity : AppCompatActivity() {
                     yearArea.setSelection(0)
                 }
             }  else {
-                val date = yearArea.text.toString() + "." + monthArea.text.toString() + "." + dayArea.text.toString()
+                val date = yearArea.text.toString().trim() + "." + monthArea.text.toString().trim() + "." + dayArea.text.toString().trim()
 
-                plusMedicineNote(date, hourArea.text.toString() + ":" + minuteArea.text.toString(), medicineNameArea.text.toString())
+                plusMedicineNote(date, hourArea.text.toString().trim() + ":" + minuteArea.text.toString().trim(), medicineNameArea.text.toString().trim())
                 Toast.makeText(this, "투약 기록 추가 완료!", Toast.LENGTH_SHORT).show()
                 finish()
             }

@@ -553,6 +553,8 @@ class TonicStatisticsFragment : Fragment() {
         labelList.clear()
         oneDayDataList.clear()
 
+        Log.d("oneDayMap", oneDayMap.toString())
+
         for((key, value) in oneDayMap.entries) {
             labelList.add(key)
         }
@@ -775,6 +777,8 @@ class TonicStatisticsFragment : Fragment() {
     private fun setWeekTonic() {
         weekLabelList.clear()
         weekDataList.clear()
+
+        Log.d("oneDayMap", weekMap.toString())
 
         for((key, value) in weekMap.entries) {
             weekLabelList.add(key)

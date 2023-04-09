@@ -95,11 +95,11 @@ class PlusMedicinePlanActivity : AppCompatActivity() {
             val sm = startMonthArea.text.toString().toInt()
             val sd = startDayArea.text.toString().toInt()
 
-            if(medicineNameArea.text.toString() == "") {
+            if(medicineNameArea.text.toString().trim() == "") {
                 Toast.makeText(this, "투약할 약의 이름을 입력하세요!", Toast.LENGTH_LONG).show()
                 medicineNameArea.setSelection(0)
             }
-            else if(startYearArea.text.toString() == "" || startMonthArea.text.toString() == "" || startDayArea.text.toString() == "" || sm < 1 || sm > 12 || sd < 1 || sd > 31) {
+            else if(startYearArea.text.toString().trim() == "" || startMonthArea.text.toString().trim() == "" || startDayArea.text.toString().trim() == "" || sm < 1 || sm > 12 || sd < 1 || sd > 31) {
                 if(((sm == 1 || sm == 3 || sm == 5 || sm == 7 || sm == 8 || sm == 10 || sm == 12) && sd > 31) || ((sm == 2 || sm == 4 || sm == 6 || sm == 9 || sm == 11) && sd > 30)) {
                     if (repeat == "하루")
                         Toast.makeText(this, "날짜를 정확하게 입력하세요!", Toast.LENGTH_LONG).show()
@@ -113,9 +113,9 @@ class PlusMedicinePlanActivity : AppCompatActivity() {
                         Toast.makeText(this, "시작 날짜를 정확하게 입력하세요!", Toast.LENGTH_LONG).show()
                     startYearArea.setSelection(0)
                 }
-            }  else if(repeat == "매일" && (endYearArea.text.toString() == "" || endMonthArea.text.toString() == "" || endDayArea.text.toString() == "" || endMonthArea.text.toString().toInt() < 1 || endMonthArea.text.toString().toInt() > 12 || endDayArea.text.toString().toInt() < 1 || endDayArea.text.toString().toInt() > 31)) {
-                val em = endMonthArea.text.toString().toInt()
-                val ed = endDayArea.text.toString().toInt()
+            }  else if(repeat == "매일" && (endYearArea.text.toString().trim() == "" || endMonthArea.text.toString().trim() == "" || endDayArea.text.toString().trim() == "" || endMonthArea.text.toString().trim().toInt() < 1 || endMonthArea.text.toString().trim().toInt() > 12 || endDayArea.text.toString().trim().toInt() < 1 || endDayArea.text.toString().trim().toInt() > 31)) {
+                val em = endMonthArea.text.toString().trim().toInt()
+                val ed = endDayArea.text.toString().trim().toInt()
                 if(((em == 1 || em == 3 || em == 5 || em == 7 || em == 8 || em == 10 || em == 12) && ed > 31) || ((em == 2 || em == 4 || em == 6 || em == 9 || em == 11) && ed > 30)) {
                     Toast.makeText(this, "종료 날짜를 정확하게 입력하세요!", Toast.LENGTH_LONG).show()
                     endYearArea.setSelection(0)
@@ -124,15 +124,15 @@ class PlusMedicinePlanActivity : AppCompatActivity() {
                     endYearArea.setSelection(0)
                 }
             }  else {
-                val startDate = startYearArea.text.toString() + "." + startMonthArea.text.toString() + "." + startDayArea.text.toString()
+                val startDate = startYearArea.text.toString().trim() + "." + startMonthArea.text.toString().trim() + "." + startDayArea.text.toString().trim()
                 var endDate = ""
                 if(repeat == "하루")
-                    endDate = startYearArea.text.toString() + "." + startMonthArea.text.toString() + "." + startDayArea.text.toString()
+                    endDate = startYearArea.text.toString().trim() + "." + startMonthArea.text.toString().trim() + "." + startDayArea.text.toString().trim()
                 else if(repeat == "매일")
-                    endDate = endYearArea.text.toString() + "." + endMonthArea.text.toString() + "." + endDayArea.text.toString()
+                    endDate = endYearArea.text.toString().trim() + "." + endMonthArea.text.toString().trim() + "." + endDayArea.text.toString().trim()
 
 
-                plusMedicinePlanNote(startDate, endDate, hourArea.text.toString() + ":" + minuteArea.text.toString(), repeat, medicineNameArea.text.toString())
+                plusMedicinePlanNote(startDate, endDate, hourArea.text.toString().trim() + ":" + minuteArea.text.toString().trim(), repeat, medicineNameArea.text.toString().trim())
                 Toast.makeText(this, "투약 일정 추가 완료!", Toast.LENGTH_SHORT).show()
                 finish()
             }

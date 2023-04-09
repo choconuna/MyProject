@@ -59,7 +59,7 @@ class PlusWaterActivity : AppCompatActivity() {
 
         val plusBtn = findViewById<Button>(R.id.plusBtn)
         plusBtn.setOnClickListener {
-            if(waterWeightArea.text.toString() == "") {
+            if(waterWeightArea.text.toString().trim() == "") {
                 Toast.makeText(this, "물 양을 입력하세요!", Toast.LENGTH_LONG).show()
                 waterWeightArea.setSelection(0)
             } else {
