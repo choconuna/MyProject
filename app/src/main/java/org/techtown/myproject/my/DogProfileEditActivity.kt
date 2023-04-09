@@ -131,16 +131,6 @@ class DogProfileEditActivity : AppCompatActivity() {
                     Toast.makeText(this, "반려견 이름을 입력하세요!", Toast.LENGTH_LONG).show()
                     dogNameArea.setSelection(0)
                 }
-                !dogNameCheckClicked -> {
-                    Toast.makeText(this, "반려견 이름이 중복되는지 확인하세요!", Toast.LENGTH_LONG).show()
-                    dogNameArea.setSelection(0)
-                }
-                !dogNameChecked -> {
-                    Toast.makeText(this, "반려견 이름이 중복됩니다. 다시 입력하세요!", Toast.LENGTH_LONG).show()
-                    dogNameArea.setText("")
-                    dogNameArea.setSelection(0)
-                    dogNameCheckClicked = false
-                }
                 dogBirthDate == "" -> {
                     Toast.makeText(this, "반려견 생일을 입력하세요!", Toast.LENGTH_LONG).show()
                     dogBirthArea.setSelection(0)
@@ -153,6 +143,20 @@ class DogProfileEditActivity : AppCompatActivity() {
                     editDogProfile(key) // 사용자 반려견의 profile 내용 수정
                     Toast.makeText(this, "반려견 프로필이 수정되었습니다!", Toast.LENGTH_SHORT).show()
                     finish()
+                }
+                !dogNameCheckClicked -> {
+                    if(originName != dogName) {
+                        Toast.makeText(this, "반려견 이름이 중복되는지 확인하세요!", Toast.LENGTH_LONG).show()
+                        dogNameArea.setSelection(0)
+                    }
+                }
+                !dogNameChecked -> {
+                    if(originName != dogName) {
+                        Toast.makeText(this, "반려견 이름이 중복됩니다. 다시 입력하세요!", Toast.LENGTH_LONG).show()
+                        dogNameArea.setText("")
+                        dogNameArea.setSelection(0)
+                        dogNameCheckClicked = false
+                    }
                 }
             }
         }
@@ -186,6 +190,7 @@ class DogProfileEditActivity : AppCompatActivity() {
                 val post = dataSnapshot.getValue(DogModel::class.java)
                 dogName = post!!.dogName
                 dogNameArea.setText(dogName)
+                originName = post!!.dogName
 
                 dogBirthDate = post!!.dogBirthDate
                 dogBirthArea.setText(dogBirthDate)

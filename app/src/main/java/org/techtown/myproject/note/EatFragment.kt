@@ -77,6 +77,7 @@ class EatFragment() : Fragment() {
         myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
         sharedPreferences = v!!.context.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
         dogId = sharedPreferences.getString(myUid, "").toString() // 현재 대표 반려견의 id
+        Log.d("mainDogId", dogId)
 
         // 사료 목록 recycler 어댑터
         mealRVAdapter = MealReVAdapter(mealDataList)
@@ -116,8 +117,8 @@ class EatFragment() : Fragment() {
 
         totalWeightProgress = v!!.findViewById(R.id.totalWeightProgress)
         val dogWeight = FBRef.dogRef.child(myUid).child(dogId).child("dogWeight").get().addOnSuccessListener {
-            totalWeightProgress.max = it.value.toString().toInt() * 60
-            v!!.findViewById<TextView>(R.id.fullWeight).text = (it.value.toString().toInt() * 60).toString()
+            totalWeightProgress.max = (it.value.toString().toFloat()).toInt() * 60
+            v!!.findViewById<TextView>(R.id.fullWeight).text = ((it.value.toString().toFloat()).toInt()  * 60).toString()
         }
 
         nowDate = arguments?.getString("nowDate").toString() // 선택된 날짜를 받아옴

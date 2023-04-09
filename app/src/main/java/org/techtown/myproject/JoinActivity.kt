@@ -1,10 +1,15 @@
 package org.techtown.myproject
 
+import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
+import android.view.View
 import android.view.View.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -14,8 +19,13 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import org.techtown.myproject.utils.DogModel
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.UserInfo
+import org.techtown.myproject.utils.UserMainDogModel
+import java.io.ByteArrayOutputStream
 
 
 class JoinActivity : AppCompatActivity() {
@@ -23,6 +33,9 @@ class JoinActivity : AppCompatActivity() {
 
     lateinit var mFirebaseAuth: FirebaseAuth // 파이어베이스 인증
     lateinit var userDB : DatabaseReference
+
+    private lateinit var sharedPreferences: SharedPreferences // 대표 반려견 id를 저장하기 위함
+    lateinit var editor : SharedPreferences.Editor
 
     lateinit var userNameArea : TextView
     lateinit var userName : String
@@ -41,6 +54,24 @@ class JoinActivity : AppCompatActivity() {
 
     lateinit var email : String
     lateinit var pw : String
+
+    lateinit var dogDB : DatabaseReference
+
+    lateinit var dogNameArea : EditText
+    lateinit var dogName : String
+
+    lateinit var dogBirthArea : EditText
+    lateinit var dogBirthDate : String
+
+    lateinit var dogSex : String
+
+    lateinit var spinner : Spinner
+    lateinit var dogSpecies : String
+
+    lateinit var dogWeightArea : EditText
+    lateinit var dogWeight : String
+
+    lateinit var neutralization : String
 
     lateinit var joinBtn : Button
 
@@ -79,6 +110,38 @@ class JoinActivity : AppCompatActivity() {
         pwAlert.visibility = GONE
         pwCheck()
 
+        dogNameArea = findViewById(R.id.dogNameArea)
+
+        dogBirthArea = findViewById(R.id.dogBirth)
+        dogWeightArea = findViewById(R.id.dogWeightArea)
+
+        dogSex = "수컷"
+        val sexGroup = findViewById<RadioGroup>(R.id.sexGroup)
+        sexGroup.setOnCheckedChangeListener { _, checkedId ->
+            when(checkedId) {
+                R.id.male -> dogSex = "수컷"
+                R.id.female -> dogSex = "암컷"
+            }
+        }
+
+        spinner = findViewById(R.id.spinner)
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                dogSpecies = parent.getItemAtPosition(position).toString()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        neutralization = "YES"
+        val neutralizationGroup = findViewById<RadioGroup>(R.id.neutralization)
+        neutralizationGroup.setOnCheckedChangeListener { _, checkedId ->
+            when(checkedId) {
+                R.id.yes -> neutralization = "YES"
+                R.id.no -> neutralization = "NO"
+            }
+        }
+
+
         joinBtn = findViewById(R.id.joinBtn)
         joinBtn.setOnClickListener {
             userName = userNameArea.text.toString().trim()
@@ -86,9 +149,11 @@ class JoinActivity : AppCompatActivity() {
             email = emailArea.text.toString().trim()
             pw = pwArea.text.toString().trim()
 
-            Log.d(TAG, "$userName $nickName $email $pw")
+            dogName = dogNameArea.text.toString().trim()
+            dogBirthDate = dogBirthArea.text.toString().trim()
+            dogWeight = dogWeightArea.text.toString().trim()
 
-            createUser(userName, nickName, email, pw)
+            createUser(userName, nickName, email, pw, dogName, dogBirthDate, dogWeight)
         }
     }
 
@@ -164,7 +229,7 @@ class JoinActivity : AppCompatActivity() {
         })
     }
 
-    private fun createUser(userName : String, nickName: String, email : String, pw : String) { // 사용자 가입 동작 구현
+    private fun createUser(userName : String, nickName: String, email : String, pw : String, dogName : String, dogBirthDate : String, dogWeight : String) { // 사용자 가입 동작 구현
         if(userName == "") {
             Toast.makeText(this, "이름을 입력하세요!", Toast.LENGTH_LONG).show()
         } else if(nickName == "" ) {
@@ -183,12 +248,21 @@ class JoinActivity : AppCompatActivity() {
         }  else if(pw == "") {
             Toast.makeText(this, "비밀번호를 입력하세요!", Toast.LENGTH_LONG).show()
             pwArea.setSelection(0)
-        } else if(userName != "" && userName != "" && nickName != "" && email != "" && pw != "") {
+        } else if(dogName == "") {
+            Toast.makeText(this, "반려견 이름을 입력하세요!", Toast.LENGTH_LONG).show()
+            dogNameArea.setSelection(0)
+        } else if(dogBirthDate == "") {
+            Toast.makeText(this, "반려견 생일을 입력하세요!", Toast.LENGTH_LONG).show()
+            dogBirthArea.setSelection(0)
+        } else if(dogWeight == "") {
+            Toast.makeText(this, "반려견 몸무게를 입력하세요!", Toast.LENGTH_LONG).show()
+            dogWeightArea.setSelection(0)
+        } else if(userName != "" && userName != "" && nickName != "" && email != "" && pw != "" && dogName != "" && dogBirthDate != "" && dogWeight != "") {
             mFirebaseAuth.createUserWithEmailAndPassword(email, pw).addOnCompleteListener(this)
             { task ->
                 if (task.isSuccessful) {
                     var uid : String = task.result.user!!.uid
-                    saveDB(uid, "basic_user.png", userName, nickName, email, pw) // DB에 가입한 사용자 정보 저장
+                    saveDB(uid, "basic_user.png", userName, nickName, email, pw, dogName, dogBirthDate, dogWeight) // DB에 가입한 사용자 정보 저장
                     Toast.makeText(this@JoinActivity, "회원가입이 완료되었습니다.", Toast.LENGTH_SHORT).show()
                     finish()
                 } else if (!task.isSuccessful) {
@@ -215,8 +289,17 @@ class JoinActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveDB(uid : String, profileImage : String, userName : String, nickName : String, email : String, pw : String) { // DB에 가입한 사용자에 대한 정보 저장
+    private fun saveDB(uid : String, profileImage : String, userName : String, nickName : String, email : String, pw : String, dogName : String, dogBirthDate : String, dogWeight : String) { // DB에 가입한 사용자에 대한 정보 저장
+        val userKey = FBRef.userRef.push().key.toString() // 사용자의 키 값을 받아옴
+        val dogKey = FBRef.dogRef.push().key.toString() // 반려견의 키 값을 받아옴
+
         FBRef.userRef.child(uid).setValue(UserInfo(profileImage, userName, nickName, email, pw)) // 사용자 정보 데이터베이스에 저장 // "Users" 안의 사용자 uid 아래에 userInfo 데이터를 삽입
+        FBRef.dogRef.child(uid).child(dogKey).setValue(DogModel("basic_user.png", dogName, dogBirthDate, dogSex, dogSpecies, dogWeight, neutralization))
+        FBRef.userMainDogRef.child(uid).setValue(UserMainDogModel(dogKey))
+        sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE) // sharedPreferences 이름의 기본모드 설정
+        val editor = sharedPreferences.edit() //sharedPreferences를 제어할 editor를 선언
+        editor.putString(uid, dogKey) // key,value 형식으로 저장
+        editor.commit() //최종 커밋. 커밋을 해야 저장됨.
     }
 }
 

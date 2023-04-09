@@ -773,7 +773,7 @@ class SnackStatisticsFragment : Fragment() {
         weekLabelList.clear()
         weekDataList.clear()
 
-              for((key, value) in weekMap.entries) {
+        for((key, value) in weekMap.entries) {
             weekLabelList.add(key)
         }
 

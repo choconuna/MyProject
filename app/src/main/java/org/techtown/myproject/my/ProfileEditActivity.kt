@@ -82,7 +82,11 @@ class ProfileEditActivity : AppCompatActivity() {
         nickNameCheckBtn.setOnClickListener {
             nickNameCheckClicked = true
             nickName = nickNameArea.text.toString().trim()
-            checkNickName(nickName)
+            if(originName != nickName) {
+                checkNickName(nickName)
+            } else {
+                Toast.makeText(this, "기존의 닉네임입니다!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         findViewById<Button>(R.id.editBtn).setOnClickListener {
@@ -96,6 +100,7 @@ class ProfileEditActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val dataModel = dataSnapshot.getValue(UserInfo::class.java)
 
+                originName = dataModel!!.nickName
                 profileFile = dataModel!!.profileImage
                 email = dataModel!!.email
                 pw = dataModel!!.password

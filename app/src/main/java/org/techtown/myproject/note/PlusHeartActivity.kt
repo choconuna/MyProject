@@ -135,9 +135,9 @@ class PlusHeartActivity : AppCompatActivity() {
     }
 
 
-     // 밀리언 초를 시간으로 포멧해주는 기능
-     // @param milliSeconds
-     // @return HH:mm:ss 시간 포멧
+    // 밀리언 초를 시간으로 포멧해주는 기능
+    // @param milliSeconds
+    // @return HH:mm:ss 시간 포멧
     @SuppressLint("DefaultLocale")
     private fun hmsTimeFormatter(milliSeconds: Long): String? {
         return java.lang.String.format(

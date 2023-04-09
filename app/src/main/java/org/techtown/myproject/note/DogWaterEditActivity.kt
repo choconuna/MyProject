@@ -90,7 +90,7 @@ class DogWaterEditActivity : AppCompatActivity() {
 
     private fun getData() {
         val dogWeight = FBRef.dogRef.child(userId).child(dogId).child("dogWeight").get().addOnSuccessListener {
-            val w = it.value.toString().toInt()
+            val w = it.value.toString().toFloat().toInt()
             minWeight.text = (w*50).toString()
             maxWeight.text = (w*60).toString()
         }

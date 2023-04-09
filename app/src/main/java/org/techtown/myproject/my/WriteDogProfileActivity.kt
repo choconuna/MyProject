@@ -215,9 +215,5 @@ class WriteDogProfileActivity : AppCompatActivity() {
         }
 
         FBRef.dogRef.child(uid).child(key).setValue(DogModel(dogProfileFile, dogName, dogBirthDate, dogSex, dogSpecies, dogWeight, neutralization)) // 반려견 정보 데이터베이스에 저장
-        sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE) // sharedPreferences 이름의 기본모드 설정
-        val editor = sharedPreferences.edit() //sharedPreferences를 제어할 editor를 선언
-        editor.putString(uid, key) // key,value 형식으로 저장
-        editor.commit() //최종 커밋. 커밋을 해야 저장됨.
     }
 }
