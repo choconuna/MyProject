@@ -22,37 +22,57 @@
                 android:layout_gravity="center"
                 android:layout_weight="1">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25dp"
                     android:layout_marginTop="15dp"
+                    android:layout_marginRight="25dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/dateArea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10"
-                        android:textSize="15sp"
                         android:fontFamily="@font/bold"
-                        android:textColor="@color/black" />
+                        android:text="10"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="MissingConstraints" />
 
                     <TextView
                         android:id="@+id/dayArea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/rectangle_box_brown"
+                        android:fontFamily="@font/regular"
+                        android:paddingLeft="8dp"
                         android:paddingTop="2dp"
                         android:paddingRight="8dp"
-                        android:paddingLeft="8dp"
                         android:paddingBottom="2dp"
                         android:text="월"
-                        android:background="@drawable/rectangle_box_brown"
-                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/white"
                         android:textSize="15sp"
-                        android:fontFamily="@font/regular"
-                        android:textColor="@color/white" />
-                </LinearLayout>
+                        app:layout_constraintStart_toEndOf="@+id/dateArea"
+                        tools:ignore="MissingConstraints" />
+
+                    <TextView
+                        android:id="@+id/dayPriceArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/bold"
+                        android:text="10"
+                        android:textColor="#DC143C"
+                        android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="MissingConstraints" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"

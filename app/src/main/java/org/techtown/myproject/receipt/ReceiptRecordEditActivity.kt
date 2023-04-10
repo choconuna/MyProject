@@ -9,44 +9,54 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.core.content.ContentProviderCompat.requireContext
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
-import org.techtown.myproject.utils.DogMealModel
+import org.techtown.myproject.utils.DogModel
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.ReceiptModel
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
 import java.util.*
 
-class PlusReceiptRecordActivity : AppCompatActivity() {
+class ReceiptRecordEditActivity : AppCompatActivity() {
 
+    private val TAG = ReceiptRecordEditActivity::class.java.simpleName
     private lateinit var userId : String
+    private lateinit var key : String
 
     private lateinit var selectedDateArea : EditText
     private var date = LocalDate.now()
     private lateinit var selectedDate : String
 
     private lateinit var priceArea : EditText
+    private lateinit var price : String
     private lateinit var categorySpinner : Spinner
     private lateinit var category : String
     private lateinit var contentArea : EditText
+    private lateinit var content : String
 
     private val decimalFormat = DecimalFormat("#,###")
     private var result: String = ""
 
-    private lateinit var plusBtn : Button
+    private lateinit var editBtn : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_plus_receipt_record)
+        setContentView(R.layout.activity_receipt_record_edit)
 
         userId = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
+        key = intent.getStringExtra("key").toString() // 해당 가계부 id
 
         setData()
+        getData()
 
         selectedDateArea.setOnClickListener {
             val datepickercalendar = Calendar.getInstance()
@@ -56,7 +66,7 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
 
             if(!this.isFinishing) {
                 val dpd = DatePickerDialog(
-                    this@PlusReceiptRecordActivity, R.style.MySpinnerDatePickerStyle,
+                    this@ReceiptRecordEditActivity, R.style.MySpinnerDatePickerStyle,
                     { _, year, monthOfYear, dayOfMonth ->
 //                  월이 0부터 시작하여 1을 더해주어야함
                         val month = monthOfYear + 1
@@ -113,7 +123,7 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
 
         priceArea.addTextChangedListener(watcher)
 
-        plusBtn.setOnClickListener {
+        editBtn.setOnClickListener {
             val price = priceArea.text.toString().replace(",", "")
             val content = contentArea.text.toString().trim()
 
@@ -127,12 +137,18 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
                     contentArea.setSelection(0)
                 }
                 else -> {
-                    val key = FBRef.receiptRef.child(userId).push().key.toString() // 키 값을 먼저 받아옴
                     FBRef.receiptRef.child(userId).child(key).setValue(ReceiptModel(userId, key, selectedDate, category, price, content))
-                    Toast.makeText(this, "지출 내역이 추가되었습니다!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "지출 내역이 수정되었습니다!", Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
+        }
+
+        val deleteBtn = findViewById<ImageView>(R.id.deleteBtn)
+        deleteBtn.setOnClickListener {
+            FBRef.receiptRef.child(userId).child(key).removeValue() // 파이어베이스에서 해당 기록의 데이터 삭제
+            Toast.makeText(this, "지출 내역이 삭제되었습니다!", Toast.LENGTH_SHORT).show()
+            finish()
         }
 
         val backBtn = findViewById<ImageView>(R.id.back)
@@ -146,15 +162,44 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
         priceArea = findViewById(R.id.priceArea)
         categorySpinner = findViewById(R.id.categorySpinner)
         contentArea = findViewById(R.id.contentArea)
-        plusBtn = findViewById(R.id.plusBtn)
+        editBtn = findViewById(R.id.editBtn)
+    }
 
-        val format = "yyyy.MM.dd (E)"
-        val sdf = DateTimeFormatter.ofPattern(format)
-        selectedDateArea.setText(date.format(sdf))
+    private fun getData() { // 기존에 저장된 데이터를 가져옴
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    val post = dataSnapshot.getValue(ReceiptModel::class.java)
+                    selectedDate = post!!.date
+                    val dateSp = selectedDate.split(".")
 
-        val formatt = "yyyy.MM.dd.E"
-        val sfd = DateTimeFormatter.ofPattern(formatt)
-        selectedDate = date.format(sfd)
-        Log.d("selectedDate", selectedDate)
+                    selectedDateArea.setText(dateSp[0] + "." + dateSp[1] + "." + dateSp[2] + " (" + dateSp[3] + ")")
+
+                    val decimalFormat = DecimalFormat("#,###")
+                    priceArea.setText(
+                        decimalFormat.format(
+                            post!!.price.replace(",", "").toDouble()
+                        )
+                    )
+                    contentArea.setText(post!!.content)
+
+                    category = post!!.category
+
+                    for (i in 0 until categorySpinner.count) {
+                        if (categorySpinner.getItemAtPosition(i).toString() == category) {
+                            categorySpinner.setSelection(i)
+                            break
+                        }
+                    }
+                } catch (e: Exception) {
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.receiptRef.child(userId).child(key).addValueEventListener(postListener)
     }
 }

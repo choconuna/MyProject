@@ -50,6 +50,33 @@ class ReceiptReVAdapter(val receiptList : ArrayList<Receipt>):
         receiptItemDataList.clear()
         receiptItemDataList.add(receiptList[position])
         receiptItemRVAdapter.notifyDataSetChanged()
+
+        val postListener = object : ValueEventListener { // 해당 일자의 총 지출액 표시
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    var dayPrice = 0
+
+                    for(dataModel in dataSnapshot.children) {
+                        // dataModel.key
+                        val item = dataModel.getValue(ReceiptModel::class.java)
+                        val date = item!!.date
+                        val dateSp = date.split(".")
+
+                        if(dateSp[0].toInt() == splitDate[0].toInt() && dateSp[1].toInt() == splitDate[1].toInt() && dateSp[2].toInt() == splitDate[2].toInt()) {
+                            dayPrice += item!!.price.toInt()
+                        }
+                    }
+
+                    val decimalFormat = DecimalFormat("#,###")
+                    holder.dayPriceArea!!.text = decimalFormat.format(dayPrice.toString().replace(",","").toDouble()) + "원"
+                } catch (e: Exception) {
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        }
+        FBRef.receiptRef.child(myUid).addValueEventListener(postListener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReceiptViewHolder {
@@ -61,6 +88,7 @@ class ReceiptReVAdapter(val receiptList : ArrayList<Receipt>):
         val view = view
         val dateArea = view?.findViewById<TextView>(R.id.dateArea)
         val dayArea = view?.findViewById<TextView>(R.id.dayArea)
+        val dayPriceArea = view?.findViewById<TextView>(R.id.dayPriceArea)
         val receiptDetailReVAdapter = view?.findViewById<RecyclerView>(R.id.receiptDetailRecyclerView)
     }
 }

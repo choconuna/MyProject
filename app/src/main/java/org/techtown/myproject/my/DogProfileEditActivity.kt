@@ -62,9 +62,6 @@ class DogProfileEditActivity : AppCompatActivity() {
     lateinit var neutralizationGroup : RadioGroup
     lateinit var neutralization : String
 
-    lateinit var saveBtn : Button
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dog_profile_edit)

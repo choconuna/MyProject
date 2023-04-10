@@ -88,6 +88,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_plus_vomit.xml" value="0.28104956268221576" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_plus_water.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_profile_edit.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_receipt_record_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_specific_community_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_specific_community_in.xml" value="0.23541666666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_splash.xml" value="0.25104166666666666" />
@@ -135,7 +136,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_pee_statistics.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_question.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_receipt.xml" value="0.264" />
-        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_receipt_record.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_receipt_record.xml" value="0.536" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_receipt_statistics.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_record.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_review.xml" value="0.25104166666666666" />

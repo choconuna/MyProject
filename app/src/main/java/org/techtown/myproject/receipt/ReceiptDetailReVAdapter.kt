@@ -1,5 +1,6 @@
 package org.techtown.myproject.receipt
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +39,9 @@ class ReceiptDetailReVAdapter(val receiptDetailList : ArrayList<ReceiptModel>):
         holder.priceArea!!.text = decimalFormat.format(receiptDetailList[position].price.replace(",","").toDouble()) + "원"
 
         holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
+            val intent = Intent(holder!!.view!!.context, ReceiptRecordEditActivity::class.java)
+            intent.putExtra("key", receiptDetailList[position].receiptId)
+            holder!!.view!!.context.startActivity(intent)
         }
     }
 

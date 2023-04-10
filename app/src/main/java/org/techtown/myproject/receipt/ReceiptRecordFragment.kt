@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -22,6 +23,7 @@ import org.techtown.myproject.utils.DogCheckUpInputModel
 import org.techtown.myproject.utils.DogCheckUpPictureModel
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.ReceiptModel
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -44,6 +46,8 @@ class ReceiptRecordFragment : Fragment() {
 
     private lateinit var myUid : String
     private lateinit var nowDate : String
+
+    private lateinit var monthPriceArea : TextView
 
     private lateinit var writeBtn : ImageView
 
@@ -80,6 +84,7 @@ class ReceiptRecordFragment : Fragment() {
             Log.d("selectedDate", "$year $month $day $dayOfWeek")
 
             showDate(myUid, year, month)
+            showMonthPrice(myUid, year, month)
         }
 
         nextMonth.setOnClickListener {
@@ -96,6 +101,7 @@ class ReceiptRecordFragment : Fragment() {
             Log.d("selectedDate", "$year $month $day $dayOfWeek")
 
             showDate(myUid, year, month)
+            showMonthPrice(myUid, year, month)
         }
 
         writeBtn.setOnClickListener {
@@ -124,6 +130,7 @@ class ReceiptRecordFragment : Fragment() {
         year = date2[0]
         month = date2[1]
 
+        monthPriceArea = v!!.findViewById(R.id.monthPriceArea)
         writeBtn = v!!.findViewById(R.id.writeBtn)
 
         receiptRVAdapter = ReceiptReVAdapter(receiptDataList)
@@ -135,6 +142,7 @@ class ReceiptRecordFragment : Fragment() {
         receiptListView.adapter = receiptRVAdapter
 
         showDate(myUid, year, month)
+        showMonthPrice(myUid, year, month)
     }
 
     private fun showDate(userId : String, year : String, month : String) {
@@ -178,6 +186,35 @@ class ReceiptRecordFragment : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.receiptRef.child(userId).addValueEventListener(postListener)
+    }
+
+    private fun showMonthPrice(userId : String, year : String, month : String) {
+        val postListener = object : ValueEventListener { // 해당 일자의 총 지출액 표시
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    var dayPrice = 0
+
+                    for(dataModel in dataSnapshot.children) {
+                        // dataModel.key
+                        val item = dataModel.getValue(ReceiptModel::class.java)
+                        val date = item!!.date
+                        val dateSp = date.split(".")
+
+                        if(dateSp[0].toInt() == year.toInt() && dateSp[1].toInt() == month.toInt()) {
+                            dayPrice += item!!.price.toInt()
+                        }
+                    }
+
+                    val decimalFormat = DecimalFormat("#,###")
+                    monthPriceArea!!.text = decimalFormat.format(dayPrice.toString().replace(",","").toDouble()) + "원"
+                } catch (e: Exception) {
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
             }
         }
         FBRef.receiptRef.child(userId).addValueEventListener(postListener)
