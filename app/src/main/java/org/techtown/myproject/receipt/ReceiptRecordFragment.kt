@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.DogCheckUpInputModel
+import org.techtown.myproject.utils.DogCheckUpPictureModel
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.ReceiptModel
 import java.text.SimpleDateFormat
@@ -47,12 +48,12 @@ class ReceiptRecordFragment : Fragment() {
     private lateinit var writeBtn : ImageView
 
     private lateinit var receiptListView : RecyclerView
-    private val receiptDataList = ArrayList<ReceiptModel>() // 가계부 목록 리스트
+    private val receiptDataList = ArrayList<Receipt>() // 가계부 목록 리스트
     lateinit var receiptRVAdapter : ReceiptReVAdapter
     lateinit var layoutManager : RecyclerView.LayoutManager
 
-    private var receiptMap : MutableMap<ReceiptModel, Int> = mutableMapOf()
-    private var sortedMap : MutableMap<ReceiptModel, Int> = mutableMapOf()
+    private var receiptMap : MutableMap<Int, Receipt> = mutableMapOf()
+    private var sortedMap : MutableMap<Int, Receipt> = mutableMapOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -141,6 +142,8 @@ class ReceiptRecordFragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
                     receiptDataList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
+                    receiptMap.clear()
+                    sortedMap.clear()
 
                     for(dataModel in dataSnapshot.children) {
                         Log.d(TAG, dataModel.toString())
@@ -153,10 +156,17 @@ class ReceiptRecordFragment : Fragment() {
                         val nowDate = dateSp[2]
 
                         if(year.toInt() == nowYear.toInt() && month.toInt() == nowMonth.toInt()) {
-                            receiptDataList.add(item!!)
+                            val receipt = Receipt(date, nowDate, dateSp[3])
+                            receiptMap[nowDate.toInt()] = receipt
+                            sortedMap = sortMapByKey(receiptMap)
+//                            receiptDataList.add(receipt)
                         }
                     }
 
+                    for((key, value) in sortedMap.entries) {
+                        receiptDataList.add(value)
+                        Log.d("sortedMap", value.toString())
+                    }
                     receiptRVAdapter.notifyDataSetChanged() // 동기화
 
                     Log.d("receiptDataList", receiptDataList.toString())
@@ -173,4 +183,16 @@ class ReceiptRecordFragment : Fragment() {
         FBRef.receiptRef.child(userId).addValueEventListener(postListener)
     }
 
+    private fun sortMapByKey(map: MutableMap<Int, Receipt>): LinkedHashMap<Int, Receipt> { // 시간순으로 정렬
+        val entries = LinkedList(map.entries)
+
+        entries.sortByDescending { it.key }
+
+        val result = LinkedHashMap<Int, Receipt>()
+        for(entry in entries) {
+            result[entry.key] = entry.value
+        }
+
+        return result
+    }
 }
