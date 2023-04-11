@@ -114,7 +114,6 @@
 
             </LinearLayout>
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,6 +142,151 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="20dp"
                     android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:text="결제 방법"
+                    android:fontFamily="@font/bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:textSize="15sp" />
+
+                <Spinner
+                    android:id="@+id/payMethodSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/mainColor"
+                    android:fontFamily="@font/regular"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:entries="@array/payMethodSpinner"
+                    android:theme="@style/receiptSpinner" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/divideArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <RadioGroup
+                    android:id="@+id/divideRadioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:checked="true"
+                        android:id="@+id/no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/regular"
+                        android:background="@drawable/selector_radio_button"
+                        android:textColor="@drawable/selector_radio_text"
+                        android:button="@null"
+                        android:textAlignment="center"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="30dp"
+                        android:text="일시불"
+                        android:textSize="10sp"
+                        android:layout_weight="1"/>
+
+                    <RadioButton
+                        android:id="@+id/yes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/regular"
+                        android:background="@drawable/selector_radio_button"
+                        android:textColor="@drawable/selector_radio_text"
+                        android:button="@null"
+                        android:textAlignment="center"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="30dp"
+                        android:text="할부"
+                        android:textSize="10sp"
+                        android:layout_weight="1"/>
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/divideMonthArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:text="할부 입력 (개월수)"
+                    android:fontFamily="@font/bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/divideMonth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/mainColor"
+                    android:fontFamily="@font/regular"
+                    android:lines="1"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:text="장소"
+                    android:fontFamily="@font/bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/placeArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/mainColor"
+                    android:fontFamily="@font/regular"
+                    android:lines="1"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
                     android:singleLine="true"
                     android:textSize="15sp" />
 
@@ -186,7 +330,7 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="80dp"
                 android:background="@drawable/round_button_brown"
                 android:fontFamily="@font/bold"
                 android:text="추가하기"

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="할부 데이터 전체가 삭제됩니다.\n삭제하시겠습니까?"
+        android:gravity="center"
+        android:fontFamily="@font/bold"
+        android:textColor="@color/mainColor"
+        android:layout_margin="10dp"
+        android:textSize="15sp"/>
+
+    <Button
+        android:id="@+id/yesBtn"
+        android:text="삭제하기"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/bold"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="100dp"
+        android:background="@drawable/rectangle_box_brown"/>
+
+    <Button
+        android:id="@+id/noBtn"
+        android:text="취소하기"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/bold"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:background="@drawable/rectangle_box_brown"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+
+</LinearLayout>

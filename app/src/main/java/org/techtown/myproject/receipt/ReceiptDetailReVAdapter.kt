@@ -3,6 +3,8 @@ package org.techtown.myproject.receipt
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -46,6 +48,21 @@ class ReceiptDetailReVAdapter(val receiptDetailList : ArrayList<ReceiptModel>):
         holder.category!!.text = receiptDetailList[position].category
         holder.contentArea!!.text = receiptDetailList[position].content
 
+        holder.payMethodArea!!.text = receiptDetailList[position].payMethod
+        holder.placeArea!!.text = receiptDetailList[position].place
+
+        if(receiptDetailList[position].payMethod == "카드")
+            holder.monthPlanArea!!.text = receiptDetailList[position].payMonthRole
+        else if(receiptDetailList[position].payMethod == "현금")
+            holder.monthPlanArea!!.visibility = GONE
+
+        if(receiptDetailList[position].payMethod == "카드" && receiptDetailList[position].payMonthRole == "할부") {
+            holder!!.divideMonth!!.visibility = VISIBLE
+            holder!!.divideMonth!!.text = receiptDetailList[position].nowPayMonth + "/" + receiptDetailList[position].payMonth
+        } else {
+            holder!!.divideMonth!!.visibility = GONE
+        }
+
         val decimalFormat = DecimalFormat("#,###")
         holder.priceArea!!.text = decimalFormat.format(receiptDetailList[position].price.replace(",","").toDouble()) + "원"
 
@@ -65,7 +82,11 @@ class ReceiptDetailReVAdapter(val receiptDetailList : ArrayList<ReceiptModel>):
         val view = view
         val categoryImage = view?.findViewById<ImageView>(R.id.categoryImage)
         val category = view?.findViewById<TextView>(R.id.category)
+        val payMethodArea = view?.findViewById<TextView>(R.id.payMethodArea)
+        val placeArea = view?.findViewById<TextView>(R.id.placeArea)
         val contentArea = view?.findViewById<TextView>(R.id.contentArea)
+        val divideMonth = view?.findViewById<TextView>(R.id.divideMonth)
+        val monthPlanArea = view?.findViewById<TextView>(R.id.monthPlanArea)
         val priceArea = view?.findViewById<TextView>(R.id.priceArea)
     }
 }

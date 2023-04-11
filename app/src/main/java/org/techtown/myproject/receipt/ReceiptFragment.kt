@@ -51,7 +51,7 @@ class ReceiptFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val pagerAdapter = PagerFragmentStateAdapter(requireActivity())
-        // 5개의 fragment add
+        // 2개의 fragment add
         pagerAdapter.addFragment(receiptRecordFragment)
         pagerAdapter.addFragment(receiptStatisticsFragment)
 
