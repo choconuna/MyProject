@@ -23,6 +23,7 @@ class PlusMedicinePlanActivity : AppCompatActivity() {
     lateinit var userId : String
     lateinit var dogId : String
     lateinit var nowDate : String
+    lateinit var date : String
 
     private lateinit var medicineNameArea : EditText
 
@@ -50,6 +51,7 @@ class PlusMedicinePlanActivity : AppCompatActivity() {
         userId = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
         sharedPreferences = getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
         dogId = sharedPreferences.getString(userId, "").toString() // 현재 대표 반려견의 id
+        date = intent.getStringExtra("date").toString()
 
         medicineNameArea = findViewById(R.id.medicineNameArea)
 
@@ -124,13 +126,43 @@ class PlusMedicinePlanActivity : AppCompatActivity() {
                     endYearArea.setSelection(0)
                 }
             }  else {
-                val startDate = startYearArea.text.toString().trim() + "." + startMonthArea.text.toString().trim() + "." + startDayArea.text.toString().trim()
-                var endDate = ""
-                if(repeat == "하루")
-                    endDate = startYearArea.text.toString().trim() + "." + startMonthArea.text.toString().trim() + "." + startDayArea.text.toString().trim()
-                else if(repeat == "매일")
-                    endDate = endYearArea.text.toString().trim() + "." + endMonthArea.text.toString().trim() + "." + endDayArea.text.toString().trim()
+                val startMonth = startMonthArea.text.toString().trim()
+                val startDay = startDayArea.text.toString().trim()
+                var startDate = ""
+                if(startMonth.length == 1 && startDay.length == 1)
+                    startDate = startYearArea.text.toString().trim() + "." + "0$startMonth" + "." + "0$startDay"
+                else if(startMonth.length == 1 && startDay.length == 2)
+                    startDate = startYearArea.text.toString().trim() + "." + "0$startMonth" + "." + startDay
+                else if(startMonth.length == 2 && startDay.length == 1)
+                    startDate = startYearArea.text.toString().trim() + "." + startMonth + "." + "0$startDay"
+                else if(startMonth.length == 2 && startDay.length == 2)
+                    startDate = startYearArea.text.toString().trim() + "." + startMonth + "." + startDay
 
+                var endDate = ""
+                if(repeat == "하루") {
+                    if (startMonth.length == 1 && startDay.length == 1)
+                        endDate = startYearArea.text.toString().trim() + "." + "0$startMonth" + "." + "0$startDay"
+                    else if (startMonth.length == 1 && startDay.length == 2)
+                        endDate = startYearArea.text.toString().trim() + "." + "0$startMonth" + "." + startDay
+                    else if (startMonth.length == 2 && startDay.length == 1)
+                        endDate = startYearArea.text.toString().trim() + "." + startMonth + "." + "0$startDay"
+                    else if (startMonth.length == 2 && startDay.length == 2)
+                        endDate = startYearArea.text.toString().trim() + "." + startMonth + "." + startDay
+                }
+
+                else if(repeat == "매일") {
+                    val endMonth = endMonthArea.text.toString().trim()
+                    val endDay = endDayArea.text.toString().trim()
+
+                    if (endMonth.length == 1 && endDay.length == 1)
+                        endDate = endYearArea.text.toString().trim() + "." + "0$endMonth" + "." + "0$endDay"
+                    else if (endMonth.length == 1 && endDay.length == 2)
+                        endDate = endYearArea.text.toString().trim() + "." + "0$endMonth" + "." + endDay
+                    else if (endMonth.length == 2 && endDay.length == 1)
+                        endDate = endYearArea.text.toString().trim() + "." + endMonth + "." + "0$endDay"
+                    else if (endMonth.length == 2 && endDay.length == 2)
+                        endDate = endYearArea.text.toString().trim() + "." + endMonth + "." + endDay
+                }
 
                 plusMedicinePlanNote(startDate, endDate, hourArea.text.toString().trim() + ":" + minuteArea.text.toString().trim(), repeat, medicineNameArea.text.toString().trim())
                 Toast.makeText(this, "투약 일정 추가 완료!", Toast.LENGTH_SHORT).show()
@@ -145,6 +177,12 @@ class PlusMedicinePlanActivity : AppCompatActivity() {
     }
 
     private fun setNowTime() {
+        val sb = date.split(".")
+
+        startYearArea.setText(sb[0])
+        startMonthArea.setText(sb[1])
+        startDayArea.setText(sb[2])
+
         val cal = Calendar.getInstance()
         val mHour = cal.get(Calendar.HOUR_OF_DAY)
         val mMin = cal.get(Calendar.MINUTE)

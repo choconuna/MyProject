@@ -88,7 +88,18 @@ class DogMedicineEditActivity : AppCompatActivity() {
                     yearArea.setSelection(0)
                 }
             }  else {
-                val date = yearArea.text.toString() + "." + monthArea.text.toString() + "." + dayArea.text.toString()
+                val month = monthArea.text.toString().trim()
+                val day = dayArea.text.toString().trim()
+                var date = ""
+
+                if(month.length == 1 && day.length == 1)
+                    date = yearArea.text.toString().trim() + "." + "0$month" + "." + "0$day"
+                else if(month.length == 1 && day.length == 2)
+                    date = yearArea.text.toString().trim() + "." + "0$month" + "." + day
+                else if(month.length == 2 && day.length == 1)
+                    date = yearArea.text.toString().trim() + "." + month + "." + "0$day"
+                else if(month.length == 2 && day.length == 2)
+                    date = yearArea.text.toString().trim() + "." + month + "." + day
 
                 editMedicineNote(date, hourArea.text.toString() + ":" + minuteArea.text.toString(), medicineNameArea.text.toString())
                 Toast.makeText(this, "투약 기록 수정 완료!", Toast.LENGTH_SHORT).show()

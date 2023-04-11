@@ -81,6 +81,7 @@ class MedicineFragment : Fragment() {
         medicinePlanPlusBtn = v!!.findViewById(R.id.medicinePlanPlusBtn)
         medicinePlanPlusBtn.setOnClickListener {
             val intent = Intent(context, PlusMedicinePlanActivity::class.java)
+            intent.putExtra("date", nowDate)
             startActivity(intent)
         }
 
@@ -94,6 +95,7 @@ class MedicineFragment : Fragment() {
         medicinePlusBtn = v!!.findViewById(R.id.medicinePlusBtn)
         medicinePlusBtn.setOnClickListener {
             val intent = Intent(context, PlusMedicineActivity::class.java)
+            intent.putExtra("date", nowDate)
             startActivity(intent)
         }
 

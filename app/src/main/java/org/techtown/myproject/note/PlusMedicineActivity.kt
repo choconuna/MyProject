@@ -21,6 +21,7 @@ class PlusMedicineActivity : AppCompatActivity() {
 
     private lateinit var medicineNameArea : EditText
 
+    private lateinit var date : String
     private lateinit var yearArea : EditText
     private lateinit var monthArea : EditText
     private lateinit var dayArea : EditText
@@ -37,6 +38,7 @@ class PlusMedicineActivity : AppCompatActivity() {
         userId = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
         sharedPreferences = getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
         dogId = sharedPreferences.getString(userId, "").toString() // 현재 대표 반려견의 id
+        date = intent.getStringExtra("date").toString()
 
         medicineNameArea = findViewById(R.id.medicineNameArea)
 
@@ -72,7 +74,18 @@ class PlusMedicineActivity : AppCompatActivity() {
                     yearArea.setSelection(0)
                 }
             }  else {
-                val date = yearArea.text.toString().trim() + "." + monthArea.text.toString().trim() + "." + dayArea.text.toString().trim()
+                val month = monthArea.text.toString().trim()
+                val day = dayArea.text.toString().trim()
+                var date = ""
+
+                if(month.length == 1 && day.length == 1)
+                    date = yearArea.text.toString().trim() + "." + "0$month" + "." + "0$day"
+                else if(month.length == 1 && day.length == 2)
+                    date = yearArea.text.toString().trim() + "." + "0$month" + "." + day
+                else if(month.length == 2 && day.length == 1)
+                    date = yearArea.text.toString().trim() + "." + month + "." + "0$day"
+                else if(month.length == 2 && day.length == 2)
+                    date = yearArea.text.toString().trim() + "." + month + "." + day
 
                 plusMedicineNote(date, hourArea.text.toString().trim() + ":" + minuteArea.text.toString().trim(), medicineNameArea.text.toString().trim())
                 Toast.makeText(this, "투약 기록 추가 완료!", Toast.LENGTH_SHORT).show()
@@ -87,6 +100,12 @@ class PlusMedicineActivity : AppCompatActivity() {
     }
 
     private fun setNowTime() {
+        val sb = date.split(".")
+
+        yearArea.setText(sb[0])
+        monthArea.setText(sb[1])
+        dayArea.setText(sb[2])
+
         val cal = Calendar.getInstance()
         val mHour = cal.get(Calendar.HOUR_OF_DAY)
         val mMin = cal.get(Calendar.MINUTE)

@@ -133,13 +133,44 @@ class DogMedicinePlanEditActivity : AppCompatActivity() {
                     endYearArea.setSelection(0)
                 }
             }  else {
-                val startDate = startYearArea.text.toString() + "." + startMonthArea.text.toString() + "." + startDayArea.text.toString()
-                var endDate = ""
-                if(repeat == "하루")
-                    endDate = startYearArea.text.toString() + "." + startMonthArea.text.toString() + "." + startDayArea.text.toString()
-                else if(repeat == "매일")
-                    endDate = endYearArea.text.toString() + "." + endMonthArea.text.toString() + "." + endDayArea.text.toString()
+                val startMonth = startMonthArea.text.toString().trim()
+                val startDay = startDayArea.text.toString().trim()
+                var startDate = ""
 
+                if(startMonth.length == 1 && startDay.length == 1)
+                    startDate = startYearArea.text.toString().trim() + "." + "0$startMonth" + "." + "0$startDay"
+                else if(startMonth.length == 1 && startDay.length == 2)
+                    startDate = startYearArea.text.toString().trim() + "." + "0$startMonth" + "." + startDay
+                else if(startMonth.length == 2 && startDay.length == 1)
+                    startDate = startYearArea.text.toString().trim() + "." + startMonth + "." + "0$startDay"
+                else if(startMonth.length == 2 && startDay.length == 2)
+                    startDate = startYearArea.text.toString().trim() + "." + startMonth + "." + startDay
+
+                var endDate = ""
+                if(repeat == "하루") {
+                    if (startMonth.length == 1 && startDay.length == 1)
+                        endDate = startYearArea.text.toString().trim() + "." + "0$startMonth" + "." + "0$startDay"
+                    else if (startMonth.length == 1 && startDay.length == 2)
+                        endDate = startYearArea.text.toString().trim() + "." + "0$startMonth" + "." + startDay
+                    else if (startMonth.length == 2 && startDay.length == 1)
+                        endDate = startYearArea.text.toString().trim() + "." + startMonth + "." + "0$startDay"
+                    else if (startMonth.length == 2 && startDay.length == 2)
+                        endDate = startYearArea.text.toString().trim() + "." + startMonth + "." + startDay
+                }
+
+                else if(repeat == "매일") {
+                    val endMonth = endMonthArea.text.toString().trim()
+                    val endDay = endDayArea.text.toString().trim()
+
+                    if (endMonth.length == 1 && endDay.length == 1)
+                        endDate = endYearArea.text.toString().trim() + "." + "0$endMonth" + "." + "0$endDay"
+                    else if (endMonth.length == 1 && endDay.length == 2)
+                        endDate = endYearArea.text.toString().trim() + "." + "0$endMonth" + "." + endDay
+                    else if (endMonth.length == 2 && endDay.length == 1)
+                        endDate = endYearArea.text.toString().trim() + "." + endMonth + "." + "0$endDay"
+                    else if (endMonth.length == 2 && endDay.length == 2)
+                        endDate = endYearArea.text.toString().trim() + "." + endMonth + "." + endDay
+                }
 
                 editMedicinePlanNote(startDate, endDate, hourArea.text.toString() + ":" + minuteArea.text.toString(), repeat, medicineNameArea.text.toString())
                 Toast.makeText(this, "투약 일정 수정 완료!", Toast.LENGTH_SHORT).show()
