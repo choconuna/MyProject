@@ -39,8 +39,6 @@ class MedicinePlanReVAdapter(val dogMeidicinePlanList : ArrayList<DogMedicinePla
         val nowDate = dateList[position] // 선택된 날짜를 가져옴
         val medicineName = dogMeidicinePlanList[position].medicineName
 
-        Toast.makeText(holder!!.view!!.context, nowDate, Toast.LENGTH_SHORT).show()
-
         holder.repeatArea!!.text = dogMeidicinePlanList[position].repeat
         holder.timeArea!!.text = dogMeidicinePlanList[position].time
         holder.medicineNameArea!!.text = dogMeidicinePlanList[position].medicineName
