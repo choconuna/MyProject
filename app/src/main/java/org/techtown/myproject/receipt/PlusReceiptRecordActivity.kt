@@ -67,12 +67,9 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
                 val dpd = DatePickerDialog(
                     this@PlusReceiptRecordActivity, R.style.MySpinnerDatePickerStyle,
                     { _, year, monthOfYear, dayOfMonth ->
-//                  월이 0부터 시작하여 1을 더해주어야함
-                        val month = monthOfYear + 1
-//                   선택한 날짜의 요일을 구하기 위한 calendar
-                        val calendar = Calendar.getInstance()
-//                    선택한 날짜 세팅
-                        calendar.set(year, monthOfYear, dayOfMonth)
+                        val month = monthOfYear + 1 // 월이 0부터 시작하여 1을 더해줌
+                        val calendar = Calendar.getInstance() //선택한 날짜의 요일을 구하기 위한 calendar
+                        calendar.set(year, monthOfYear, dayOfMonth) //선택한 날짜 세팅
                         val date = calendar.time
                         val simpledateformat = SimpleDateFormat("E", Locale.getDefault())
                         val dayName: String = simpledateformat.format(date)

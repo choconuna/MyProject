@@ -111,8 +111,8 @@ class DogMemoEditActivity : AppCompatActivity() {
 
         val editBtn = findViewById<Button>(R.id.editBtn)
         editBtn.setOnClickListener {
-            val title = titleArea.text.toString()
-            val content = contentArea.text.toString()
+            val title = titleArea.text.toString().trim()
+            val content = contentArea.text.toString().trim()
 
             FBRef.memoRef.child(userId).child(dogId).child(dogMemoId).setValue(DogMemoModel(dogMemoId, dogId, date, dateFormat, title, content, count.toString()))
 

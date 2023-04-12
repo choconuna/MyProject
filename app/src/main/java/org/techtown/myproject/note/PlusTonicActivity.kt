@@ -93,7 +93,7 @@ class PlusTonicActivity : AppCompatActivity() {
                 Toast.makeText(this, "영양제 양을 입력하세요!", Toast.LENGTH_LONG).show()
                 tonicWeightArea.setSelection(0)
             } else {
-                plusTonicNote(nowDate, timeSlot, tonicPart, tonicNameArea.text.toString(), tonicWeightArea.text.toString(), tonicUnit)
+                plusTonicNote(nowDate, timeSlot, tonicPart, tonicNameArea.text.toString().trim(), tonicWeightArea.text.toString().trim(), tonicUnit)
                 Toast.makeText(this, "영양제 추가 완료!", Toast.LENGTH_SHORT).show()
                 finish()
             }

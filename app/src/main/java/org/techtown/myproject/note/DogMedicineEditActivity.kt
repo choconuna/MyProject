@@ -101,7 +101,7 @@ class DogMedicineEditActivity : AppCompatActivity() {
                 else if(month.length == 2 && day.length == 2)
                     date = yearArea.text.toString().trim() + "." + month + "." + day
 
-                editMedicineNote(date, hourArea.text.toString() + ":" + minuteArea.text.toString(), medicineNameArea.text.toString())
+                editMedicineNote(date, hourArea.text.toString() + ":" + minuteArea.text.toString(), medicineNameArea.text.toString().trim())
                 Toast.makeText(this, "투약 기록 수정 완료!", Toast.LENGTH_SHORT).show()
                 finish()
             }

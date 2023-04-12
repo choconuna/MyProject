@@ -100,7 +100,7 @@ class PlusMemoActivity : AppCompatActivity() {
 
             val key = FBRef.memoRef.child(userId).child(dogId).push().key.toString() // 키 값을 먼저 받아옴 -> 메모에 해당하는 이미지의 이름을 메모의 키 값으로 설정하기 위함
 
-            FBRef.memoRef.child(userId).child(dogId).child(key).setValue(DogMemoModel(key, dogId, nowDate, dateFormat, title, content, count.toString())) // 메모 정보 데이터베이스에 저장
+            FBRef.memoRef.child(userId).child(dogId).child(key).setValue(DogMemoModel(key, dogId, nowDate, dateFormat, title, content, count.toString().trim())) // 메모 정보 데이터베이스에 저장
 
             Toast.makeText(this, "메모 입력 완료", Toast.LENGTH_LONG).show()
 

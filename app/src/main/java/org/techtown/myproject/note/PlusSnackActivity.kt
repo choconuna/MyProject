@@ -96,7 +96,7 @@ class PlusSnackActivity : AppCompatActivity() {
                 Toast.makeText(this, "간식 양을 입력하세요!", Toast.LENGTH_LONG).show()
                 snackWeightArea.setSelection(0)
             } else {
-                plusSnackNote(nowDate, timeSlot, snackType, snackNameArea.text.toString(), snackWeightArea.text.toString(), snackUnit)
+                plusSnackNote(nowDate, timeSlot, snackType, snackNameArea.text.toString().trim(), snackWeightArea.text.toString().trim(), snackUnit)
                 Toast.makeText(this, "간식 추가 완료!", Toast.LENGTH_SHORT).show()
                 finish()
             }

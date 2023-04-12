@@ -172,7 +172,7 @@ class DogMedicinePlanEditActivity : AppCompatActivity() {
                         endDate = endYearArea.text.toString().trim() + "." + endMonth + "." + endDay
                 }
 
-                editMedicinePlanNote(startDate, endDate, hourArea.text.toString() + ":" + minuteArea.text.toString(), repeat, medicineNameArea.text.toString())
+                editMedicinePlanNote(startDate, endDate, hourArea.text.toString() + ":" + minuteArea.text.toString(), repeat, medicineNameArea.text.toString().trim())
                 Toast.makeText(this, "투약 일정 수정 완료!", Toast.LENGTH_SHORT).show()
                 finish()
             }

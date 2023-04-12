@@ -63,7 +63,7 @@ class PlusWaterActivity : AppCompatActivity() {
                 Toast.makeText(this, "물 양을 입력하세요!", Toast.LENGTH_LONG).show()
                 waterWeightArea.setSelection(0)
             } else {
-                plusWaterNote(nowDate, timeSlot, waterWeightArea.text.toString())
+                plusWaterNote(nowDate, timeSlot, waterWeightArea.text.toString().trim())
                 Toast.makeText(this, "물 추가 완료!", Toast.LENGTH_SHORT).show()
                 finish()
             }

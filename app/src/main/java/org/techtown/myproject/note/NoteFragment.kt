@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -17,6 +19,8 @@ import com.prolificinteractive.materialcalendarview.CalendarMode
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.FBRef
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class NoteFragment: Fragment() {
@@ -24,6 +28,9 @@ class NoteFragment: Fragment() {
     private val TAG = NoteFragment::class.java.simpleName
 
     lateinit var sharedPreferences: SharedPreferences
+
+    lateinit var layoutDetail : MaterialCardView
+    lateinit var layoutBtn : ImageView
 
     lateinit var calendarView : MaterialCalendarView
     private var decorator = Decorator()
@@ -40,9 +47,6 @@ class NoteFragment: Fragment() {
     private var noteCategory : String = "식단"
 
     lateinit var noteView : LinearLayout
-
-    lateinit var tab_main : TabLayout
-    lateinit var viewPager : ViewPager2
 
     lateinit var bundle: Bundle
 
@@ -64,13 +68,43 @@ class NoteFragment: Fragment() {
         sharedPreferences = v!!.context.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
         mainDogId = sharedPreferences.getString(uid, "").toString()
 
+        layoutDetail = v!!.findViewById(R.id.layoutDetail)
+        layoutBtn = v!!.findViewById(R.id.layoutBtn)
+
         calendarView = v!!.findViewById(R.id.calendarView)
         setCalendarSet(v, calendarView)
         calendarView.selectedDate = CalendarDay.today()
 
+        v!!.findViewById<MaterialCardView>(R.id.layout).setOnClickListener {
+            if(layoutDetail.visibility == View.VISIBLE) {
+                layoutDetail.visibility = View.GONE
+                layoutBtn.animate().apply {
+                    duration = 300
+                    rotation(0f)
+                }
+            } else {
+                layoutDetail.visibility = View.VISIBLE
+                layoutBtn.animate().apply {
+                    duration = 300
+                    rotation(180f)
+                }
+            }
+        }
+
         calendarView.setOnDateChangedListener { widget, date, selected ->
             nowDate = date
-            v!!.findViewById<TextView>(R.id.date).text = nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." +nowDate.day.toString()
+
+            val calendar = Calendar.getInstance() //선택한 날짜의 요일을 구하기 위한 calendar
+            calendar.set(nowDate.year.toString().toInt(), (nowDate.month).toString().toInt(), nowDate.day.toString().toInt()) //선택한 날짜 세팅
+            val dat = calendar.time
+            val simpledateformat = SimpleDateFormat("E", Locale.getDefault())
+            val dayName: String = simpledateformat.format(dat)
+
+//            v!!.findViewById<TextView>(R.id.date).text = nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." +nowDate.day.toString()
+
+            v!!.findViewById<TextView>(R.id.date).text =
+                nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." + nowDate.day.toString() + " (" + dayName + ")"
+
             bundle = Bundle(1)
             bundle.putString("nowDate", nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." +nowDate.day.toString())
             setDate(v, bundle)
@@ -80,15 +114,20 @@ class NoteFragment: Fragment() {
         todayBtn.setOnClickListener {
             calendarView.selectedDate = CalendarDay.today()
             nowDate = CalendarDay.today()
+
+            val calendar = Calendar.getInstance() //선택한 날짜의 요일을 구하기 위한 calendar
+            calendar.set(nowDate.year.toString().toInt(), (nowDate.month).toString().toInt(), nowDate.day.toString().toInt()) //선택한 날짜 세팅
+            val dat = calendar.time
+            val simpledateformat = SimpleDateFormat("E", Locale.getDefault())
+            val dayName: String = simpledateformat.format(dat)
+
             v!!.findViewById<TextView>(R.id.date).text =
-                nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." + nowDate.day.toString()
+                nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." + nowDate.day.toString() + " (" + dayName + ")"
             bundle = Bundle(1)
             bundle.putString("nowDate", nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." +nowDate.day.toString())
             eatFragment.arguments = bundle
             setDate(v, bundle)
         }
-        // viewPager = v!!.findViewById(R.id.viewpager)
-        // tab_main = v!!.findViewById(R.id.tabs)
 
         noteView = v!!.findViewById(R.id.noteView)
 
@@ -108,7 +147,15 @@ class NoteFragment: Fragment() {
 
         val date = calendarView.selectedDate
         nowDate = date
-        v!!.findViewById<TextView>(R.id.date).text = nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." +nowDate.day.toString()
+
+        val calendar = Calendar.getInstance() //선택한 날짜의 요일을 구하기 위한 calendar
+        calendar.set(nowDate.year.toString().toInt(), (nowDate.month).toString().toInt(), nowDate.day.toString().toInt()) //선택한 날짜 세팅
+        val dat = calendar.time
+        val simpledateformat = SimpleDateFormat("E", Locale.getDefault())
+        val dayName: String = simpledateformat.format(dat)
+
+//        v!!.findViewById<TextView>(R.id.date).text = nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." + nowDate.day.toString()
+        v!!.findViewById<TextView>(R.id.date).text = nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." + nowDate.day.toString() + " (" + dayName + ")"
         bundle = Bundle(1)
         bundle.putString("nowDate", nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." +nowDate.day.toString())
         eatFragment.arguments = bundle
@@ -225,31 +272,4 @@ class NoteFragment: Fragment() {
             }
         }
     }
-
-    /* override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        val pagerAdapter = PagerFragmentStateAdapter(requireActivity())
-
-        // 4개의 fragment add
-        pagerAdapter.addFragment(eatFragment)
-        pagerAdapter.addFragment(healthFragment)
-        pagerAdapter.addFragment(medicineFragment)
-        pagerAdapter.addFragment(checkUpFragment)
-        pagerAdapter.addFragment(statisticsFragment)
-
-        // adapter
-        viewPager.adapter = pagerAdapter
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int){
-                super.onPageSelected(position)
-                Log.e("ViewPagerFragment", "Page ${position+1}")
-            }
-        })
-        // tablayout attach
-        val tabTitles = listOf<String>("식단", "건강", "투약", "검사", "통계")
-        TabLayoutMediator(tab_main, viewPager){ tab, position ->
-            tab.text = tabTitles[position]
-        }.attach()
-    } */
 }
