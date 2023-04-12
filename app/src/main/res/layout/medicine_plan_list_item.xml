@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -21,32 +23,38 @@
                 android:layout_gravity="center"
                 android:layout_weight="1">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25dp"
                     android:layout_marginTop="15dp"
-                    android:orientation="horizontal">
+                    android:layout_marginRight="25dp">
 
                     <TextView
                         android:id="@+id/repeatArea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="하루"
-                        android:textSize="15sp"
                         android:fontFamily="@font/bold"
-                        android:textColor="@color/black" />
+                        android:text="하루"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="MissingConstraints" />
 
                     <TextView
                         android:id="@+id/timeArea"
-                        android:text="시각"
-                        android:textSize="15sp"
-                        android:fontFamily="@font/bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="10dp" />
-                </LinearLayout>
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/bold"
+                        android:text="시각"
+                        android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/repeatArea"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="MissingConstraints" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -114,16 +122,29 @@
                     android:layout_marginTop="10dp"/>
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/checkImage"
-                android:src="@drawable/check"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_marginRight="20dp"
-                android:visibility="gone"
-                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
+                <ImageView
+                    android:id="@+id/commentSet"
+                    android:layout_width="25dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/ic_write_menu" />
+
+                <ImageView
+                    android:id="@+id/checkImage"
+                    android:src="@drawable/ic_round_check"
+                    android:layout_width="30dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

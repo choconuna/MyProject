@@ -187,40 +187,43 @@ class DogMedicinePlanEditActivity : AppCompatActivity() {
     private fun getData() {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val post = dataSnapshot.getValue(DogMedicinePlanModel::class.java)
-                repeat = post!!.repeat
+                try {
+                    val post = dataSnapshot.getValue(DogMedicinePlanModel::class.java)
+                    repeat = post!!.repeat
 
-                medicineNameArea.setText(post!!.medicineName)
+                    medicineNameArea.setText(post!!.medicineName)
 
-                when (repeat) {
-                    "하루" ->  {
-                        repeatGroup.check(findViewById<RadioButton>(R.id.oneDay).id)
-                        startDateName.text = "날짜"
-                        endDateArea.visibility = View.GONE
+                    when (repeat) {
+                        "하루" -> {
+                            repeatGroup.check(findViewById<RadioButton>(R.id.oneDay).id)
+                            startDateName.text = "날짜"
+                            endDateArea.visibility = View.GONE
+                        }
+                        "매일" -> {
+                            repeatGroup.check(findViewById<RadioButton>(R.id.everyDay).id)
+                            startDateName.text = "시작 날짜"
+                            endDateArea.visibility = View.VISIBLE
+
+                            val endDate = post!!.endDate
+                            val endDateSplit = endDate.split(".")
+                            endYearArea.setText(endDateSplit[0])
+                            endMonthArea.setText(endDateSplit[1])
+                            endDayArea.setText(endDateSplit[2])
+                        }
                     }
-                    "매일" -> {
-                        repeatGroup.check(findViewById<RadioButton>(R.id.everyDay).id)
-                        startDateName.text = "시작 날짜"
-                        endDateArea.visibility = View.VISIBLE
 
-                        val endDate = post!!.endDate
-                        val endDateSplit = endDate.split(".")
-                        endYearArea.setText(endDateSplit[0])
-                        endMonthArea.setText(endDateSplit[1])
-                        endDayArea.setText(endDateSplit[2])
-                    }
+                    val startDate = post!!.startDate
+                    val startDateSplit = startDate.split(".")
+                    startYearArea.setText(startDateSplit[0])
+                    startMonthArea.setText(startDateSplit[1])
+                    startDayArea.setText(startDateSplit[2])
+
+                    time = post!!.time
+                    var timeToken = time.split(':')
+                    hourArea.text = timeToken[0]
+                    minuteArea.text = timeToken[1]
+                } catch (e: Exception) {
                 }
-
-                val startDate = post!!.startDate
-                val startDateSplit = startDate.split(".")
-                startYearArea.setText(startDateSplit[0])
-                startMonthArea.setText(startDateSplit[1])
-                startDayArea.setText(startDateSplit[2])
-
-                time = post!!.time
-                var timeToken = time.split(':')
-                hourArea.text = timeToken[0]
-                minuteArea.text = timeToken[1]
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

@@ -142,6 +142,6 @@ class PlusMedicineActivity : AppCompatActivity() {
     private fun plusMedicineNote(date : String, time : String, medicineName : String) {
         val key = FBRef.medicineRef.child(userId).child(dogId).push().key.toString() // 키 값을 먼저 받아옴
 
-        FBRef.medicineRef.child(userId).child(dogId).child(key).setValue(DogMedicineModel(key, dogId, date, time, medicineName)) // 반려견 투약 기록 정보 데이터베이스에 저장
+        FBRef.medicineRef.child(userId).child(dogId).child(key).setValue(DogMedicineModel(key, "",  dogId, date, time, medicineName)) // 반려견 투약 기록 정보 데이터베이스에 저장
     }
 }

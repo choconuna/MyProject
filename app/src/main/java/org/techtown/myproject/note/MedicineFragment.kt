@@ -41,6 +41,7 @@ class MedicineFragment : Fragment() {
 
     private lateinit var medicineListView : RecyclerView
     private val medicineDataList = ArrayList<DogMedicineModel>() // 투약 기록 목록 리스트
+    private val dateDataList = ArrayList<String>() // 날짜 리스트
     lateinit var medicineRVAdapter : MedicineReVAdapter
     lateinit var mLayoutManager : RecyclerView.LayoutManager
 
@@ -56,7 +57,7 @@ class MedicineFragment : Fragment() {
         dogId = sharedPreferences.getString(myUid, "").toString() // 현재 대표 반려견의 id
 
         // 투약 일정 목록 recycler 어댑터
-        medicinePlanRVAdapter = MedicinePlanReVAdapter(medicinePlanDataList)
+        medicinePlanRVAdapter = MedicinePlanReVAdapter(medicinePlanDataList, dateDataList)
         medicinePlanListView = v!!.findViewById(R.id.medicinePlanRecyclerView)
         medicinePlanListView.setItemViewCacheSize(20)
         medicinePlanListView.setHasFixedSize(true)
@@ -85,13 +86,6 @@ class MedicineFragment : Fragment() {
             startActivity(intent)
         }
 
-        medicinePlanRVAdapter.setItemClickListener(object: MedicinePlanReVAdapter.OnItemClickListener{
-            override fun onClick(v: View, position: Int) {
-                // 클릭 시 이벤트 작성
-                showPlanDialog(v, position, medicinePlanDataList[position].dogMedicinePlanId)
-            }
-        })
-
         medicinePlusBtn = v!!.findViewById(R.id.medicinePlusBtn)
         medicinePlusBtn.setOnClickListener {
             val intent = Intent(context, PlusMedicineActivity::class.java)
@@ -107,36 +101,6 @@ class MedicineFragment : Fragment() {
         })
 
         return v
-    }
-
-    private fun showPlanDialog(v : View, position : Int, id : String) { // 투약 일정 기록 수정/삭제를 위한 다이얼로그 띄우기
-        val mDialogView = LayoutInflater.from(v.context).inflate(R.layout.medicine_plan_dialog, null)
-        val mBuilder = AlertDialog.Builder(v.context).setView(mDialogView)
-
-        val alertDialog = mBuilder.show()
-
-        val checkBtn = alertDialog.findViewById<Button>(R.id.checkBtn)
-        checkBtn?.setOnClickListener {
-        }
-
-        val editBtn = alertDialog.findViewById<Button>(R.id.editBtn)
-        editBtn?.setOnClickListener { // 수정 버튼 클릭 시
-            Log.d(TAG, "edit Button Clicked")
-
-            val intent = Intent(v.context, DogMedicinePlanEditActivity::class.java)
-            intent.putExtra("id", id) // dogMedicinePlan id 전송
-            startActivity(intent) // 수정 페이지로 이동
-
-            alertDialog.dismiss()
-        }
-
-        val rmBtn = alertDialog.findViewById<Button>(R.id.rmBtn)
-        rmBtn?.setOnClickListener {  // 삭제 버튼 클릭 시
-            Log.d(TAG, "remove Button Clicked")
-            alertDialog.dismiss()
-
-            FBRef.medicinePlanRef.child(myUid).child(dogId).child(id).removeValue() // 파이어베이스에서 해당 기록의 데이터 삭제
-        }
     }
 
     private fun showDialog(v : View, position : Int, id : String) { // 투약 기록 수정/삭제를 위한 다이얼로그 띄우기
@@ -170,6 +134,7 @@ class MedicineFragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try { // 투약 일정 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
                     medicinePlanDataList.clear()
+                    dateDataList.clear()
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogMedicinePlanModel::class.java)
@@ -180,8 +145,10 @@ class MedicineFragment : Fragment() {
                             val startDateSplit = startDate.split(".")
                             val nowDateSplit = nowDate.split(".")
 
-                            if(nowDateSplit[0].toInt() == startDateSplit[0].toInt() && nowDateSplit[1].toInt() == startDateSplit[1].toInt() && nowDateSplit[2].toInt() == startDateSplit[2].toInt())
+                            if(nowDateSplit[0].toInt() == startDateSplit[0].toInt() && nowDateSplit[1].toInt() == startDateSplit[1].toInt() && nowDateSplit[2].toInt() == startDateSplit[2].toInt()) {
                                 medicinePlanDataList.add(item!!)
+                                dateDataList.add(nowDate)
+                            }
 
                         } else if (item!!.repeat == "매일") {
 
@@ -194,30 +161,46 @@ class MedicineFragment : Fragment() {
                             val nowDateSplit = nowDate.split(".")
 
                             if (nowDateSplit[0].toInt() >= startDateSplit[0].toInt() && nowDateSplit[0].toInt() <= endDateSplit[0].toInt()) { // 투약 일정 내에 있는 데이터만 추가
-                                if (nowDateSplit[0] > startDateSplit[0] && nowDateSplit[0] < endDateSplit[0]) // 시작 연도와 종료 연도 사이에 있는 연도일 경우 모든 날짜에 일정이 추가되도록
+                                if (nowDateSplit[0] > startDateSplit[0] && nowDateSplit[0] < endDateSplit[0]) { // 시작 연도와 종료 연도 사이에 있는 연도일 경우 모든 날짜에 일정이 추가되도록
                                     medicinePlanDataList.add(item!!)
+                                    dateDataList.add(nowDate)
+                                }
+
                                 else if (nowDateSplit[0].toInt() == startDateSplit[0].toInt() && nowDateSplit[0].toInt() == endDateSplit[0].toInt()) { // 시작 연도와 종료 연도가 같을 경우
                                     if (nowDateSplit[1].toInt() > startDateSplit[1].toInt() && nowDateSplit[1].toInt() < endDateSplit[1].toInt()) { // 시작 날짜와 종료 날짜 달 사이에 있을 경우
                                         medicinePlanDataList.add(item!!)
+                                        dateDataList.add(nowDate)
                                     } else if (nowDateSplit[1].toInt() == startDateSplit[1].toInt()) { // 시작 날짜와 같은 달일 경우
-                                        if (nowDateSplit[2].toInt() >= startDateSplit[2].toInt()) // 시작 날짜 이후의 날에 일정 추가
+                                        if (nowDateSplit[2].toInt() >= startDateSplit[2].toInt()) {  // 시작 날짜 이후의 날에 일정 추가
                                             medicinePlanDataList.add(item!!)
+                                            dateDataList.add(nowDate)
+                                        }
                                     } else if (nowDateSplit[1].toInt() == endDateSplit[1].toInt()) { // 종료 날짜와 같은 달일 경우
-                                        if (nowDateSplit[2].toInt() <= endDateSplit[2].toInt()) // 종료 날짜 이전의 날에 일정 추가
+                                        if (nowDateSplit[2].toInt() <= endDateSplit[2].toInt()) { // 종료 날짜 이전의 날에 일정 추가
                                             medicinePlanDataList.add(item!!)
+                                            dateDataList.add(nowDate)
+                                        }
                                     }
                                 } else if (nowDateSplit[0].toInt() == startDateSplit[0].toInt()) { // 시작 연도와 현재 연도가 같고 종료 연도 이전일 경우
                                     if (nowDateSplit[1].toInt() == startDateSplit[1].toInt()) {
-                                        if (nowDateSplit[2].toInt() >= startDateSplit[2].toInt())
+                                        if (nowDateSplit[2].toInt() >= startDateSplit[2].toInt()) {
                                             medicinePlanDataList.add(item!!)
-                                    } else if (nowDateSplit[1].toInt() > startDateSplit[1].toInt())
+                                            dateDataList.add(nowDate)
+                                        }
+                                    } else if (nowDateSplit[1].toInt() > startDateSplit[1].toInt()) {
                                         medicinePlanDataList.add(item!!)
+                                        dateDataList.add(nowDate)
+                                    }
                                 } else if (nowDateSplit[0].toInt() == endDateSplit[0].toInt()) { // 종료 연도와 현재 연도가 같을 경우
                                     if (nowDateSplit[1].toInt() == endDateSplit[1].toInt()) {
-                                        if (nowDateSplit[2].toInt() <= endDateSplit[2].toInt())
+                                        if (nowDateSplit[2].toInt() <= endDateSplit[2].toInt()) {
                                             medicinePlanDataList.add(item!!)
-                                    } else if (nowDateSplit[1].toInt() < endDateSplit[1].toInt())
+                                            dateDataList.add(nowDate)
+                                        }
+                                    } else if (nowDateSplit[1].toInt() < endDateSplit[1].toInt()) {
                                         medicinePlanDataList.add(item!!)
+                                        dateDataList.add(nowDate)
+                                    }
                                 }
                             }
                         }

@@ -111,7 +111,5 @@ class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
         val timeArea = view?.findViewById<TextView>(R.id.timeArea)
         val commentSet = view?.findViewById<ImageView>(R.id.commentSet)
         val recommentArea = view?.findViewById<TextView>(R.id.reCommentArea)
-
-
     }
 }
