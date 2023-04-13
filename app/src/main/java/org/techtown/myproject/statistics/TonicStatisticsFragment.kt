@@ -498,6 +498,7 @@ class TonicStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -545,7 +546,6 @@ class TonicStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "영양제"
         }
     }
 
@@ -721,6 +721,7 @@ class TonicStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -770,7 +771,6 @@ class TonicStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "영양제"
         }
     }
 
@@ -1082,6 +1082,7 @@ class TonicStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -1131,7 +1132,6 @@ class TonicStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "영양제"
         }
     }
 
@@ -1436,6 +1436,7 @@ class TonicStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -1485,7 +1486,6 @@ class TonicStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "영양제"
         }
     }
 
@@ -2001,6 +2001,7 @@ class TonicStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -2050,7 +2051,6 @@ class TonicStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "영양제"
         }
     }
 
@@ -2996,6 +2996,7 @@ class TonicStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -3045,7 +3046,6 @@ class TonicStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "영양제"
         }
     }
 

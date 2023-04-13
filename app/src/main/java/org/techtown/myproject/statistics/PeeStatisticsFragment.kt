@@ -297,6 +297,7 @@ class PeeStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -343,7 +344,6 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "소변"
         }
     }
 
@@ -428,6 +428,7 @@ class PeeStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -476,7 +477,6 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "소변"
         }
     }
 
@@ -624,6 +624,7 @@ class PeeStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -672,7 +673,6 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "소변"
         }
     }
 
@@ -818,6 +818,7 @@ class PeeStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -866,7 +867,6 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "소변"
         }
     }
 
@@ -1110,6 +1110,7 @@ class PeeStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -1158,7 +1159,6 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "소변"
         }
     }
 
@@ -1602,6 +1602,7 @@ class PeeStatisticsFragment : Fragment() {
         pieChart.extraBottomOffset = 15f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
+        pieChart.isDrawHoleEnabled = false
 
         pieChart.run {
             description.isEnabled = false
@@ -1650,7 +1651,6 @@ class PeeStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "소변"
         }
     }
 

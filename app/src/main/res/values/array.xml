@@ -314,4 +314,10 @@
         <item>현금</item>
         <item>카드</item>
     </string-array>
+
+    <string-array name="receiptSpinner">
+        <item>주별</item>
+        <item>월별</item>
+        <item>연별</item>
+    </string-array>
 </resources>
