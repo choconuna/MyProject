@@ -38,8 +38,6 @@ class ReceiptPieFragment : Fragment() {
     private val TAG = ReceiptPieFragment::class.java.simpleName
 
     private lateinit var myUid : String
-    private lateinit var category : TextView
-    private lateinit var date : TextView
 
     private lateinit var nowCategory : String
 

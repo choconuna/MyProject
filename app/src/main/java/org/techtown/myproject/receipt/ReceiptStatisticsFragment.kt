@@ -361,25 +361,19 @@ class ReceiptStatisticsFragment : Fragment() {
         val cal = Calendar.getInstance()
         cal[dateArray[0].toInt(), dateArray[1].toInt() - 1] = dateArray[2].toInt()
 
-        // 일주일의 첫날을 일요일로 지정한다
-        cal.firstDayOfWeek = Calendar.SUNDAY
+        cal.firstDayOfWeek = Calendar.SUNDAY // 일주일의 첫날을 일요일로 지정
 
-        // 시작일과 특정날짜의 차이를 구한다
-        val dayOfWeek = cal[Calendar.DAY_OF_WEEK] - cal.firstDayOfWeek
+        val dayOfWeek = cal[Calendar.DAY_OF_WEEK] - cal.firstDayOfWeek // 시작일과 특정날짜의 차이를 구함
 
-        // 해당 주차의 첫째날을 지정한다
-        cal.add(Calendar.DAY_OF_MONTH, -dayOfWeek)
+        cal.add(Calendar.DAY_OF_MONTH, -dayOfWeek) // 해당 주차의 첫째날 지정
 
         val sf = SimpleDateFormat("yyyy.MM.dd")
 
-        // 해당 주차의 첫째 날짜
-        val startDt = sf.format(cal.time)
+        val startDt = sf.format(cal.time) // 해당 주차의 첫째 날짜
 
-        // 해당 주차의 마지막 날짜 지정
-        cal.add(Calendar.DAY_OF_MONTH, 6)
+        cal.add(Calendar.DAY_OF_MONTH, 6)  // 해당 주차의 마지막 날짜 지정
 
-        // 해당 주차의 마지막 날짜
-        val endDt = sf.format(cal.time)
+        val endDt = sf.format(cal.time) // 해당 주차의 마지막 날짜
 
         startDateArea.text = startDt.toString()
         endDateArea.text = endDt.toString()

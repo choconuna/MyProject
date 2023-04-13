@@ -52,7 +52,7 @@
             android:src="@drawable/pet_food"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/categoryArea"
-            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/percentArea"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
