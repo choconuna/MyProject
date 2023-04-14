@@ -6,15 +6,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.disklrucache.DiskLruCache
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.DefaultValueFormatter
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
@@ -22,10 +26,14 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import org.techtown.myproject.R
+import org.techtown.myproject.statistics.WaterStatisticsFragment
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.ReceiptModel
 import org.techtown.myproject.utils.ReceiptPieModel
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class ReceiptChartFragment : Fragment() {
@@ -49,6 +57,8 @@ class ReceiptChartFragment : Fragment() {
     private var startYear : Int = 0
     private var startMonth : Int = 0
     private var startDay : Int = 0
+
+    private lateinit var totalPriceArea : TextView
 
     private lateinit var lineWeek : LineChart // 주별에 해당하는 통계 차트
     private lateinit var lineMonth : LineChart // 월별에 해당하는 통계 차트
@@ -74,6 +84,8 @@ class ReceiptChartFragment : Fragment() {
     }
 
     private fun setData(v : View) {
+
+        totalPriceArea =v.findViewById(R.id.totalPriceArea)
 
         lineWeek = v.findViewById(R.id.line_week)
         lineMonth = v.findViewById(R.id.line_month)
@@ -133,43 +145,55 @@ class ReceiptChartFragment : Fragment() {
                 try { // 가계부 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
                     weekLineMap.clear()
-                    val format = SimpleDateFormat("yyyy.MM.dd")
-                    val date = format.parse(startDate)
-                    val cal = Calendar.getInstance()
-                    cal.time = date
+                    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+                    val date: LocalDate = LocalDate.parse(startDate, formatter)
 
-                    Toast.makeText(v!!.context, cal.time.toString(), Toast.LENGTH_SHORT).show()
+                    var intDate = 0
+                    for(i in 0 until 7) {
+                        val dateSp = date.plusDays(i.toLong()).toString().split("-")
+                        intDate = (dateSp[0] + dateSp[1] + dateSp[2]).toInt()
+                        weekLineMap[intDate] = 0.toFloat()
+                        Log.d("localDate", intDate.toString())
+                    }
+
+                    Log.d("weekLineMap", weekLineMap.toString())
+
+                    var totalPrice = 0
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(ReceiptModel::class.java)
                         val date = item!!.date
                         val sp = date.split(".")
-                        val year = sp[0].toInt()
-                        val month = sp[1].toInt()
-                        val day = sp[2].toInt()
+                        val selectedDate = (sp[0] + sp[1] + sp[2]).toInt()
 
-                        if(year == startYear && year == endYear) { // 일주일 전이 같은 연도일 경우
-                            if(month == startMonth && month == endMonth) { // 일주일 전이 같은 달일 경우
-                                if(day in startDay..endDay) {
+                        Log.d("selectedDate", selectedDate.toString())
 
-                                }
-                            } else if(month < endMonth && month == startMonth) { // 일주일 전이 전달일 경우
-                                if(day >= startDay) {
-
-                                }
-                            } else if(month == endMonth && month > startMonth) {  // 일주일 전이 이번달일 경우
-                                if(day <= endDay) {
-
-                                }
-                            }
-                        } else if(year < endYear && year == startYear) { // 일주일 전이 전년도일 경우
-                            if(startMonth == month && day >= startDay) {
-
+                        for((key, value) in weekLineMap) {
+                            if(key == selectedDate) {
+                                weekLineMap[key] = weekLineMap[key]!!.plus(item!!.price.toFloat())
+                                totalPrice += item!!.price.toInt()
                             }
                         }
                     }
 
-//                    pieChartGraph(v, lineWeek, weekLineMap)
+                    Log.d("weekLineMap", weekLineMap.toString())
+
+                    var labelList = ArrayList<String>()
+                    for((key, value) in weekLineMap) {
+                        val sb = StringBuffer() // 입력된 생년월일이 20100409라면 2010.04.09로 변환하여 화면에 출력하기 위해 StringBuffer() 사용
+                        sb.append(key.toString())
+                        sb.insert(4, ".")
+                        sb.insert(7, ".")
+                        val stringb = sb.toString().split(".")
+                        labelList.add(stringb[1] + "." + stringb[2])
+                    }
+
+                    Log.d("labelList", labelList.toString())
+
+                    val decimalFormat = DecimalFormat("#,###")
+                    totalPriceArea.text = decimalFormat.format(totalPrice.toString().replace(",","").toDouble())
+
+                    weekLineChartGraph(v, lineWeek, weekLineMap, labelList)
 
                 } catch (e: Exception) {
                     Log.d(TAG, "가계부 기록 삭제 완료")
@@ -195,7 +219,28 @@ class ReceiptChartFragment : Fragment() {
                 try { // 가계부 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
                     monthLineMap.clear()
+                    var labelList = ArrayList<String>()
 
+                    val cal = Calendar.getInstance()
+                    cal.set(endYear, endMonth - 1, 1)
+                    if(cal.getActualMaximum(Calendar.DAY_OF_MONTH) == 28) { // 말일이 28일일 경우
+                        for(i in 1 until 5)
+                            monthLineMap[i] = 0.toFloat()
+                        labelList.add("첫째 주")
+                        labelList.add("둘째 주")
+                        labelList.add("셋째 주")
+                        labelList.add("넷째 주")
+                    } else if(cal.getActualMaximum(Calendar.DAY_OF_MONTH) > 28) { // 말일이 28일 이후일 경우
+                        for(i in 1 until 6)
+                            monthLineMap[i] = 0.toFloat()
+                        labelList.add("첫째 주")
+                        labelList.add("둘째 주")
+                        labelList.add("셋째 주")
+                        labelList.add("넷째 주")
+                        labelList.add("다섯째 주")
+                    }
+
+                    var totalPrice = 0
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(ReceiptModel::class.java)
@@ -203,12 +248,35 @@ class ReceiptChartFragment : Fragment() {
                         val sp = date.split(".")
                         val year = sp[0].toInt()
                         val month = sp[1].toInt()
+                        val day = sp[2].toInt()
 
                         if(year == endYear && month == endMonth) {
+                            if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) == 28) {
+                                when (day) {
+                                    in 1..7 -> monthLineMap[1] = monthLineMap[1]!!.plus(item!!.price.toInt())
+                                    in 8..14 -> monthLineMap[2] = monthLineMap[2]!!.plus(item!!.price.toInt())
+                                    in 15..21 -> monthLineMap[3] = monthLineMap[3]!!.plus(item!!.price.toInt())
+                                    in 22..28 -> monthLineMap[4] = monthLineMap[4]!!.plus(item!!.price.toInt())
+                                }
+                            } else if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) > 28) {
+                                when {
+                                    day in 1..7 -> monthLineMap[1] = monthLineMap[1]!!.plus(item!!.price.toInt())
+                                    day in 8..14 -> monthLineMap[2] = monthLineMap[2]!!.plus(item!!.price.toInt())
+                                    day in 15..21 -> monthLineMap[3] = monthLineMap[3]!!.plus(item!!.price.toInt())
+                                    day in 22..28 -> monthLineMap[4] = monthLineMap[4]!!.plus(item!!.price.toInt())
+                                    day > 28 -> monthLineMap[5] = monthLineMap[5]!!.plus(item!!.price.toInt())
+                                }
+                            }
+                            totalPrice += item!!.price.toInt()
                         }
                     }
 
-//                    lineChartGraph(v, pieMonth, monthPieMap)
+                    Log.d("labelList", labelList.toString())
+
+                    val decimalFormat = DecimalFormat("#,###")
+                    totalPriceArea.text = decimalFormat.format(totalPrice.toString().replace(",","").toDouble())
+
+                    monthLineChartGraph(v, lineMonth, monthLineMap, labelList)
 
                 } catch (e: Exception) {
                     Log.d(TAG, "가계부 기록 삭제 완료")
@@ -232,18 +300,47 @@ class ReceiptChartFragment : Fragment() {
                 try { // 가계부 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
                     yearLineMap.clear()
+                    yearLineMap[1] = 0.toFloat()
+                    yearLineMap[2] = 0.toFloat()
+                    yearLineMap[3] = 0.toFloat()
+                    yearLineMap[4] = 0.toFloat()
+                    yearLineMap[5] = 0.toFloat()
+                    yearLineMap[6] = 0.toFloat()
+                    yearLineMap[7] = 0.toFloat()
+                    yearLineMap[8] = 0.toFloat()
+                    yearLineMap[9] = 0.toFloat()
+                    yearLineMap[10] = 0.toFloat()
+                    yearLineMap[11] = 0.toFloat()
+                    yearLineMap[12] = 0.toFloat()
+
+                    var totalPrice = 0
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(ReceiptModel::class.java)
                         val date = item!!.date
                         val sp = date.split(".")
                         val year = sp[0].toInt()
+                        val month = sp[1].toInt()
 
                         if(year == endYear) {
+                            for((key, value) in yearLineMap) {
+                                if(key == month) {
+                                    yearLineMap[key] = yearLineMap[key]!!.plus(item!!.price.toFloat())
+                                }
+                            }
+                            totalPrice += item!!.price.toInt()
                         }
                     }
 
-//                    lineChartGraph(v, pieYear, yearPieMap)
+                    var labelList = ArrayList<String>()
+                    for(i in 1 until 13) {
+                        labelList.add(i.toString() + "월")
+                    }
+
+                    val decimalFormat = DecimalFormat("#,###")
+                    totalPriceArea.text = decimalFormat.format(totalPrice.toString().replace(",","").toDouble())
+
+                    yearLineChartGraph(v, lineYear, yearLineMap, labelList)
 
                 } catch (e: Exception) {
                     Log.d(TAG, "가계부 기록 삭제 완료")
@@ -258,64 +355,200 @@ class ReceiptChartFragment : Fragment() {
         FBRef.receiptRef.child(myUid).addValueEventListener(postListener)
     }
 
-    private fun lineChartGraph(v : View, pieChart: PieChart, valList : MutableMap<String, Float>) {
+    private fun weekLineChartGraph(v : View, lineChart: LineChart, valList : MutableMap<Int, Float>, labelList : ArrayList<String>) {
+        lineChart.invalidate()
+        lineChart.clear()
 
-        pieChart.extraBottomOffset = 15f // 간격
-        pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
-        pieChart.setTouchEnabled(false)
-        pieChart.isDrawHoleEnabled = false
-
-        pieChart.run {
-            description.isEnabled = false
-
-            setTouchEnabled(false)
-            legend.isEnabled = true
-
-            setEntryLabelTextSize(10f)
-            setEntryLabelColor(Color.parseColor("#FFFFFF"))
-
-            animateY(1400, Easing.EaseInOutQuad);
+        //차트 전체 설정
+        lineChart.apply {
+            axisRight.isEnabled = false   //y축 사용여부
+            axisLeft.isEnabled = true
+            axisLeft.axisMinimum = 0f
+            axisLeft.setDrawAxisLine(false)
+            legend.isEnabled = false    //legend 사용여부
+            description.isEnabled = false //주석
+            setVisibleXRangeMinimum((60 * 60 * 24 * 1000 * 7).toFloat())
         }
 
-        var sum = 0.toFloat()
-        for((key, value) in valList.entries) {
-            if(value >= 1) {
-                sum += value
-            }
+        //X축 설정
+        lineChart.xAxis.apply {
+            setDrawGridLines(false)
+            setDrawAxisLine(true)
+            setDrawLabels(true)
+            isDrawLabelsEnabled
+            isCenterAxisLabelsEnabled
+            position = XAxis.XAxisPosition.BOTTOM
+            valueFormatter = IndexAxisValueFormatter(labelList)
+            labelCount = 7
+            textColor = Color.parseColor("#000000")
+            granularity = 1f
+            textSize = 10f
+//            labelRotationAngle = 0f
         }
 
-        var entries : ArrayList<PieEntry> = ArrayList()
-        for((key, value) in valList.entries) {
-            if(value >= 1) {
-                entries.add(PieEntry(value / sum * 100, key))
-            }
+        Log.d("valList", "$valList $labelList")
+
+        val entries: MutableList<Entry> = mutableListOf()
+        var index = 0
+        for ((key, value) in valList){
+            entries.add(Entry(index.toFloat(), value))
+            index += 1
+        }
+        Log.d("entries", entries.toString())
+
+        var depenses = LineDataSet(entries, "지출 비용")
+        depenses.apply {
+            color = Color.parseColor("#c08457")
+            circleRadius = 4f
+            lineWidth = 2f
+            setCircleColor(color)
+            circleHoleColor = Color.parseColor("#FFFFFF")
+            setDrawHighlightIndicators(false)
+            setDrawValues(true) // 숫자 표시
+            valueTextColor = Color.parseColor("#000000")
+            valueFormatter = DefaultValueFormatter(0)  // 소숫점 자릿수 설정
+            valueTextSize = 10f
         }
 
-        val colors: ArrayList<Int> = ArrayList()
-        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
-        for (c in ColorTemplate.COLORFUL_COLORS) colors.add(c)
-        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
-        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
-
-        var depenses = PieDataSet(entries, "")
-        with(depenses) {
-            sliceSpace = 3f
-            selectionShift = 5f
-            valueTextSize = 5f
-            setColors(colors)
+        lineChart.run {
+            notifyDataSetChanged()
+            this.data = LineData(depenses)
+            isDoubleTapToZoomEnabled = false
+            setDrawGridBackground(false)
+            description = description
+            animateY(500, Easing.EaseInCubic)
+            invalidate()
         }
-        depenses.valueFormatter = CustomFormatter()
+    }
 
-        val data = PieData(depenses)
-        with(data) {
-            setValueTextSize(10f)
-            setValueTextColor(Color.parseColor("#FFFFFF"))
+    private fun monthLineChartGraph(v : View, lineChart: LineChart, valList : MutableMap<Int, Float>, labelList : ArrayList<String>) {
+        lineChart.invalidate()
+        lineChart.clear()
+
+        //차트 전체 설정
+        lineChart.apply {
+            axisRight.isEnabled = false   //y축 사용여부
+            axisLeft.isEnabled = true
+            axisLeft.axisMinimum = 0f
+            axisLeft.setDrawAxisLine(false)
+            legend.isEnabled = false    //legend 사용여부
+            description.isEnabled = false //주석
+            setVisibleXRangeMinimum((60 * 60 * 24 * 1000 * 5).toFloat())
         }
 
-        pieChart.run {
-            this.data = data
-            description.isEnabled = false
-            animate()
+        //X축 설정
+        lineChart.xAxis.apply {
+            setDrawGridLines(false)
+            setDrawAxisLine(true)
+            setDrawLabels(true)
+            isDrawLabelsEnabled
+            isCenterAxisLabelsEnabled
+            position = XAxis.XAxisPosition.BOTTOM
+            valueFormatter = IndexAxisValueFormatter(labelList)
+            labelCount = 5
+            textColor = Color.parseColor("#000000")
+            granularity = 1f
+            textSize = 10f
+//            labelRotationAngle = 0f
+        }
+
+        Log.d("valList", "$valList $labelList")
+
+        val entries: MutableList<Entry> = mutableListOf()
+        var index = 0
+        for ((key, value) in valList){
+            entries.add(Entry(index.toFloat(), value))
+            index += 1
+        }
+        Log.d("entries", entries.toString())
+
+        var depenses = LineDataSet(entries, "지출 비용")
+        depenses.apply {
+            color = Color.parseColor("#c08457")
+            circleRadius = 6f
+            lineWidth = 2f
+            setCircleColor(color)
+            circleHoleColor = Color.parseColor("#FFFFFF")
+            setDrawHighlightIndicators(false)
+            setDrawValues(true) // 숫자 표시
+            valueTextColor = Color.parseColor("#000000")
+            valueFormatter = DefaultValueFormatter(0)  // 소숫점 자릿수 설정
+            valueTextSize = 10f
+        }
+
+        lineChart.run {
+            notifyDataSetChanged()
+            this.data = LineData(depenses)
+            isDoubleTapToZoomEnabled = false
+            setDrawGridBackground(false)
+            description = description
+            animateY(500, Easing.EaseInCubic)
+            invalidate()
+        }
+    }
+
+    private fun yearLineChartGraph(v : View, lineChart: LineChart, valList : MutableMap<Int, Float>, labelList : ArrayList<String>) {
+        lineChart.invalidate()
+        lineChart.clear()
+
+        //차트 전체 설정
+        lineChart.apply {
+            axisRight.isEnabled = false   //y축 사용여부
+            axisLeft.isEnabled = true
+            axisLeft.axisMinimum = 0f
+            axisLeft.setDrawAxisLine(false)
+            legend.isEnabled = false    //legend 사용여부
+            description.isEnabled = false //주석
+            setVisibleXRangeMinimum((60 * 60 * 24 * 1000 * 12).toFloat())
+        }
+
+        //X축 설정
+        lineChart.xAxis.apply {
+            setDrawGridLines(false)
+            setDrawAxisLine(true)
+            setDrawLabels(true)
+            isDrawLabelsEnabled
+            isCenterAxisLabelsEnabled
+            position = XAxis.XAxisPosition.BOTTOM
+            valueFormatter = IndexAxisValueFormatter(labelList)
+            labelCount = 12
+            textColor = Color.parseColor("#000000")
+            granularity = 1f
+            textSize = 8f
+//            labelRotationAngle = 0f
+        }
+
+        Log.d("valList", "$valList $labelList")
+
+        val entries: MutableList<Entry> = mutableListOf()
+        var index = 0
+        for ((key, value) in valList){
+            entries.add(Entry(index.toFloat(), value))
+            index += 1
+        }
+        Log.d("entries", entries.toString())
+
+        var depenses = LineDataSet(entries, "지출 비용")
+        depenses.apply {
+            color = Color.parseColor("#c08457")
+            circleRadius = 4f
+            lineWidth = 2f
+            setCircleColor(color)
+            circleHoleColor = Color.parseColor("#FFFFFF")
+            setDrawHighlightIndicators(false)
+            setDrawValues(true) // 숫자 표시
+            valueTextColor = Color.parseColor("#000000")
+            valueFormatter = DefaultValueFormatter(0)  // 소숫점 자릿수 설정
+            valueTextSize = 10f
+        }
+
+        lineChart.run {
+            notifyDataSetChanged()
+            this.data = LineData(depenses)
+            isDoubleTapToZoomEnabled = false
+            setDrawGridBackground(false)
+            description = description
+            animateY(500, Easing.EaseInCubic)
             invalidate()
         }
     }
