@@ -239,7 +239,7 @@ class ReceiptPieFragment : Fragment() {
 
                     for((key, value) in weekPieMap) {
                         if(value > 0) {
-                            val percent = (value / totalPrice * 100).toInt()
+                            val percent = (("%.2f".format(value / totalPrice)).toFloat() * 100).toInt()
                             weekMap[ReceiptPieModel(key, value.toString(), percent.toString())] =
                                 percent
                         }
@@ -307,7 +307,7 @@ class ReceiptPieFragment : Fragment() {
 
                     for((key, value) in monthPieMap) {
                         if(value > 0) {
-                            val percent = (value / totalPrice * 100).toInt()
+                            val percent = (("%.2f".format(value / totalPrice)).toFloat() * 100).toInt()
                             monthMap[ReceiptPieModel(key, value.toString(), percent.toString())] =
                                 percent
                         }
@@ -373,7 +373,7 @@ class ReceiptPieFragment : Fragment() {
 
                     for((key, value) in yearPieMap) {
                         if(value > 0) {
-                            val percent = (value / totalPrice * 100).toInt()
+                            val percent = (("%.2f".format(value / totalPrice)).toFloat() * 100).toInt()
                             yearMap[ReceiptPieModel(key, value.toString(), percent.toString())] =
                                 percent
                         }
@@ -402,7 +402,7 @@ class ReceiptPieFragment : Fragment() {
 
     private fun pieChartGraph(v : View, pieChart: PieChart, valList : MutableMap<String, Float>) {
 
-        pieChart.extraBottomOffset = 15f // 간격
+        pieChart.extraBottomOffset = 10f // 간격
         pieChart.description.isEnabled = false // chart 밑에 description 표시 유무
         pieChart.setTouchEnabled(false)
         pieChart.isDrawHoleEnabled = false
@@ -429,7 +429,7 @@ class ReceiptPieFragment : Fragment() {
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value >= 1) {
-                entries.add(PieEntry(value / sum * 100, key))
+                entries.add(PieEntry(("%.2f".format(value / sum)).toFloat() * 100, key))
             }
         }
 
@@ -441,7 +441,7 @@ class ReceiptPieFragment : Fragment() {
 
         var depenses = PieDataSet(entries, "")
         with(depenses) {
-            sliceSpace = 3f
+            sliceSpace = 1f
             selectionShift = 5f
             valueTextSize = 5f
             setColors(colors)
