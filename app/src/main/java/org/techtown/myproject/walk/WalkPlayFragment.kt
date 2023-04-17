@@ -49,6 +49,19 @@ class WalkPlayFragment : Fragment() {
         setData(v!!)
         getFBDogData()
 
+        walkDogReVAdapter.setItemClickListener(object: WalkDogReVAdapter.OnItemClickListener{
+            override fun onClick(v: View, position: Int) {
+                // 클릭 시 이벤트 작성
+                if(isSelected[dogKeyList[position]] == false) { // 반려견이 선택되었을 경우
+                    isSelected[dogKeyList[position]] = true // 선택되었음을 표시
+                    Log.d("isSelected", isSelected.toString())
+                } else if(isSelected[dogKeyList[position]] == true) { // 선택되었음에도 다시 선택했을 경우
+                    isSelected[dogKeyList[position]] = false // 선택 취소되었음을 표시
+                    Log.d("isSelected", isSelected.toString())
+                }
+            }
+        })
+
         walkStartBtn.setOnClickListener {
             var totalDogNum = isSelected.size
 

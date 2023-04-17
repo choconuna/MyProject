@@ -48,8 +48,8 @@
 
             <Button
                 android:id="@+id/backMonth"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_marginStart="10dp"
                 android:background="@drawable/ic_arrow_left"
                 app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +62,7 @@
                 android:fontFamily="@font/bold"
                 android:text="2023년 4월"
                 android:textColor="@color/black"
-                android:textSize="16dp"
+                android:textSize="14dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/nextMonth"
                 app:layout_constraintStart_toEndOf="@+id/backMonth"
@@ -71,8 +71,8 @@
 
             <Button
                 android:id="@+id/nextMonth"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/ic_arrow_right_24"
                 app:layout_constraintEnd_toEndOf="parent"

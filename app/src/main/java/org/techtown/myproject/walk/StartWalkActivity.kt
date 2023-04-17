@@ -29,7 +29,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.ArrayList
+import java.util.*
 import kotlin.math.*
 
 
@@ -69,8 +69,9 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
 
         userId = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
 
-        val currentTime : Long = System.currentTimeMillis()
-        val currentTimeFormat = SimpleDateFormat("hh:mm:ss").format(currentTime) // 시작 시각 구하기
+        val currentTime = System.currentTimeMillis()
+        val date = Date(currentTime)
+        val currentTimeFormat = SimpleDateFormat("HH:mm:ss").format(date)
 
         dogList = intent.getStringArrayExtra("checkedDogIdList") as Array<String>
         Log.d("dogList", dogList.contentToString())
@@ -127,8 +128,9 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
 
             if(minute >= 1) {
 
-                val endTime: Long = System.currentTimeMillis()
-                val endTimeFormat = SimpleDateFormat("hh:mm:ss").format(endTime) // 종료 시각 구하기
+                val endTime = System.currentTimeMillis()
+                val date = Date(endTime)
+                val endTimeFormat = SimpleDateFormat("HH:mm:ss").format(date)
 
                 val today = SimpleDateFormat("yyyy.MM.dd.E").format(endTime) // 오늘 날짜 구하기
 

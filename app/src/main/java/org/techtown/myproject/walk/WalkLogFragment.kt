@@ -1,5 +1,6 @@
 package org.techtown.myproject.walk
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,15 +11,19 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
 import org.techtown.myproject.my.DogListVAdapter
 import org.techtown.myproject.my.DogReVAdapter
+import org.techtown.myproject.note.*
 import org.techtown.myproject.receipt.Receipt
 import org.techtown.myproject.receipt.ReceiptReVAdapter
 import org.techtown.myproject.receipt.ReceiptRecordFragment
@@ -108,6 +113,13 @@ class WalkLogFragment : Fragment() {
             showDate(myUid, year, month)
         }
 
+        walkRVAdapter.setItemClickListener(object: WalkReVAdapter.OnItemClickListener{
+            override fun onClick(v: View, position: Int) {
+                // 클릭 시 이벤트 작성
+                showDialog(v, walkDataList[position].walkId)
+            }
+        })
+
         return v
     }
 
@@ -133,7 +145,7 @@ class WalkLogFragment : Fragment() {
         walkRVAdapter = WalkReVAdapter(walkDataList)
         walkListView = v!!.findViewById(R.id.walkRecyclerView)
         walkListView.setHasFixedSize(true)
-        wLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        wLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         walkListView.layoutManager = wLayoutManager
         walkListView.adapter = walkRVAdapter
 
@@ -165,8 +177,14 @@ class WalkLogFragment : Fragment() {
                         val nowMonth = dateSp[1]
                         val nowDate = dateSp[2]
 
+                        val startTime = item!!.startTime
+                        val startTimeSp = startTime.split(":")
+
+                        val dateTime = (dateSp[2] + startTimeSp[0] + startTimeSp[1])
+                        Log.d("dateTime", dateTime)
+
                         if(year.toInt() == nowYear.toInt() && month.toInt() == nowMonth.toInt()) {
-                            walkMap[nowDate.toInt()] = item!!
+                            walkMap[dateTime.toInt()] = item!!
                             sortedMap = sortMapByKey(walkMap)
                         }
                     }
@@ -220,6 +238,29 @@ class WalkLogFragment : Fragment() {
         }
         FBRef.dogRef.child(myUid).addValueEventListener(postListener)
     }
+
+    private fun showDialog(v : View, id : String) { // 산책 기록 수정/삭제를 위한 다이얼로그 띄우기
+        val mDialogView = LayoutInflater.from(v.context).inflate(R.layout.walk_dialog, null)
+        val mBuilder = AlertDialog.Builder(v.context).setView(mDialogView)
+
+        val alertDialog = mBuilder.show()
+        val yesBtn = alertDialog.findViewById<Button>(R.id.yesBtn)
+        yesBtn?.setOnClickListener { // 예 버튼 클릭 시
+            Log.d(TAG, "yes Button Clicked")
+
+            FBRef.walkDogRef.child(myUid).child(id).removeValue() // 파이어베이스에서 해당 기록의 데이터 삭제
+            FBRef.walkRef.child(myUid).child(id).removeValue()
+
+            alertDialog.dismiss()
+        }
+
+        val noBtn = alertDialog.findViewById<Button>(R.id.noBtn)
+        noBtn?.setOnClickListener {  // 아니오 버튼 클릭 시
+            Log.d(TAG, "no Button Clicked")
+            alertDialog.dismiss()
+        }
+    }
+
 
     private fun sortMapByKey(map: MutableMap<Int, WalkModel>): LinkedHashMap<Int, WalkModel> { // 시간순으로 정렬
         val entries = LinkedList(map.entries)

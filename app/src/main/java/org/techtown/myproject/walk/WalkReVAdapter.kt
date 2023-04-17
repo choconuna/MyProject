@@ -16,10 +16,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
-import org.techtown.myproject.utils.DogModel
-import org.techtown.myproject.utils.FBRef
-import org.techtown.myproject.utils.ReceiptModel
-import org.techtown.myproject.utils.WalkModel
+import org.techtown.myproject.receipt.ReceiptDetailReVAdapter
+import org.techtown.myproject.utils.*
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -27,8 +25,8 @@ class WalkReVAdapter(val walkList : ArrayList<WalkModel>):
     RecyclerView.Adapter<WalkReVAdapter.WalkViewHolder>() {
 
     lateinit var dogRecyclerView: RecyclerView
-    private val dogReDataList = java.util.ArrayList<DogModel>() // 각 반려견의 프로필을 넣는 리스트
-    lateinit var dogListReVAdapter: DogListReVAdapter
+    private val dogReDataList = java.util.ArrayList<String>() // 각 반려견의 프로필을 넣는 리스트
+    lateinit var dogListReVAdapter: WithDogReVAdapter
     lateinit var layoutManager: RecyclerView.LayoutManager
 
     interface OnItemClickListener {
@@ -47,6 +45,35 @@ class WalkReVAdapter(val walkList : ArrayList<WalkModel>):
 
     override fun onBindViewHolder(holder: WalkViewHolder, position: Int) {
         val myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
+
+        dogListReVAdapter = WithDogReVAdapter(dogReDataList)
+        dogRecyclerView = holder!!.view!!.findViewById(R.id.dogImageRecyclerView)
+        dogRecyclerView.setItemViewCacheSize(20)
+        dogRecyclerView.setHasFixedSize(true)
+        layoutManager = LinearLayoutManager(holder!!.view!!.context, LinearLayoutManager.HORIZONTAL, false)
+        dogRecyclerView.layoutManager = layoutManager
+        dogRecyclerView.adapter = dogListReVAdapter
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    dogReDataList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
+
+                    for(dataModel in dataSnapshot.children) {
+                        val item = dataModel.getValue(WalkDogModel::class.java)
+                        dogReDataList.add(item!!.dogId)
+                    }
+
+                    dogListReVAdapter.notifyDataSetChanged() // 동기화
+                    Log.d("dogReDataList", dogReDataList.toString())
+                } catch (e: Exception) {
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        }
+        FBRef.walkDogRef.child(myUid).child(walkList[position].walkId).addValueEventListener(postListener)
 
         holder!!.dateArea!!.text = walkList[position].date
 
