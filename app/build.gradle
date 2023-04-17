@@ -44,6 +44,19 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/notice.txt'
+    }
 }
 
 dependencies {
@@ -72,7 +85,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation "com.firebaseui:firebase-ui-auth:7.2.0" // gradle_firebase_ui_auth
     implementation 'com.google.android.gms:play-services-auth:19.2.0' // Google Play services library
-
+//    implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'androidx.work:work-runtime-ktx:2.7.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0' // 원형 imageView
 
@@ -83,4 +96,11 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+//    //구글맵
+//    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+//    implementation 'com.google.android.gms:play-services-location:19.0.1'
+
+    implementation 'com.naver.maps:map-sdk:3.16.2'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }

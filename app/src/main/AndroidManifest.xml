@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.techtown.myproject">
     <!-- 인터넷 사용 권한 설정 -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -9,6 +10,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +19,12 @@
         android:label="멍노트"
         android:roundIcon="@mipmap/ic_launcher_appicon_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyProject">
+        android:theme="@style/Theme.MyProject"
+        tools:replace="android:label">
+
+        <activity
+            android:name=".walk.StartWalkActivity"
+            android:exported="false" />
         <activity
             android:name=".receipt.ReceiptRecordEditActivity"
             android:exported="false" />
@@ -177,6 +185,15 @@
         <activity android:name=".StartActivity" />
 
         <receiver android:name=".my.AlarmReceiver" />
+
+<!--        <meta-data-->
+<!--            android:name="com.google.android.geo.API_KEY"-->
+<!--            android:value="AIzaSyB2JI3MpgerNW4aU2Q3mUxFX3rE3fAZgBg" />-->
+
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="b49e1b1g73" />
+
     </application>
 
 </manifest>
