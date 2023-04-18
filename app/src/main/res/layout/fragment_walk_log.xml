@@ -13,6 +13,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <Spinner
+            android:id="@+id/spinner"
+            android:entries="@array/receiptSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="@color/mainColor"
+            android:theme="@style/dateSpinner">
+        </Spinner>
+
         <LinearLayout
             android:id="@+id/linearLayout7"
             android:layout_width="wrap_content"
@@ -48,38 +59,38 @@
             android:orientation="vertical"
             android:background="@drawable/rectangle_box">
 
-            <LinearLayout
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:orientation="horizontal">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/bold"
-                    android:textColor="@color/mainColor"
-                    android:id="@+id/dogNameArea"
-                    android:visibility="gone"/>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="@font/bold"-->
+<!--                    android:textColor="@color/mainColor"-->
+<!--                    android:id="@+id/dogNameArea"-->
+<!--                    android:visibility="gone"/>-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/bold"
-                    android:textColor="@color/black"
-                    android:id="@+id/alphaArea"
-                    android:text="의 "
-                    android:visibility="gone"/>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="@font/bold"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:id="@+id/alphaArea"-->
+<!--                    android:text="의 "-->
+<!--                    android:visibility="gone"/>-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/bold"
-                    android:textColor="@color/black"
-                    android:text="산책 기록" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="@font/bold"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:text="산책 기록" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -95,6 +106,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     tools:ignore="MissingConstraints">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:fontFamily="@font/bold"
+                        android:textColor="@color/black" />
 
                     <TextView
                         android:id="@+id/textView7"
@@ -127,6 +145,39 @@
                     app:layout_constraintStart_toEndOf="@+id/linearLayout8"
                     tools:ignore="MissingConstraints">
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/bold"
+                            android:textColor="@color/mainColor"
+                            android:id="@+id/dogNameArea"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/bold"
+                            android:textColor="@color/black"
+                            android:id="@+id/alphaArea"
+                            android:text="의 "
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/bold"
+                            android:textColor="@color/black"
+                            android:text="산책 기록" />
+
+                    </LinearLayout>
+
                     <TextView
                         android:id="@+id/textView9"
                         android:layout_width="wrap_content"
@@ -140,7 +191,7 @@
                         tools:ignore="MissingConstraints" />
 
                     <TextView
-                        android:id="@+id/totalTimeArea"
+                        android:id="@+id/totalDistanceArea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/bold"
@@ -162,6 +213,13 @@
                     tools:ignore="MissingConstraints">
 
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:fontFamily="@font/bold"
+                        android:textColor="@color/black" />
+
+                    <TextView
                         android:id="@+id/textView8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -173,7 +231,7 @@
                         tools:ignore="MissingConstraints" />
 
                     <TextView
-                        android:id="@+id/totalDistanceArea"
+                        android:id="@+id/totalTimeArea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/bold"
@@ -204,14 +262,14 @@
                 tools:ignore="MissingConstraints">
 
                 <Button
-                    android:id="@+id/backMonth"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:id="@+id/backDate"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:background="@drawable/ic_arrow_left"
                     tools:ignore="MissingConstraints" />
 
                 <TextView
-                    android:id="@+id/date"
+                    android:id="@+id/startDateArea"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/bold"
@@ -220,10 +278,28 @@
                     android:textSize="14dp"
                     tools:ignore="MissingConstraints" />
 
+                <TextView
+                    android:id="@+id/between"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/bold"
+                    android:text=" ~ "
+                    android:textColor="@color/black"
+                    android:textSize="14dp" />
+
+                <TextView
+                    android:id="@+id/endDateArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/bold"
+                    android:text="2023.4.12"
+                    android:textColor="@color/black"
+                    android:textSize="14dp" />
+
                 <Button
-                    android:id="@+id/nextMonth"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:id="@+id/nextDate"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginEnd="10dp"
                     android:background="@drawable/ic_arrow_right_24"
                     tools:ignore="MissingConstraints" />

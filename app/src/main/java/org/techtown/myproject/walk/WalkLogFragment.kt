@@ -45,15 +45,26 @@ class WalkLogFragment : Fragment() {
 
     private lateinit var allImage : TextView
 
-    private lateinit var backMonth : Button
-    private lateinit var nextMonth : Button
-    private lateinit var dateArea : TextView
+    private lateinit var startDateArea : TextView
+    private lateinit var between : TextView
+    private lateinit var endDateArea : TextView
 
-    private var selectedDate = LocalDate.now()
-    private lateinit var year : String
-    private lateinit var month : String
-    private lateinit var day : String
-    private lateinit var dayOfWeek : String
+    private lateinit var selectedMenu : String
+
+    private var endDate = LocalDate.now() // 현재 날짜
+    private lateinit var endYear : String
+    private lateinit var endMonth : String
+    private lateinit var endDay : String
+
+    private lateinit var startDate : LocalDate
+    private lateinit var startYear : String
+    private lateinit var startMonth : String
+    private lateinit var startDay : String
+
+    private lateinit var spinner : Spinner
+
+    private lateinit var backDate : Button
+    private lateinit var nextDate : Button
 
     private lateinit var myUid : String
     private lateinit var nowDate : String
@@ -69,8 +80,8 @@ class WalkLogFragment : Fragment() {
     lateinit var walkRVAdapter : WalkReVAdapter
     lateinit var wLayoutManager : RecyclerView.LayoutManager
 
-    private var walkMap : MutableMap<Int, WalkModel> = mutableMapOf()
-    private var sortedMap : MutableMap<Int, WalkModel> = mutableMapOf()
+    private var walkMap : MutableMap<Long, WalkModel> = mutableMapOf()
+    private var sortedMap : MutableMap<Long, WalkModel> = mutableMapOf()
 
     lateinit var walkDogRecyclerView: RecyclerView
     private val walkDogReDataList = ArrayList<DogModel>() // 각 반려견의 프로필을 넣는 리스트
@@ -78,8 +89,8 @@ class WalkLogFragment : Fragment() {
     lateinit var dogListReVAdapter: DogListReVAdapter
     lateinit var layoutManager: RecyclerView.LayoutManager
 
-    private var dogWalkMap : MutableMap<Int, WalkDogModel> = mutableMapOf()
-    private var dogSortedMap : MutableMap<Int, WalkDogModel> = mutableMapOf()
+    private var dogWalkMap : MutableMap<Long, WalkDogModel> = mutableMapOf()
+    private var dogSortedMap : MutableMap<Long, WalkDogModel> = mutableMapOf()
 
     private lateinit var dogWalkListView : RecyclerView
     private val dogWalkDataList = ArrayList<WalkDogModel>() // 반려견 산책 목록 리스트
@@ -98,63 +109,199 @@ class WalkLogFragment : Fragment() {
 
         getFBDogData()
 
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long
+            ) {
+                selectedMenu = parent.getItemAtPosition(position).toString()
+                setDate(v, selectedMenu)
+
+                when(selectedMenu) {
+                    "주별" -> {
+                        setDate(v!!, selectedMenu)
+
+                        if (selectedDogId == "all") {
+                            showWeekData(myUid, startYear, startMonth, startDay, endYear, endMonth, endDay)
+                            Log.d("partDate", "$startYear.$startMonth.$startDay $endYear.$endMonth.$endDay")
+                            walkListView.visibility = VISIBLE
+                            dogWalkListView.visibility = GONE
+                        } else {
+                            showWeekSpecificData(myUid, startYear, startMonth, startDay, endYear, endMonth, endDay, selectedDogId.trim())
+                            Log.d("partDate", "$startYear.$startMonth.$startDay $endYear.$endMonth.$endDay")
+                            walkListView.visibility = GONE
+                            dogWalkListView.visibility = VISIBLE
+                        }
+                    }
+                    "월별" -> {
+                        setDate(v!!, selectedMenu)
+                        if (selectedDogId == "all") {
+                            showMonthData(myUid, endYear, endMonth)
+                            Log.d("partDate", "$endYear.$endMonth")
+                            walkListView.visibility = VISIBLE
+                            dogWalkListView.visibility = GONE
+                        } else {
+                            showMonthSpecificData(myUid, endYear,  endMonth, selectedDogId.trim())
+                            Log.d("partDate", "$endYear.$endMonth")
+                            walkListView.visibility = GONE
+                            dogWalkListView.visibility = VISIBLE
+                        }
+                    }
+                    "연별" -> {
+                        setDate(v!!, selectedMenu)
+
+                        if (selectedDogId == "all") {
+                            showYearData(myUid, endYear)
+                            Log.d("partDate", "$endYear")
+                            walkListView.visibility = VISIBLE
+                            dogWalkListView.visibility = GONE
+                        } else {
+                            showYearSpecificData(myUid, endYear, selectedDogId.trim())
+                            Log.d("partDate", "$endYear")
+                            walkListView.visibility = GONE
+                            dogWalkListView.visibility = VISIBLE
+                        }
+                    }
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
         allImage.setOnClickListener {
             selectedDogId = "all"
             dogNameArea.visibility = GONE
             alphaArea.visibility = GONE
-            showDate(myUid, year, month)
+
+            when(selectedMenu) {
+                "주별" -> {
+                    setDate(v!!, selectedMenu)
+
+                    showWeekData(myUid, startYear, startMonth, startDay, endYear, endMonth, endDay)
+                    Log.d("partDate", "$startYear.$startMonth.$startDay $endYear.$endMonth.$endDay")
+                    walkListView.visibility = VISIBLE
+                    dogWalkListView.visibility = GONE
+                }
+                "월별" -> {
+                    setDate(v!!, selectedMenu)
+
+                    showMonthData(myUid, endYear, endMonth)
+                    Log.d("partDate", "$endYear.$endMonth")
+                    walkListView.visibility = VISIBLE
+                    dogWalkListView.visibility = GONE
+                }
+                "연별" -> {
+                    setDate(v!!, selectedMenu)
+
+                    showYearData(myUid, endYear)
+                    Log.d("partDate", "$endYear")
+                    walkListView.visibility = VISIBLE
+                    dogWalkListView.visibility = GONE
+                }
+            }
+
             Toast.makeText(v!!.context, "모든 산책 데이터를 불러옵니다.", Toast.LENGTH_SHORT).show()
-            walkListView.visibility = VISIBLE
-            dogWalkListView.visibility = GONE
         }
 
-        backMonth.setOnClickListener {
-            selectedDate = selectedDate.minusMonths(1)
-            val format = "yyyy년 MM월"
-            val sdf = DateTimeFormatter.ofPattern(format)
-            dateArea.text = selectedDate.format(sdf)
+        backDate.setOnClickListener {
+            when(selectedMenu) {
+                "주별" -> {
+                    endDate = endDate.minusWeeks(1) // 기준 날짜를 한주 전으로 설정
+                    setDate(v!!, selectedMenu)
 
-            val datee = selectedDate.toString().split("-")
-            year = datee[0]
-            month = datee[1]
-            day = datee[2]
-            dayOfWeek = selectedDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)
-            Log.d("selectedDate", "$year $month $day $dayOfWeek")
+                    if (selectedDogId == "all") {
+                        showWeekData(myUid, startYear, startMonth, startDay, endYear, endMonth, endDay)
+                        Log.d("partDate", "$startYear.$startMonth.$startDay $endYear.$endMonth.$endDay")
+                        walkListView.visibility = VISIBLE
+                        dogWalkListView.visibility = GONE
+                    } else {
+                        showWeekSpecificData(myUid, startYear, startMonth, startDay, endYear, endMonth, endDay, selectedDogId.trim())
+                        Log.d("partDate", "$startYear.$startMonth.$startDay $endYear.$endMonth.$endDay")
+                        walkListView.visibility = GONE
+                        dogWalkListView.visibility = VISIBLE
+                    }
+                }
+                "월별" -> {
+                    endDate = endDate.minusMonths(1) // 기준 날짜를 한달 전으로 설정
+                    setDate(v!!, selectedMenu)
+                    if (selectedDogId == "all") {
+                        showMonthData(myUid, endYear, endMonth)
+                        Log.d("partDate", "$endYear.$endMonth")
+                        walkListView.visibility = VISIBLE
+                        dogWalkListView.visibility = GONE
+                    } else {
+                        showMonthSpecificData(myUid, endYear,  endMonth, selectedDogId.trim())
+                        Log.d("partDate", "$endYear.$endMonth")
+                        walkListView.visibility = GONE
+                        dogWalkListView.visibility = VISIBLE
+                    }
+                }
+                "연별" -> {
+                    endDate = endDate.minusYears(1) // 기준 날짜를 1년 전으로 설정
+                    setDate(v!!, selectedMenu)
 
-            if(selectedDogId == "all") {
-                showDate(myUid, year, month)
-                walkListView.visibility = VISIBLE
-                dogWalkListView.visibility = GONE
-            }
-            else {
-                showSpecificDate(myUid, year, month, selectedDogId)
-                walkListView.visibility = GONE
-                dogWalkListView.visibility = VISIBLE
+                    if (selectedDogId == "all") {
+                        showYearData(myUid, endYear)
+                        Log.d("partDate", "$endYear")
+                        walkListView.visibility = VISIBLE
+                        dogWalkListView.visibility = GONE
+                    } else {
+                        showYearSpecificData(myUid, endYear, selectedDogId.trim())
+                        Log.d("partDate", "$endYear")
+                        walkListView.visibility = GONE
+                        dogWalkListView.visibility = VISIBLE
+                    }
+                }
             }
         }
 
-        nextMonth.setOnClickListener {
-            selectedDate = selectedDate.plusMonths(1)
-            val format = "yyyy년 MM월"
-            val sdf = DateTimeFormatter.ofPattern(format)
-            dateArea.text = selectedDate.format(sdf)
+        nextDate.setOnClickListener {
+            when(selectedMenu) {
+                "주별" -> {
+                    endDate = endDate.plusWeeks(1) // 기준 날짜를 한주 후로 설정
+                    setDate(v!!, selectedMenu)
 
-            val datee = selectedDate.toString().split("-")
-            year = datee[0]
-            month = datee[1]
-            day = datee[2]
-            dayOfWeek = selectedDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)
-            Log.d("selectedDate", "$year $month $day $dayOfWeek")
+                    if (selectedDogId == "all") {
+                        showWeekData(myUid, startYear, startMonth, startDay, endYear, endMonth, endDay)
+                        Log.d("partDate", "$startYear.$startMonth.$startDay $endYear.$endMonth.$endDay")
+                        walkListView.visibility = VISIBLE
+                        dogWalkListView.visibility = GONE
+                    } else {
+                        showWeekSpecificData(myUid, startYear, startMonth, startDay, endYear, endMonth, endDay, selectedDogId)
+                        Log.d("partDate", "$startYear.$startMonth.$startDay $endYear.$endMonth.$endDay")
+                        walkListView.visibility = GONE
+                        dogWalkListView.visibility = VISIBLE
+                    }
+                }
+                "월별" -> {
+                    endDate = endDate.plusMonths(1) // 기준 날짜를 한달 후로 설정
+                    setDate(v!!, selectedMenu)
 
-            if(selectedDogId == "all") {
-                showDate(myUid, year, month)
-                walkListView.visibility = VISIBLE
-                dogWalkListView.visibility = GONE
-            }
-            else {
-                showSpecificDate(myUid, year, month, selectedDogId)
-                walkListView.visibility = GONE
-                dogWalkListView.visibility = VISIBLE
+                    if (selectedDogId == "all") {
+                        showMonthData(myUid, endYear, endMonth)
+                        Log.d("partDate", "$endYear.$endMonth")
+                        walkListView.visibility = VISIBLE
+                        dogWalkListView.visibility = GONE
+                    } else {
+                        showMonthSpecificData(myUid, endYear,  endMonth, selectedDogId)
+                        Log.d("partDate", "$endYear.$endMonth")
+                        walkListView.visibility = GONE
+                        dogWalkListView.visibility = VISIBLE
+                    }
+                }
+                "연별" -> {
+                    endDate = endDate.plusYears(1) // 기준 날짜를 1년 후로 설정
+                    setDate(v!!, selectedMenu)
+
+                    if (selectedDogId == "all") {
+                        showYearData(myUid, endYear)
+                        Log.d("partDate", "$endYear.$endMonth")
+                        walkListView.visibility = VISIBLE
+                        dogWalkListView.visibility = GONE
+                    } else {
+                        showYearSpecificData(myUid, endYear, selectedDogId)
+                        Log.d("partDate", "$endYear")
+                        walkListView.visibility = GONE
+                        dogWalkListView.visibility = VISIBLE
+                    }
+                }
             }
         }
 
@@ -166,10 +313,33 @@ class WalkLogFragment : Fragment() {
                 alphaArea.visibility = VISIBLE
                 dogNameArea.visibility = VISIBLE
                 Toast.makeText(v!!.context, "특정 산책 데이터를 불러옵니다.", Toast.LENGTH_SHORT).show()
-                showSpecificDate(myUid, year, month, selectedDogId)
-                Log.d("selectedDogId", selectedDogId)
-                walkListView.visibility = GONE
-                dogWalkListView.visibility = VISIBLE
+
+                when(selectedMenu) {
+                    "주별" -> {
+                        setDate(v!!, selectedMenu)
+
+                        showWeekSpecificData(myUid, startYear, startMonth, startDay, endYear, endMonth, endDay, selectedDogId)
+                        Log.d("partDate", "$startYear.$startMonth.$startDay $endYear.$endMonth.$endDay")
+                        walkListView.visibility = GONE
+                        dogWalkListView.visibility = VISIBLE
+                    }
+                    "월별" -> {
+                        setDate(v!!, selectedMenu)
+
+                        showMonthSpecificData(myUid, endYear,  endMonth, selectedDogId)
+                        Log.d("partDate", "$endYear.$endMonth")
+                        walkListView.visibility = GONE
+                        dogWalkListView.visibility = VISIBLE
+                    }
+                    "연별" -> {
+                        setDate(v!!, selectedMenu)
+
+                        showYearSpecificData(myUid, endYear, selectedDogId)
+                        Log.d("partDate", "$endYear")
+                        walkListView.visibility = GONE
+                        dogWalkListView.visibility = VISIBLE
+                    }
+                }
             }
         })
 
@@ -194,28 +364,19 @@ class WalkLogFragment : Fragment() {
 
         allImage = v!!.findViewById(R.id.allImage)
 
+        spinner = v!!.findViewById(R.id.spinner)
+
         dogNameArea = v!!.findViewById(R.id.dogNameArea)
         alphaArea = v!!.findViewById(R.id.alphaArea)
         totalNumArea = v!!.findViewById(R.id.totalNumArea)
         totalDistanceArea = v!!.findViewById(R.id.totalDistanceArea)
         totalTimeArea = v!!.findViewById(R.id.totalTimeArea)
 
-        backMonth = v!!.findViewById(R.id.backMonth)
-        nextMonth = v!!.findViewById(R.id.nextMonth)
-        dateArea = v!!.findViewById(R.id.date)
-
-        val cal: Calendar = Calendar.getInstance()
-        val format = "yyyy년 MM월"
-        val sdf = SimpleDateFormat(format)
-        nowDate = sdf.format(cal.time)
-        dateArea.text = nowDate
-
-        val cal2 : Calendar = Calendar.getInstance()
-        val formatt = "yyyy.MM"
-        val sfd = SimpleDateFormat(formatt)
-        val date2 = sfd.format(cal2.time).split(".")
-        year = date2[0]
-        month = date2[1]
+        backDate = v!!.findViewById(R.id.backDate)
+        nextDate = v!!.findViewById(R.id.nextDate)
+        startDateArea = v!!.findViewById(R.id.startDateArea)
+        endDateArea = v!!.findViewById(R.id.endDateArea)
+        between = v!!.findViewById(R.id.between )
 
         walkRVAdapter = WalkReVAdapter(walkDataList)
         walkListView = v!!.findViewById(R.id.walkRecyclerView)
@@ -238,10 +399,349 @@ class WalkLogFragment : Fragment() {
         walkDogRecyclerView.layoutManager = layoutManager
         walkDogRecyclerView.adapter = dogListReVAdapter
 
-        showDate(myUid, year, month)
+        setDate(v!!, "주별")
+        showWeekData(myUid, startYear, startMonth, startDay, endYear, endMonth, endDay)
+        Log.d("partDate", "$startYear.$startMonth.$startDay $endYear.$endMonth.$endDay")
+        walkListView.visibility = VISIBLE
+        dogWalkListView.visibility = GONE
     }
 
-    private fun showDate(userId : String, year : String, month : String) {
+    private fun setDate(v : View, selectedMenu : String) {
+
+        when(selectedMenu) {
+            "주별" -> {
+                week(endDate.toString())
+
+                endDateArea.visibility = VISIBLE
+
+                val endDateSplit = endDateArea.text.toString().split(".")
+                endYear = endDateSplit[0]
+                endMonth = endDateSplit[1]
+                endDay = endDateSplit[2]
+
+                between.visibility = VISIBLE
+
+                startDateArea.visibility = VISIBLE
+
+                val startDateSplit = startDateArea.text.toString().split(".")
+                startYear = startDateSplit[0]
+                startMonth = startDateSplit[1]
+                startDay = startDateSplit[2]
+
+            }
+            "월별" -> {
+                val format = "yyyy년 MM월"
+                val formatt = "yyyy.MM"
+                val sdf = DateTimeFormatter.ofPattern(format)
+                val sfd = DateTimeFormatter.ofPattern(formatt)
+                endDateArea.text = endDate.format(sdf)
+                endDateArea.visibility = VISIBLE
+
+                val endDateSplit = endDate.format(sfd).toString().split(".")
+                endYear = endDateSplit[0]
+                endMonth = endDateSplit[1]
+
+                between.visibility = GONE
+                startDateArea.visibility = GONE
+            }
+            "연별" -> {
+                val format = "yyyy년"
+                val sdf = DateTimeFormatter.ofPattern(format)
+                endDateArea.text = endDate.format(sdf)
+                endDateArea.visibility = VISIBLE
+
+                val endDateSplit = endDateArea.text.toString().split("년")
+                endYear = endDateSplit[0]
+
+                between.visibility = GONE
+                startDateArea.visibility = GONE
+            }
+        }
+    }
+
+    private fun showWeekData(userId : String, startYear : String, startMonth : String, startDay : String, endYear : String, endMonth : String, endDay : String) {
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    walkDataList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
+                    walkMap.clear()
+                    sortedMap.clear()
+
+                    var totalNum = 0
+                    var totalDistance = 0.0
+                    var totalHour = 0
+                    var totalMinute = 0
+                    var totalSecond = 0
+
+                    for(dataModel in dataSnapshot.children) {
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(WalkModel::class.java)
+                        val date = item!!.date
+                        val dateSp = date.split(".")
+                        val nowYear = dateSp[0]
+                        val nowMonth = dateSp[1]
+                        val nowDay = dateSp[2]
+
+                        val startTime = item!!.startTime
+                        val startTimeSp = startTime.split(":")
+
+                        val dateTime = (dateSp[0] + dateSp[1] + dateSp[2] + startTimeSp[0] + startTimeSp[1])
+                        Log.d("dateTime", dateTime)
+
+                        val timeSp = item!!.time.split(":")
+
+                        if(startYear.toInt() == endYear.toInt() && startYear.toInt() == nowYear.toInt()) { // 일주일의 시작과 끝이 같은 연도일 경우
+                            if(startMonth.toInt() == endMonth.toInt() && startMonth.toInt() == nowMonth.toInt()) { // 일주일의 시작과 끝이 같은 달일 경우
+                                if(nowDay.toInt() >= startDay.toInt() && nowDay.toInt() <= endDay.toInt()) { // 일주일 사이에 기록된 산책 날짜 데이터 추가
+                                    walkMap[dateTime.toLong()] = item!!
+                                    totalNum += 1
+                                    totalDistance += item!!.distance.toFloat()
+                                    totalHour += timeSp[0].toInt()
+                                    totalMinute += timeSp[1].toInt()
+                                    totalSecond += timeSp[2].toInt()
+                                }
+                            } else if(startMonth.toInt() < endMonth.toInt()) { // 일주일의 시작과 끝이 다른 달일 경우
+                                if(startMonth.toInt() == nowMonth.toInt()) { // 일주일의 시작인 달과 같은 달일 경우
+                                    if(nowDay.toInt() >= startDay.toInt()) {
+                                        walkMap[dateTime.toLong()] = item!!
+                                        totalNum += 1
+                                        totalDistance += item!!.distance.toFloat()
+                                        totalHour += timeSp[0].toInt()
+                                        totalMinute += timeSp[1].toInt()
+                                        totalSecond += timeSp[2].toInt()
+                                    }
+                                } else if(nowMonth.toInt() == endMonth.toInt()) { // 일주일의 끝인 달과 같은 달일 경우
+                                    if(nowDay.toInt() <= endDay.toInt()) {
+                                        walkMap[dateTime.toLong()] = item!!
+                                        totalNum += 1
+                                        totalDistance += item!!.distance.toFloat()
+                                        totalHour += timeSp[0].toInt()
+                                        totalMinute += timeSp[1].toInt()
+                                        totalSecond += timeSp[2].toInt()
+                                    }
+                                }
+                            }
+                        } else if(startYear.toInt() < endYear.toInt()) { // 일주일의 시작과 끝이 다른 연도일 경우
+                            if(startMonth.toInt() == nowMonth.toInt()) { // 일주일의 시작인 달과 같은 달일 경우
+                                if(nowDay.toInt() >= startDay.toInt()) {
+                                    walkMap[dateTime.toLong()] = item!!
+                                    totalNum += 1
+                                    totalDistance += item!!.distance.toFloat()
+                                    totalHour += timeSp[0].toInt()
+                                    totalMinute += timeSp[1].toInt()
+                                    totalSecond += timeSp[2].toInt()
+                                }
+                            } else if(nowMonth.toInt() == endMonth.toInt()) { // 일주일의 끝인 달과 같은 달일 경우
+                                if(nowDay.toInt() <= endDay.toInt()) {
+                                    walkMap[dateTime.toLong()] = item!!
+                                    totalNum += 1
+                                    totalDistance += item!!.distance.toFloat()
+                                    totalHour += timeSp[0].toInt()
+                                    totalMinute += timeSp[1].toInt()
+                                    totalSecond += timeSp[2].toInt()
+                                }
+                            }
+                        }
+                    }
+
+                    totalNumArea.text = totalNum.toString()
+
+                    val df = DecimalFormat("#.##")
+                    df.roundingMode = RoundingMode.DOWN
+                    val roundoff = df.format(totalDistance)
+                    totalDistanceArea.text = roundoff + "km"
+
+                    var totalTime = ""
+                    var hourStr = ""
+                    var minuteStr = ""
+                    var secondStr =""
+
+                    if(totalSecond > 59) {
+                        totalMinute += 1
+                        totalSecond -= 60
+                    }
+                    if(totalMinute > 59) {
+                        totalMinute -= 60
+                        totalHour += 1
+                    }
+
+                    hourStr = if(totalHour < 10)
+                        "0$totalHour"
+                    else
+                        totalHour.toString()
+
+                    minuteStr = if(totalMinute < 10)
+                        "0$totalMinute"
+                    else
+                        totalMinute.toString()
+
+                    secondStr = if(totalSecond < 10)
+                        "0$totalSecond"
+                    else
+                        totalSecond.toString()
+
+                    totalTimeArea.text = "$hourStr:$minuteStr:$secondStr"
+
+                    sortedMap = sortMapByKey(walkMap)
+
+                    for((key, value) in sortedMap.entries) {
+                        walkDataList.add(value)
+                        Log.d("sortedMap", value.toString())
+                    }
+                    walkRVAdapter.notifyDataSetChanged() // 동기화
+
+                    Log.d("walkDataList", walkDataList.toString())
+                } catch (e: Exception) {
+                    Log.d(TAG, "산책 기록 삭제 완료")
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.walkRef.child(userId).addValueEventListener(postListener)
+    }
+
+    private fun showWeekSpecificData(userId : String, startYear : String, startMonth : String, startDay : String, endYear : String, endMonth : String, endDay : String, dogId : String) {
+
+        Log.d("getDate", "$userId$dogId")
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    dogWalkDataList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
+                    dogWalkMap.clear()
+                    dogSortedMap.clear()
+
+                    var totalNum = 0
+                    var totalDistance = 0.0
+                    var totalHour = 0
+                    var totalMinute = 0
+                    var totalSecond = 0
+
+                    for(dataModel in dataSnapshot.children) {
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(WalkDogModel::class.java)
+                        val date = item!!.date
+                        val dateSp = date.split(".")
+                        val nowYear = dateSp[0]
+                        val nowMonth = dateSp[1]
+                        val nowDay = dateSp[2]
+
+                        val startTime = item!!.startTime
+                        val startTimeSp = startTime.split(":")
+
+                        val dateTime = (dateSp[0] + dateSp[1] + dateSp[2] + startTimeSp[0] + startTimeSp[1])
+                        Log.d("dateTime", dateTime)
+
+                        val timeSp = item!!.time.split(":")
+
+                        if(nowYear.toInt() == startYear.toInt() && nowYear.toInt() == endYear.toInt()) { // 일주일 전이 같은 연도일 경우
+                            if(nowMonth.toInt() == startMonth.toInt() && nowMonth.toInt() == endMonth.toInt()) { // 일주일 전이 같은 달일 경우
+                                if(nowDay.toInt() in startDay.toInt()..endDay.toInt()) {
+                                    dogWalkMap[dateTime.toLong()] = item!!
+                                    totalNum += 1
+                                    totalDistance += item!!.distance.toFloat()
+                                    totalHour += timeSp[0].toInt()
+                                    totalMinute += timeSp[1].toInt()
+                                    totalSecond += timeSp[2].toInt()
+                                }
+                            } else if(nowMonth.toInt() < endMonth.toInt() && nowMonth.toInt() == startMonth.toInt()) { // 일주일 전이 전달일 경우
+                                if(nowDay.toInt() >= startDay.toInt()) {
+                                    dogWalkMap[dateTime.toLong()] = item!!
+                                    totalNum += 1
+                                    totalDistance += item!!.distance.toFloat()
+                                    totalHour += timeSp[0].toInt()
+                                    totalMinute += timeSp[1].toInt()
+                                    totalSecond += timeSp[2].toInt()
+                                }
+                            } else if(nowMonth.toInt() == endMonth.toInt() && nowMonth.toInt() > startMonth.toInt()) { // 일주일 전이 이번달일 경우
+                                if(nowDay.toInt() <= endDay.toInt()) {
+                                    dogWalkMap[dateTime.toLong()] = item!!
+                                    totalNum += 1
+                                    totalDistance += item!!.distance.toFloat()
+                                    totalHour += timeSp[0].toInt()
+                                    totalMinute += timeSp[1].toInt()
+                                    totalSecond += timeSp[2].toInt()
+                                }
+                            }
+                        } else if((nowYear.toInt() < endYear.toInt()) && nowYear.toInt() == endYear.toInt()) { // 일주일 전이 전년도일 경우
+                            if(nowMonth.toInt() == startMonth.toInt() && nowDay.toInt() >= startDay.toInt()) {
+                                dogWalkMap[dateTime.toLong()] = item!!
+                                totalNum += 1
+                                totalDistance += item!!.distance.toFloat()
+                                totalHour += timeSp[0].toInt()
+                                totalMinute += timeSp[1].toInt()
+                                totalSecond += timeSp[2].toInt()
+                            }
+                        }
+                    }
+
+                    totalNumArea.text = totalNum.toString()
+
+                    val df = DecimalFormat("#.##")
+                    df.roundingMode = RoundingMode.DOWN
+                    val roundoff = df.format(totalDistance)
+                    totalDistanceArea.text = roundoff + "km"
+
+                    var totalTime = ""
+                    var hourStr = ""
+                    var minuteStr = ""
+                    var secondStr =""
+
+                    if(totalSecond > 59) {
+                        totalMinute += 1
+                        totalSecond -= 60
+                    }
+                    if(totalMinute > 59) {
+                        totalMinute -= 60
+                        totalHour += 1
+                    }
+
+                    hourStr = if(totalHour < 10)
+                        "0$totalHour"
+                    else
+                        totalHour.toString()
+
+                    minuteStr = if(totalMinute < 10)
+                        "0$totalMinute"
+                    else
+                        totalMinute.toString()
+
+                    secondStr = if(totalSecond < 10)
+                        "0$totalSecond"
+                    else
+                        totalSecond.toString()
+
+                    totalTimeArea.text = "$hourStr:$minuteStr:$secondStr"
+
+                    dogSortedMap = sortMapByKey2(dogWalkMap)
+
+                    for((key, value) in dogSortedMap.entries) {
+                        dogWalkDataList.add(value)
+                        Log.d("dogSortedMap", value.toString())
+                    }
+                    dogWalkRVAdapter.notifyDataSetChanged() // 동기화
+
+                    Log.d("walkDataList", dogWalkDataList.toString())
+                } catch (e: Exception) {
+                    Log.d(TAG, "산책 기록 삭제 완료")
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.walkDogRef.child(userId).child(dogId).addValueEventListener(postListener)
+    }
+
+    private fun showMonthData(userId : String, year : String, month : String) {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
@@ -269,11 +769,12 @@ class WalkLogFragment : Fragment() {
                         val startTimeSp = startTime.split(":")
 
                         val dateTime = (dateSp[2] + startTimeSp[0] + startTimeSp[1])
+                        Log.d("dateTime", dateTime)
 
                         val timeSp = item!!.time.split(":")
 
                         if(year.toInt() == nowYear.toInt() && month.toInt() == nowMonth.toInt()) {
-                            walkMap[dateTime.toInt()] = item!!
+                            walkMap[dateTime.toLong()] = item!!
                             sortedMap = sortMapByKey(walkMap)
 
                             totalNum += 1
@@ -342,7 +843,7 @@ class WalkLogFragment : Fragment() {
         FBRef.walkRef.child(userId).addValueEventListener(postListener)
     }
 
-    private fun showSpecificDate(userId : String, year : String, month : String, dogId : String) {
+    private fun showMonthSpecificData(userId : String, year : String, month : String, dogId : String) {
 
         Log.d("getDate", "$userId$dogId")
 
@@ -380,7 +881,216 @@ class WalkLogFragment : Fragment() {
                         val timeSp = item!!.time.split(":")
 
                         if(year.toInt() == nowYear.toInt() && month.toInt() == nowMonth.toInt()) {
-                            dogWalkMap[dateTime.toInt()] = item!!
+                            dogWalkMap[dateTime.toLong()] = item!!
+                            dogSortedMap = sortMapByKey2(dogWalkMap)
+
+                            totalNum += 1
+                            totalDistance += item!!.distance.toFloat()
+                            totalHour += timeSp[0].toInt()
+                            totalMinute += timeSp[1].toInt()
+                            totalSecond += timeSp[2].toInt()
+                        }
+                    }
+
+                    totalNumArea.text = totalNum.toString()
+
+                    val df = DecimalFormat("#.##")
+                    df.roundingMode = RoundingMode.DOWN
+                    val roundoff = df.format(totalDistance)
+                    totalDistanceArea.text = roundoff + "km"
+
+                    var totalTime = ""
+                    var hourStr = ""
+                    var minuteStr = ""
+                    var secondStr =""
+
+                    if(totalSecond > 59) {
+                        totalMinute += 1
+                        totalSecond -= 60
+                    }
+                    if(totalMinute > 59) {
+                        totalMinute -= 60
+                        totalHour += 1
+                    }
+
+                    hourStr = if(totalHour < 10)
+                        "0$totalHour"
+                    else
+                        totalHour.toString()
+
+                    minuteStr = if(totalMinute < 10)
+                        "0$totalMinute"
+                    else
+                        totalMinute.toString()
+
+                    secondStr = if(totalSecond < 10)
+                        "0$totalSecond"
+                    else
+                        totalSecond.toString()
+
+                    totalTimeArea.text = "$hourStr:$minuteStr:$secondStr"
+
+                    for((key, value) in dogSortedMap.entries) {
+                        dogWalkDataList.add(value)
+                        Log.d("dogSortedMap", value.toString())
+                    }
+                    dogWalkRVAdapter.notifyDataSetChanged() // 동기화
+
+                    Log.d("walkDataList", dogWalkDataList.toString())
+                } catch (e: Exception) {
+                    Log.d(TAG, "산책 기록 삭제 완료")
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.walkDogRef.child(userId).child(dogId).addValueEventListener(postListener)
+    }
+
+    private fun showYearData(userId : String, year : String) {
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    walkDataList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
+                    walkMap.clear()
+                    sortedMap.clear()
+
+                    var totalNum = 0
+                    var totalDistance = 0.0
+                    var totalHour = 0
+                    var totalMinute = 0
+                    var totalSecond = 0
+
+                    for(dataModel in dataSnapshot.children) {
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(WalkModel::class.java)
+                        val date = item!!.date
+                        val dateSp = date.split(".")
+                        val nowYear = dateSp[0]
+                        val nowMonth = dateSp[1]
+                        val nowDate = dateSp[2]
+
+                        val startTime = item!!.startTime
+                        val startTimeSp = startTime.split(":")
+
+                        val dateTime = (dateSp[0] + dateSp[1] + dateSp[2] + startTimeSp[0] + startTimeSp[1])
+                        Log.d("dateTime", dateTime)
+
+                        val timeSp = item!!.time.split(":")
+
+                        if(year.toInt() == nowYear.toInt()) {
+                            walkMap[dateTime.toLong()] = item!!
+                            sortedMap = sortMapByKey(walkMap)
+
+                            totalNum += 1
+                            totalDistance += item!!.distance.toFloat()
+                            totalHour += timeSp[0].toInt()
+                            totalMinute += timeSp[1].toInt()
+                            totalSecond += timeSp[2].toInt()
+                        }
+                    }
+
+                    totalNumArea.text = totalNum.toString()
+
+                    val df = DecimalFormat("#.##")
+                    df.roundingMode = RoundingMode.DOWN
+                    val roundoff = df.format(totalDistance)
+                    totalDistanceArea.text = roundoff + "km"
+
+                    var totalTime = ""
+                    var hourStr = ""
+                    var minuteStr = ""
+                    var secondStr =""
+
+                    if(totalSecond > 59) {
+                        totalMinute += 1
+                        totalSecond -= 60
+                    }
+                    if(totalMinute > 59) {
+                        totalMinute -= 60
+                        totalHour += 1
+                    }
+
+                    hourStr = if(totalHour < 10)
+                        "0$totalHour"
+                    else
+                        totalHour.toString()
+
+                    minuteStr = if(totalMinute < 10)
+                        "0$totalMinute"
+                    else
+                        totalMinute.toString()
+
+                    secondStr = if(totalSecond < 10)
+                        "0$totalSecond"
+                    else
+                        totalSecond.toString()
+
+                    totalTimeArea.text = "$hourStr:$minuteStr:$secondStr"
+
+                    for((key, value) in sortedMap.entries) {
+                        walkDataList.add(value)
+                        Log.d("sortedMap", value.toString())
+                    }
+                    walkRVAdapter.notifyDataSetChanged() // 동기화
+
+                    Log.d("walkDataList", walkDataList.toString())
+                } catch (e: Exception) {
+                    Log.d(TAG, "산책 기록 삭제 완료")
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.walkRef.child(userId).addValueEventListener(postListener)
+    }
+
+    private fun showYearSpecificData(userId : String, year : String, dogId : String) {
+
+        Log.d("getDate", "$userId$dogId")
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    dogWalkDataList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
+                    dogWalkMap.clear()
+                    dogSortedMap.clear()
+
+                    var totalNum = 0
+                    var totalDistance = 0.0
+                    var totalHour = 0
+                    var totalMinute = 0
+                    var totalSecond = 0
+
+                    for(dataModel in dataSnapshot.children) {
+                        Log.d("showSpecificDate", "played")
+                        Log.d("showSpecificDate", dataModel.toString())
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(WalkDogModel::class.java)
+                        val date = item!!.date
+                        val dateSp = date.split(".")
+                        val nowYear = dateSp[0]
+                        val nowMonth = dateSp[1]
+                        val nowDate = dateSp[2]
+
+                        val startTime = item!!.startTime
+                        val startTimeSp = startTime.split(":")
+
+                        val dateTime = (dateSp[0] + dateSp[1] + dateSp[2] + startTimeSp[0] + startTimeSp[1])
+                        Log.d("dateTime", dateTime)
+
+                        val timeSp = item!!.time.split(":")
+
+                        if(year.toInt() == nowYear.toInt()) {
+                            dogWalkMap[dateTime.toLong()] = item!!
                             dogSortedMap = sortMapByKey2(dogWalkMap)
 
                             totalNum += 1
@@ -602,12 +1312,12 @@ class WalkLogFragment : Fragment() {
     }
 
 
-    private fun sortMapByKey(map: MutableMap<Int, WalkModel>): LinkedHashMap<Int, WalkModel> { // 시간순으로 정렬
+    private fun sortMapByKey(map: MutableMap<Long, WalkModel>): LinkedHashMap<Long, WalkModel> { // 시간순으로 정렬
         val entries = LinkedList(map.entries)
 
         entries.sortByDescending { it.key }
 
-        val result = LinkedHashMap<Int, WalkModel>()
+        val result = LinkedHashMap<Long, WalkModel>()
         for(entry in entries) {
             result[entry.key] = entry.value
         }
@@ -615,16 +1325,42 @@ class WalkLogFragment : Fragment() {
         return result
     }
 
-    private fun sortMapByKey2(map: MutableMap<Int, WalkDogModel>): LinkedHashMap<Int, WalkDogModel> { // 시간순으로 정렬
+    private fun sortMapByKey2(map: MutableMap<Long, WalkDogModel>): LinkedHashMap<Long, WalkDogModel> { // 시간순으로 정렬
         val entries = LinkedList(map.entries)
 
         entries.sortByDescending { it.key }
 
-        val result = LinkedHashMap<Int, WalkDogModel>()
+        val result = LinkedHashMap<Long, WalkDogModel>()
         for(entry in entries) {
             result[entry.key] = entry.value
         }
 
         return result
+    }
+
+    fun week(eventDate: String) { // 선택된 날짜가 포함된 1주일간의 날짜 범위를 구하는 함수
+        val dateArray = eventDate.split("-").toTypedArray()
+
+        val cal = Calendar.getInstance()
+        cal[dateArray[0].toInt(), dateArray[1].toInt() - 1] = dateArray[2].toInt()
+
+        cal.firstDayOfWeek = Calendar.SUNDAY // 일주일의 첫날을 일요일로 지정
+
+        val dayOfWeek = cal[Calendar.DAY_OF_WEEK] - cal.firstDayOfWeek // 시작일과 특정 날짜의 차이를 구함
+
+        cal.add(Calendar.DAY_OF_MONTH, -dayOfWeek) // 해당 주차의 첫째날 지정
+
+        val sf = SimpleDateFormat("yyyy.MM.dd")
+
+        val startDt = sf.format(cal.time) // 해당 주차의 첫째 날짜
+
+        cal.add(Calendar.DAY_OF_MONTH, 6)  // 해당 주차의 마지막 날짜 지정
+
+        val endDt = sf.format(cal.time) // 해당 주차의 마지막 날짜
+
+        startDateArea.text = startDt.toString()
+        endDateArea.text = endDt.toString()
+
+        Log.d("getWeekDate", "특정 날짜 = [$eventDate] >> 시작 날짜 = [$startDt], 종료 날짜 = [$endDt]")
     }
 }
