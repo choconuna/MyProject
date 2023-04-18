@@ -1,6 +1,7 @@
 package org.techtown.myproject.utils
 
 class DogModel (
+    val dogId : String = "", // 반려견 id
     val dogProfileFile : String = "", // 반려견 프로필 이미지
     val dogName : String = "", // 반려견 이름
     val dogBirthDate : String = "", // 반려견 생일

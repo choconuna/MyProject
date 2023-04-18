@@ -141,8 +141,8 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
                 FBRef.walkRef.child(userId).child(key).setValue(WalkModel(userId, key, dogList!!.size.toString(), today, currentTimeFormat, endTimeFormat, timeArea.text.toString(), distance.toString()))
 
                 for (i in dogList.indices) {
-                    var childKey = FBRef.walkDogRef.child(userId).child(key).push().key.toString() // 키 값을 먼저 받아옴
-                    FBRef.walkDogRef.child(userId).child(key).child(childKey).setValue(WalkDogModel(userId, key, childKey, dogList!![i]))
+                    var childKey = FBRef.walkDogRef.child(userId).child(dogList!![i]).push().key.toString() // 키 값을 먼저 받아옴
+                    FBRef.walkDogRef.child(userId).child(dogList!![i]).child(childKey).setValue(WalkDogModel(userId, key, childKey, dogList!![i].trim(), today, currentTimeFormat, endTimeFormat, timeArea.text.toString(), distance.toString()))
                 }
 
                 Toast.makeText(this, "산책 기록이 저장되었습니다!", Toast.LENGTH_SHORT).show()

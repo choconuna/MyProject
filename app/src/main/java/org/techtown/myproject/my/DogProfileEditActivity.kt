@@ -320,6 +320,6 @@ class DogProfileEditActivity : AppCompatActivity() {
     }
 
     private fun editDogProfile(key : String) {
-        FBRef.dogRef.child(userId).child(key).setValue(DogModel(dogProfileFile, dogName, dogBirthDate, dogSex, dogSpecies, dogWeight, neutralization)) // 반려견 정보 데이터베이스에 저장
+        FBRef.dogRef.child(userId).child(key).setValue(DogModel(key, dogProfileFile, dogName, dogBirthDate, dogSex, dogSpecies, dogWeight, neutralization)) // 반려견 정보 데이터베이스에 저장
     }
 }

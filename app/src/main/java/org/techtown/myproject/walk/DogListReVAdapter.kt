@@ -36,8 +36,6 @@ class DogListReVAdapter(val dogList : ArrayList<DogModel>):
     override fun onBindViewHolder(holder: DogViewHolder, position: Int) {
         val myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
 
-
-
         val imageFile = dogList[position].dogProfileFile
         val storageReference = Firebase.storage.reference.child(imageFile)
         val imageView = holder.view?.findViewById<ImageView>(R.id.dogImage)

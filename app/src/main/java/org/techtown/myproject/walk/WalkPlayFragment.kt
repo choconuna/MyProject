@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +39,8 @@ class WalkPlayFragment : Fragment() {
 
     private lateinit var walkStartBtn: Button // 산책하기 버튼
 
+    private lateinit var dogNameArea : TextView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,9 +57,11 @@ class WalkPlayFragment : Fragment() {
                 // 클릭 시 이벤트 작성
                 if(isSelected[dogKeyList[position]] == false) { // 반려견이 선택되었을 경우
                     isSelected[dogKeyList[position]] = true // 선택되었음을 표시
+                    getSelectedDogName(dogKeyList[position].trim())
                     Log.d("isSelected", isSelected.toString())
                 } else if(isSelected[dogKeyList[position]] == true) { // 선택되었음에도 다시 선택했을 경우
                     isSelected[dogKeyList[position]] = false // 선택 취소되었음을 표시
+                    removeSelectedDogName(dogKeyList[position].trim())
                     Log.d("isSelected", isSelected.toString())
                 }
             }
@@ -107,6 +112,9 @@ class WalkPlayFragment : Fragment() {
     }
 
     private fun setData(v : View) {
+
+        dogNameArea = v.findViewById(R.id.dogNameArea)
+
         walkStartBtn = v.findViewById(R.id.walkStartBtn)
 
         walkDogReVAdapter = WalkDogReVAdapter(walkDogReDataList)
@@ -139,6 +147,52 @@ class WalkPlayFragment : Fragment() {
                 walkDogReVAdapter.notifyDataSetChanged()
 
                 Log.d(TAG, walkDogReDataList.toString())
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.dogRef.child(myUid).addValueEventListener(postListener)
+    }
+
+    private fun getSelectedDogName(dogId : String) { // 파이어베이스로부터 반려견 이름 불러오기
+        Log.d("getSelectedDogName", dogId + "키")
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                for(dataModel in dataSnapshot.children) {
+                    Log.d(TAG, dataModel.toString())
+                    val item = dataModel.getValue(DogModel::class.java)
+
+                    if(item!!.dogId == dogId) {
+                        var dogNames = dogNameArea.text.toString() + item!!.dogName + " "
+                        dogNameArea.text = dogNames
+                    }
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.dogRef.child(myUid).addValueEventListener(postListener)
+    }
+
+    private fun removeSelectedDogName(dogId : String) { // 파이어베이스로부터 반려견 이름 불러와 지우기
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                for(dataModel in dataSnapshot.children) {
+                    Log.d(TAG, dataModel.toString())
+                    val item = dataModel.getValue(DogModel::class.java)
+
+                    if(item!!.dogId == dogId) {
+                        dogNameArea.text = dogNameArea.text.toString().replace(item!!.dogName, "")
+                    }
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
