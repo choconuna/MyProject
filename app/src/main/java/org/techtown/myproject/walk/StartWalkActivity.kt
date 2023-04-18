@@ -54,6 +54,7 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var dogList : Array<String>
 
+    private lateinit var runnable : Runnable
     val handler = Handler()
     var timeValue = 0
 
@@ -87,9 +88,7 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mLocationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE) // 위치 반환하는 FusedLocationSource 생성
 
-        setData()
-
-        val runnable = object : Runnable { // 1초마다 실행되게 하는 핸들러
+        runnable = object : Runnable { // 1초마다 실행되게 하는 핸들러
             override fun run() {
                 timeValue ++
                 //TextView 업데이트 하기
@@ -99,6 +98,8 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
                 handler.postDelayed(this, 1000)
             }
         }
+
+        setData()
 
         playBtn.setOnClickListener { // 시작 버튼 클릭 시
             playBtn.visibility = GONE
@@ -124,7 +125,7 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
             isPlaying = false
 
             var timeSp = timeArea.text.toString().split(":")
-            var minute = timeSp[2].toInt() // 분 구하기
+            var minute = timeSp[1].toInt() // 분 구하기
 
             if(minute >= 1) {
 
@@ -162,6 +163,13 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
 
         distanceArea = findViewById(R.id.distanceArea)
         timeArea = findViewById(R.id.timeArea)
+
+        playBtn.visibility = GONE
+        pauseBtn.visibility = VISIBLE
+
+        isPlaying = true
+
+        handler.post(runnable)
     }
 
     private fun timeToText(time: Int = 0) : String?{ // 시간을 문자열로 변환

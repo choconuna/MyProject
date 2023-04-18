@@ -54,28 +54,6 @@ class WalkReVAdapter(val walkList : ArrayList<WalkModel>):
         dogRecyclerView.layoutManager = layoutManager
         dogRecyclerView.adapter = dogListReVAdapter
 
-//        var dogIdList : MutableList<String> = mutableListOf()
-//
-//        val dogPostListener = object : ValueEventListener {
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                try {
-//                    dogIdList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
-//
-//                    for(dataModel in dataSnapshot.children) {
-//                        val item = dataModel.getValue(DogModel::class.java)
-//                        dogIdList.add(item!!.dogId)
-//                    }
-//
-//                    Log.d("dogIdList", dogIdList.toString())
-//                } catch (e: Exception) {
-//                }
-//            }
-//
-//            override fun onCancelled(databaseError: DatabaseError) {
-//            }
-//        }
-//        FBRef.dogRef.child(myUid).addValueEventListener(dogPostListener)
-
         val walkId = walkList[position].walkId
 
         val postListener = object : ValueEventListener {
@@ -93,7 +71,7 @@ class WalkReVAdapter(val walkList : ArrayList<WalkModel>):
                                     // dataModel.key
                                     val item = dataModel.getValue(WalkDogModel::class.java)
                                     if(item!!.walkId == walkId) {
-                                        dogReDataList.add(item!!.dogId)
+                                        dogReDataList.add(item!!.dogId) // 해당 산책 기록에서 함께한 반려견의 id를 리스트에 포함 -> 반려견 프로필 사진을 띄우기 위함
                                     }
                                 }
 
@@ -113,28 +91,6 @@ class WalkReVAdapter(val walkList : ArrayList<WalkModel>):
         }
         FBRef.dogRef.child(myUid).addValueEventListener(postListener)
 
-//        val postListener = object : ValueEventListener {
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                try {
-//                    dogReDataList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
-//
-//                    for(dataModel in dataSnapshot.children) {
-//                        val item = dataModel.getValue(WalkDogModel::class.java)
-//                        dogReDataList.add(item!!.dogId)
-//                    }
-//
-//                    dogListReVAdapter.notifyDataSetChanged() // 동기화
-//                    Log.d("dogReDataList", dogReDataList.toString())
-//                } catch (e: Exception) {
-//                }
-//            }
-//
-//            override fun onCancelled(databaseError: DatabaseError) {
-//            }
-//        }
-//
-//        for(i in 0 until dogIdList.size)
-//        FBRef.walkDogRef.child(myUid).child(dogIdList[i]).child(walkList[position].walkId).addValueEventListener(postListener)
 
         holder!!.dateArea!!.text = walkList[position].date
 
