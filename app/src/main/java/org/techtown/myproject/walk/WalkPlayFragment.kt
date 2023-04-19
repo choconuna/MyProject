@@ -1,27 +1,49 @@
 package org.techtown.myproject.walk
 
 
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.*
+import android.location.LocationListener
+import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.annotations.SerializedName
 import org.techtown.myproject.R
 import org.techtown.myproject.my.DogProfileInActivity
 import org.techtown.myproject.my.DogReVAdapter
 import org.techtown.myproject.utils.DogModel
 import org.techtown.myproject.utils.FBRef
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
+import java.io.IOException
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class WalkPlayFragment : Fragment() {
@@ -29,6 +51,28 @@ class WalkPlayFragment : Fragment() {
     lateinit var myUid: String
 
     private val TAG = WalkPlayFragment::class.java.simpleName
+
+    private var mFusedLocationProviderClient: FusedLocationProviderClient? = null // 현재 위치를 가져오기 위한 변수
+    lateinit var mLastLocation: Location // 위치 값을 가지고 있는 객체
+    private lateinit var mLocationRequest: LocationRequest // 위치 정보 요청의 매개변수를 저장하는
+    private val REQUEST_PERMISSION_LOCATION = 10
+
+    var BaseUrl = "https://api.openweathermap.org/data/2.5/"
+    var AppId = "0fd049ed291f9069c321e2d10a9c2d4b"
+    var lat = ""
+    var lon = ""
+
+    private lateinit var hour : String
+
+    lateinit var locationArea : TextView
+    lateinit var refresh : ImageView
+    lateinit var weatherImage : ImageView
+    lateinit var weatherArea : TextView
+    lateinit var nowTempArea : TextView
+    lateinit var humidityArea : TextView
+    lateinit var windSpeedArea : TextView
+    lateinit var minTempArea : TextView
+    lateinit var maxTempArea : TextView
 
     lateinit var walkDogRecyclerView: RecyclerView
     private val walkDogReDataList = ArrayList<DogModel>() // 각 반려견의 프로필을 넣는 리스트
@@ -41,6 +85,11 @@ class WalkPlayFragment : Fragment() {
 
     private lateinit var dogNameArea : TextView
 
+    lateinit var retrofit : Retrofit
+
+    private lateinit var mLocationManager: LocationManager
+    private lateinit var mLocationListener: LocationListener
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,6 +99,29 @@ class WalkPlayFragment : Fragment() {
         myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
 
         setData(v!!)
+
+        mLocationRequest =  LocationRequest.create().apply {
+
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
+        }
+
+        if (checkPermissionForLocation(v!!.context)) {
+            startLocationUpdates()
+        }
+
+        refresh.setOnClickListener {
+            startLocationUpdates()
+        }
+
+        startLocationUpdates()
+
+        //Create Retrofit Builder
+        retrofit = Retrofit.Builder()
+            .baseUrl(BaseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
         getFBDogData()
 
         walkDogReVAdapter.setItemClickListener(object: WalkDogReVAdapter.OnItemClickListener{
@@ -107,11 +179,20 @@ class WalkPlayFragment : Fragment() {
             }
         }
 
-
         return v
     }
 
     private fun setData(v : View) {
+
+        locationArea = v.findViewById(R.id.locationArea)
+        refresh = v.findViewById(R.id.refresh)
+        weatherImage = v.findViewById(R.id.weatherImage)
+        weatherArea = v.findViewById(R.id.weatherArea)
+        nowTempArea = v.findViewById(R.id.nowTempArea)
+        humidityArea = v.findViewById(R.id.humidityArea)
+        windSpeedArea = v.findViewById(R.id.windSpeedArea)
+        minTempArea = v.findViewById(R.id.minTempArea)
+        maxTempArea = v.findViewById(R.id.maxTempArea)
 
         dogNameArea = v.findViewById(R.id.dogNameArea)
 
@@ -202,4 +283,262 @@ class WalkPlayFragment : Fragment() {
         }
         FBRef.dogRef.child(myUid).addValueEventListener(postListener)
     }
+
+    private fun startLocationUpdates() {
+
+        //FusedLocationProviderClient의 인스턴스를 생성.
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        // 기기의 위치에 관한 정기 업데이트를 요청하는 메서드 실행
+        // 지정한 루퍼 스레드(Looper.myLooper())에서 콜백(mLocationCallback)으로 위치 업데이트를 요청
+        mFusedLocationProviderClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
+    }
+
+    // 시스템으로부터 위치 정보를 콜백으로 받음
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+
+            // 시스템에서 받은 location 정보를 onLocationChanged()에 전달
+            locationResult.lastLocation
+            onLocationChanged(locationResult.lastLocation)
+        }
+    }
+
+    // 시스템으로 부터 받은 위치 정보를 화면에 갱신해주는 메소드
+    fun onLocationChanged(location: Location) {
+        mLastLocation = location
+
+        Toast.makeText(context, "호출", Toast.LENGTH_SHORT).show()
+
+        val g = Geocoder(context)
+        var address: MutableList<Address> = mutableListOf()
+
+        try {
+            address = g.getFromLocation(location.latitude, location.longitude, 10)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        if (address != null) {
+            if (address.size == 0) {
+                Log.d("getLocation", "위치 찾기 오류")
+            } else {
+                Log.d("getLocation", address[0].toString())
+                locationArea.text = address[0].adminArea + " " + address[0].thoroughfare
+            }
+        }
+
+        lat = mLastLocation.latitude.toString() // 갱신된 위도
+        lon  = mLastLocation.longitude.toString() // 갱신된 경도
+        Log.d("getLocation", "$lat $lon")
+
+        var nowTime = System.currentTimeMillis()
+        val date = Date(nowTime)
+        val mFormat = SimpleDateFormat("HH")
+        val time = mFormat.format(date)
+        hour = time.toString()
+        Log.d("nowHour", time.toString())
+
+        val service = retrofit.create(WeatherService::class.java)
+        Log.d("getLocation", "$lat $lon")
+        val call = service.getCurrentWeatherData(lat, lon, AppId)
+        call.enqueue(object : Callback<WeatherResponse> {
+            override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                Log.d("getWeather", "result :" + t.message)
+            }
+
+            override fun onResponse(
+                call: Call<WeatherResponse>,
+                response: Response<WeatherResponse>
+            ) {
+                if(response.code() == 200){
+                    val weatherResponse = response.body()
+                    Log.d("getWeather", "result: " + weatherResponse.toString())
+                    var cTemp =  weatherResponse!!.main!!.temp - 273.15  //켈빈을 섭씨로 변환
+                    var minTemp = weatherResponse!!.main!!.temp_min - 273.15
+                    var maxTemp = weatherResponse!!.main!!.temp_max - 273.15
+                    val stringBuilder =
+                        "현재 기온: " + cTemp.toString().format("###.#") + "°\n" +
+                                "최저 기온: " + minTemp + "\n" +
+                                "최고 기온: " + maxTemp + "\n" +
+                                "하늘" + weatherResponse!!.weather!![0].description + "\n" +
+                                "풍속: " + weatherResponse!!.wind!!.speed+ "\n" +
+                                "일출 시간: " + weatherResponse!!.sys!!.sunrise + "\n" +
+                                "일몰 시간: " + weatherResponse!!.sys!!.sunset + "\n"+
+                                "아이콘: " + weatherResponse!!.weather!![0].icon + "\n" +
+                                "습도: " + weatherResponse!!.main!!.humidity + "%"
+
+                    transferWeather(weatherResponse!!.weather!![0].description!!, hour)
+
+                    val df = DecimalFormat("#.#")
+                    df.roundingMode = RoundingMode.DOWN
+                    val cTempOff = df.format(cTemp.toFloat())
+                    nowTempArea.text = "$cTempOff°"
+
+                    val minTempOff = df.format(minTemp.toFloat())
+                    minTempArea.text = "$minTempOff°"
+
+                    val maxTempOff = df.format(maxTemp.toFloat())
+                    maxTempArea.text = "$maxTempOff°"
+
+                    humidityArea.text = weatherResponse!!.main!!.humidity.toString() + "%"
+
+                    windSpeedArea.text = weatherResponse!!.wind!!.speed.toString() + "m/s"
+                }
+            }
+        })
+    }
+
+    private fun transferWeather(weather : String, hour : String) {
+        when (weather) {
+            "haze" -> {
+                weatherArea.text = "안개"
+                weatherImage.setImageResource(R.drawable.fog)
+            }
+            "fog" -> {
+                weatherArea.text = "안개"
+                weatherImage.setImageResource(R.drawable.fog)
+            }
+            "clouds" -> {
+                weatherArea.text = "구름"
+                weatherImage.setImageResource(R.drawable.clear_cloud)
+            }
+            "few clouds" -> {
+                weatherArea.text = "구름 조금"
+                weatherImage.setImageResource(R.drawable.clear_cloud)
+            }
+            "scattered clouds" -> {
+                weatherArea.text = "구름 낌"
+                weatherImage.setImageResource(R.drawable.clear_cloud)
+            }
+            "broken clouds" -> {
+                weatherArea.text = "구름 많음"
+                weatherImage.setImageResource(R.drawable.overcast)
+            }
+            "overcast clouds" -> {
+                weatherArea.text = "구름 많음"
+                weatherImage.setImageResource(R.drawable.overcast)
+            }
+            "clear sky" -> {
+                weatherArea.text = "맑음"
+                weatherImage.setImageResource(R.drawable.clear)
+            }
+            "shower rain" -> {
+                weatherArea.text = "소나기"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.shower)
+                else
+                    weatherImage.setImageResource(R.drawable.shower_rain)
+            }
+            "rain" -> {
+                weatherArea.text = "비"
+                weatherImage.setImageResource(R.drawable.rain)
+            }
+            "thunderstorm" -> {
+                weatherArea.text = "뇌우"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.night_thunderstorm)
+                else
+                    weatherImage.setImageResource(R.drawable.thunderstorm)
+            }
+            "snow" -> {
+                weatherArea.text = "눈"
+                weatherImage.setImageResource(R.drawable.snows)
+            }
+            "mist" -> {
+                weatherArea.text = "엷은 안개"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.haze)
+                else
+                    weatherImage.setImageResource(R.drawable.mist)
+            }
+       }
+    }
+
+    // 위치 권한이 있는지 확인하는 메서드
+    private fun checkPermissionForLocation(context: Context): Boolean {
+        // Android 6.0 Marshmallow 이상에서는 위치 권한에 추가 런타임 권한이 필요
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (context.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                true
+            } else {
+                // 권한이 없으므로 권한 요청 알림 보내기
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSION_LOCATION)
+                false
+            }
+        } else {
+            true
+        }
+    }
+
+    // 사용자에게 권한 요청 후 결과에 대한 처리 로직
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSION_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startLocationUpdates()
+
+            } else {
+                Log.d("ttt", "onRequestPermissionsResult() _ 권한 허용 거부")
+                Toast.makeText(context, "권한이 없어 해당 기능을 실행할 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+}
+
+interface WeatherService{
+
+    @GET("weather?")
+    fun getCurrentWeatherData(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("appid") appid: String) :
+            Call<WeatherResponse>
+}
+
+class WeatherResponse {
+    @SerializedName("weather") var weather = ArrayList<Weather>()
+    @SerializedName("main") var main: Main? = null
+    @SerializedName("wind") var wind : Wind? = null
+    @SerializedName("sys") var sys: Sys? = null
+}
+
+class Weather {
+    @SerializedName("id") var id: Int = 0
+    @SerializedName("main") var main : String? = null
+    @SerializedName("description") var description: String? = null
+    @SerializedName("icon") var icon : String? = null
+}
+
+class Main {
+    @SerializedName("temp")
+    var temp: Float = 0.toFloat()
+    @SerializedName("humidity")
+    var humidity: Float = 0.toFloat()
+    @SerializedName("pressure")
+    var pressure: Float = 0.toFloat()
+    @SerializedName("temp_min")
+    var temp_min: Float = 0.toFloat()
+    @SerializedName("temp_max")
+    var temp_max: Float = 0.toFloat()
+
+}
+
+class Wind {
+    @SerializedName("speed")
+    var speed: Float = 0.toFloat()
+    @SerializedName("deg")
+    var deg: Float = 0.toFloat()
+}
+
+class Sys {
+    @SerializedName("country")
+    var country: String? = null
+    @SerializedName("sunrise")
+    var sunrise: Long = 0
+    @SerializedName("sunset")
+    var sunset: Long = 0
 }

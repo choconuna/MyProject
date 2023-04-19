@@ -3,6 +3,8 @@ package org.techtown.myproject.walk
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -24,6 +26,7 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.*
+import java.io.IOException
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -50,7 +53,7 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var pauseBtn : Button
     private lateinit var stopBtn : Button
 
-    private var isPlaying : Boolean = false
+    private var isPlaying : Boolean = true
 
     private lateinit var dogList : Array<String>
 
@@ -191,10 +194,6 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(naverMap: NaverMap) {
 
-//        var marker = Marker()
-//        marker.position = LatLng(37.5670135, 126.9783740)
-//        marker.map = naverMap
-
         mNaverMap = naverMap // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         mNaverMap.locationSource = mLocationSource
         mNaverMap.locationTrackingMode = LocationTrackingMode.Follow
@@ -240,11 +239,29 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
             interval = 1000 //1초에 한번씩 GPS 요청
         }
 
+        val g = Geocoder(this)
+        var address: MutableList<Address> = mutableListOf()
+
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 for ((i, location) in locationResult.locations.withIndex()) {
                     Log.d("nowLocation", "${location.latitude}, ${location.longitude}")
+
+                    try {
+                        address = g.getFromLocation(location.latitude, location.longitude, 10)
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+
+                    if (address != null) {
+                        if (address.size == 0) {
+                            Log.d("getLocation", "위치 찾기 오류")
+                        } else {
+                            Log.d("getLocation", address[0].toString())
+                        }
+                    }
+
                     coords.add(LatLng(location.latitude, location.longitude))
                     if (coords.size > 1) {
                         path.coords = coords
@@ -253,14 +270,20 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
                         var myLoc = Location(LocationManager.NETWORK_PROVIDER)
                         var targetLoc = Location(LocationManager.NETWORK_PROVIDER)
 
-                        myLoc.latitude = coords[coords.size-2].latitude
-                        myLoc.longitude = coords[coords.size-2].longitude
+                        myLoc.latitude = coords[coords.size - 2].latitude
+                        myLoc.longitude = coords[coords.size - 2].longitude
 
                         targetLoc.latitude = location.latitude
                         targetLoc.longitude = location.longitude
 
 //                        distance += abs(distance(myLoc.latitude, myLoc.longitude, targetLoc.latitude, targetLoc.longitude))
-                        distance += distance(myLoc.latitude, myLoc.longitude, targetLoc.latitude, targetLoc.longitude, 'K')
+                        distance += distance(
+                            myLoc.latitude,
+                            myLoc.longitude,
+                            targetLoc.latitude,
+                            targetLoc.longitude,
+                            'K'
+                        )
 
                         val df = DecimalFormat("#.##")
                         df.roundingMode = RoundingMode.DOWN

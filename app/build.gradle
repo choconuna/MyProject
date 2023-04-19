@@ -85,7 +85,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation "com.firebaseui:firebase-ui-auth:7.2.0" // gradle_firebase_ui_auth
     implementation 'com.google.android.gms:play-services-auth:19.2.0' // Google Play services library
-//    implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'androidx.work:work-runtime-ktx:2.7.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0' // 원형 imageView
 
@@ -97,10 +96,20 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-//    //구글맵
-//    implementation 'com.google.android.gms:play-services-maps:18.0.2'
-//    implementation 'com.google.android.gms:play-services-location:19.0.1'
-
     implementation 'com.naver.maps:map-sdk:3.16.2'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+    implementation 'com.loopj.android:android-async-http:1.4.11'
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
 }
