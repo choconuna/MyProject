@@ -21,7 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyProject"
         tools:replace="android:label">
-
+        <activity
+            android:name=".comment.WriteReCommentActivity"
+            android:exported="false" />
         <activity
             android:name=".walk.StartWalkActivity"
             android:exported="false" />
@@ -184,16 +186,12 @@
         </activity>
         <activity android:name=".StartActivity" />
 
-        <receiver android:name=".my.AlarmReceiver" />
-
-<!--        <meta-data-->
-<!--            android:name="com.google.android.geo.API_KEY"-->
-<!--            android:value="AIzaSyB2JI3MpgerNW4aU2Q3mUxFX3rE3fAZgBg" />-->
-
+        <receiver android:name=".my.AlarmReceiver" /> <!-- <meta-data -->
+        <!-- android:name="com.google.android.geo.API_KEY" -->
+        <!-- android:value="AIzaSyB2JI3MpgerNW4aU2Q3mUxFX3rE3fAZgBg" /> -->
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="b49e1b1g73" />
-
     </application>
 
 </manifest>

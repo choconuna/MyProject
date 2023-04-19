@@ -10,14 +10,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
         android:orientation="horizontal">
+
+        <TextView
+            android:text="ㄴ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:textColor="@color/black"
+            tools:ignore="MissingConstraints"
+            android:layout_marginTop="5dp" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileImageArea"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="25dp" />
+            android:layout_marginLeft="5dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,7 +56,7 @@
                     tools:ignore="MissingConstraints" />
 
                 <ImageView
-                    android:id="@+id/commentSet"
+                    android:id="@+id/reCommentSet"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/ic_write_menu"
@@ -82,20 +92,6 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="10dp"
                     tools:ignore="MissingConstraints" />
-
-                <TextView
-                    android:id="@+id/reCommentBtn"
-                    android:text="답글 달기"
-                    android:textSize="10sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/regular"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/timeArea"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    tools:ignore="MissingConstraints" />
-
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -104,10 +100,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="5dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/reCommentRecyclerView" />
 
 </LinearLayout>

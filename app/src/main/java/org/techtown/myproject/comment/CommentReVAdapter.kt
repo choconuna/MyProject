@@ -10,18 +10,30 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
 import org.techtown.myproject.community.SpecificCommunityEditActivity
+import org.techtown.myproject.receipt.ReceiptDetailReVAdapter
 import org.techtown.myproject.utils.FBRef
+import org.techtown.myproject.utils.ReCommentModel
+import org.techtown.myproject.utils.ReceiptModel
 
 class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
     RecyclerView.Adapter<CommentReVAdapter.CommentViewHolder>() {
+
+    private lateinit var reCommentRecyclerView : RecyclerView
+    private val reCommentDataList = ArrayList<ReCommentModel>() // 대댓글 목록 리스트
+    lateinit var reCommentRVAdapter : ReCommentReVAdapter
+    lateinit var layoutManager : RecyclerView.LayoutManager
 
     interface OnItemClickListener {
         fun onClick(v: View, position: Int) // 클릭 이벤트
@@ -43,9 +55,18 @@ class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
     override fun onBindViewHolder(holder: CommentReVAdapter.CommentViewHolder, position: Int) {
         Log.d("commentList", commentList[position].toString())
 
+        reCommentRVAdapter = ReCommentReVAdapter(reCommentDataList)
+        reCommentRecyclerView = holder!!.reCommentRecyclerView!!
+        reCommentRecyclerView.setItemViewCacheSize(20)
+        reCommentRecyclerView.setHasFixedSize(true)
+        layoutManager = LinearLayoutManager(holder!!.view!!.context, LinearLayoutManager.VERTICAL, false)
+        reCommentRecyclerView.layoutManager = layoutManager
+        reCommentRecyclerView.adapter = reCommentRVAdapter
+
         val writerUid = commentList[position].uid // 댓글 작성자 uid
         val myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
         val communityId = commentList[position].communityId // 댓글이 게시된 게시글의 id
+        val commentId = commentList[position].commentId
         val ref = FBRef.userRef
 
         val itemLayoutView = holder.view?.findViewById<LinearLayout>(R.id.itemView)
@@ -69,6 +90,25 @@ class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
 
                 val rmBtn = alertDialog.findViewById<Button>(R.id.rmBtn)
                 rmBtn?.setOnClickListener {  // 삭제 버튼 클릭 시
+
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try {
+
+                                for(dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(ReCommentModel::class.java)
+                                    FBRef.reCommentRef.child(communityId).child(commentId).child(item!!.reCommentId).removeValue() // 대댓글 삭제
+                                }
+
+                            } catch(e : Exception) {
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+                    }
+                    FBRef.reCommentRef.child(communityId).child(commentList[position].commentId).addValueEventListener(postListener)
+
                     FBRef.commentRef.child(communityId).child(commentList[position].commentId).removeValue() // 댓글 삭제
                     Toast.makeText(holder!!.view!!.context, "댓글이 삭제되었습니다!", Toast.LENGTH_SHORT).show()
                     alertDialog.dismiss()
@@ -97,6 +137,35 @@ class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
         holder!!.contentArea!!.text = commentList[position].commentContent
 
         holder!!.timeArea!!.text = commentList[position].commentTime
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+
+                    reCommentDataList.clear()
+
+                    for(dataModel in dataSnapshot.children) {
+                        val item = dataModel.getValue(ReCommentModel::class.java)
+                        reCommentDataList.add(item!!)
+                    }
+
+                    Log.d("reCommentDataList", reCommentDataList.toString())
+                    reCommentRVAdapter.notifyDataSetChanged() // 데이터 동기화
+                } catch(e : Exception) {
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        }
+        FBRef.reCommentRef.child(communityId).child(commentId).addValueEventListener(postListener)
+
+        holder!!.reCommentBtn!!.setOnClickListener {
+            val intent = Intent(holder!!.view!!.context, WriteReCommentActivity::class.java)
+            intent.putExtra("communityId", commentList[position].communityId)
+            intent.putExtra("commentId", commentList[position].commentId)
+            holder!!.view!!.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -110,6 +179,7 @@ class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
         val contentArea = view?.findViewById<TextView>(R.id.contentArea)
         val timeArea = view?.findViewById<TextView>(R.id.timeArea)
         val commentSet = view?.findViewById<ImageView>(R.id.commentSet)
-        val recommentArea = view?.findViewById<TextView>(R.id.reCommentArea)
+        val reCommentBtn = view?.findViewById<TextView>(R.id.reCommentBtn)
+        val reCommentRecyclerView = view?.findViewById<RecyclerView>(R.id.reCommentRecyclerView)
     }
 }
