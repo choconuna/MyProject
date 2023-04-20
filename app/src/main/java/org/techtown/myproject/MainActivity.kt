@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var sharedPreferences: SharedPreferences
     lateinit var mDatabaseReference: DatabaseReference
+    lateinit var editor : SharedPreferences.Editor
     lateinit var mAuth : FirebaseAuth
     lateinit var uid : String
     private val prefUserEmail = "userEmail"
@@ -80,6 +81,11 @@ class MainActivity : AppCompatActivity() {
         uid = mAuth.currentUser?.uid.toString()
 
         mDatabaseReference = FBRef.userRef.child(uid)
+
+        sharedPreferences = getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
+        editor = sharedPreferences.edit()
+        editor.putString("manager", "test1@test.com")
+        editor.commit()
 
         bnv_main = findViewById(R.id.bottom_menu)
         initNavigationBar()

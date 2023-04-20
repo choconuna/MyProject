@@ -230,7 +230,7 @@ class ProfileEditActivity : AppCompatActivity() {
     private fun editProfile(key : String) {
         Log.d(TAG, originName + " " + nickNameArea.text.toString().trim())
         if(originName == nickNameArea.text.toString().trim() || (nickNameCheckClicked && nickNameChecked)) {
-            FBRef.userRef.child(key).setValue(UserInfo(profileFile, nameArea.text.toString().trim(), nickNameArea.text.toString().trim(), email, pw)) // 게시물 정보 데이터베이스에 저장
+            FBRef.userRef.child(key).setValue(UserInfo(uid, profileFile, nameArea.text.toString().trim(), nickNameArea.text.toString().trim(), email, pw)) // 게시물 정보 데이터베이스에 저장
             Toast.makeText(this, "프로필 수정 완료", Toast.LENGTH_SHORT).show()
             finish() // 창 닫기
         } else if(!nickNameCheckClicked) {

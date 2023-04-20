@@ -293,7 +293,7 @@ class JoinActivity : AppCompatActivity() {
         val userKey = FBRef.userRef.push().key.toString() // 사용자의 키 값을 받아옴
         val dogKey = FBRef.dogRef.push().key.toString() // 반려견의 키 값을 받아옴
 
-        FBRef.userRef.child(uid).setValue(UserInfo(profileImage, userName, nickName, email, pw)) // 사용자 정보 데이터베이스에 저장 // "Users" 안의 사용자 uid 아래에 userInfo 데이터를 삽입
+        FBRef.userRef.child(uid).setValue(UserInfo(userKey, profileImage, userName, nickName, email, pw)) // 사용자 정보 데이터베이스에 저장 // "Users" 안의 사용자 uid 아래에 userInfo 데이터를 삽입
         FBRef.dogRef.child(uid).child(dogKey).setValue(DogModel("basic_user.png", dogName, dogBirthDate, dogSex, dogSpecies, dogWeight, neutralization))
         FBRef.userMainDogRef.child(uid).setValue(UserMainDogModel(dogKey))
         sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE) // sharedPreferences 이름의 기본모드 설정

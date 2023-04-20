@@ -5,6 +5,7 @@ package org.techtown.myproject.utils
  */
 
 class UserInfo (
+    val uid : String = "", // uid
     val profileImage : String = "", // 프로필 사진
     val userName : String = "", // 사용자 이름
     val nickName : String = "", // 사용자 닉네임

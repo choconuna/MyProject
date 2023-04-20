@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".my.MyFragment"
     android:orientation="vertical">
 
@@ -46,10 +47,10 @@
                 android:background="@color/white">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -66,11 +67,9 @@
                                 android:text="프로필"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dp"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="5dp"
                                 android:layout_marginBottom="5dp"
-                                android:layout_gravity="center"
                                 android:fontFamily="@font/bold"
                                 android:textColor="@color/black"
                                 android:textSize="18sp" />
@@ -86,105 +85,137 @@
                                 android:layout_gravity="center"
                                 android:background="@drawable/profileedit"  />
                         </LinearLayout>
+                    </LinearLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/imageView"
                             android:layout_width="90dp"
                             android:layout_height="90dp"
-                            android:layout_marginLeft="10dp"
                             android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
                             android:src="@drawable/blankuser"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/imageView"
                             app:layout_constraintTop_toTopOf="parent"
-                            />
-                    </LinearLayout>
+                            tools:ignore="MissingConstraints">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="40dp"
-                            android:layout_marginLeft="5dp">
-
-                            <TextView
-                                android:text="❝"
-                                android:fontFamily="@font/regular"
-                                android:textSize="15sp"
-                                android:textColor="@color/mainColor"
+                            <FrameLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginTop="10dp"/>
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent">
 
-                            <TextView
-                                android:id="@+id/nickNameArea"
-                                android:text="닉네임"
-                                android:fontFamily="@font/bold"
-                                android:textSize="18sp"
-                                android:textColor="@color/black"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="20dp"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginTop="10dp"/>
+                                <TextView
+                                    android:id="@+id/checkManager"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/bold"
+                                    android:text="관리자"
+                                    android:textColor="@color/mainColor"
+                                    android:textSize="15sp" />
 
-                            <TextView
-                                android:text="❞"
-                                android:fontFamily="@font/regular"
-                                android:textSize="15sp"
-                                android:textColor="@color/mainColor"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginTop="10dp"/>
-                        </LinearLayout>
+                                <TextView
+                                    android:id="@+id/checkUser"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/bold"
+                                    android:text="사용자"
+                                    android:textColor="@color/mainColor"
+                                    android:textSize="15sp" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginLeft="5dp">
+                            </FrameLayout>
 
                             <LinearLayout
+                                android:id="@+id/linearLayout17"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
 
                                 <TextView
                                     android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:text="이름"
-                                    android:id="@+id/userNameArea"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_marginLeft="27dp"
-                                    android:textColor="@color/black"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="25dp"
                                     android:fontFamily="@font/regular"
-                                    android:textSize="13sp" />
+                                    android:text="❝"
+                                    android:textColor="@color/mainColor"
+                                    android:textSize="15sp" />
+
+                                <TextView
+                                    android:id="@+id/nickNameArea"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="25dp"
+                                    android:fontFamily="@font/bold"
+                                    android:text="닉네임"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:text="님"
-                                    android:layout_marginTop="10dp"
-                                    android:textColor="@color/black"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginTop="25dp"
                                     android:fontFamily="@font/regular"
-                                    android:textSize="13sp" />
+                                    android:text="❞"
+                                    android:textColor="@color/mainColor"
+                                    android:textSize="15sp" />
                             </LinearLayout>
-                        </LinearLayout>
-                    </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/linearLayout17">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/userNameArea"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/regular"
+                                        android:text="이름"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/regular"
+                                        android:text="님"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical"
                 android:background="@color/white">
 
@@ -227,7 +258,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp"
+                android:background="#DCDCDC"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -334,8 +366,49 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
+                android:id="@+id/managerLine"
                 android:layout_width="match_parent"
-                android:layout_height="0.1dp" />
+                android:layout_marginTop="10dp"
+                android:layout_height="0.5dp"
+                android:background="#DCDCDC"
+                android:orientation="horizontal"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/userManagement"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/white"
+                    android:fontFamily="@font/regular"
+                    android:text="사용자 관리"
+                    android:textColor="@color/mainColor"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="17sp" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/next"
+                    tools:ignore="MissingConstraints" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#DCDCDC"/>
 
             <LinearLayout
                 android:id="@+id/choiceMainDog"
@@ -366,7 +439,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0.1dp" />
+                android:layout_height="0.5dp"
+                android:background="#DCDCDC" />
 
             <LinearLayout
                 android:id="@+id/logout"
@@ -392,6 +466,13 @@
                     android:layout_gravity="center"
                     android:src="@drawable/next" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#DCDCDC" />
+
         </LinearLayout>
+
     </ScrollView>
 </LinearLayout>

@@ -1,11 +1,15 @@
 package org.techtown.myproject.my
 
+import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -42,6 +46,8 @@ class MyFragment : Fragment() {
     lateinit var uid : String
     lateinit var nickName : String
     lateinit var nickNameArea : TextView
+    lateinit var checkManager : TextView
+    lateinit var checkUser : TextView
     lateinit var userName : String
     lateinit var userNameArea : TextView
     lateinit var imageView : ImageView
@@ -53,6 +59,14 @@ class MyFragment : Fragment() {
     private val dogKeyList = mutableListOf<String>() // 각 반려견의 키값을 넣는 리스트
     lateinit var dogReVAdapter: DogReVAdapter
     lateinit var layoutManager : RecyclerView.LayoutManager
+
+    lateinit var managerLine : LinearLayout
+    lateinit var userManagement : LinearLayout
+
+    lateinit var userEmail : String
+    lateinit var managerEmail : String
+
+    lateinit var sharedPreferences: SharedPreferences
 
     lateinit var myCommunityArea : ConstraintLayout
     lateinit var myWritingCnt : TextView
@@ -70,6 +84,35 @@ class MyFragment : Fragment() {
 
         mDatabaseReference = FBRef.userRef.child(uid)
         setProfile()
+
+        managerLine = v!!.findViewById(R.id.managerLine)
+        userManagement = v!!.findViewById(R.id.userManagement)
+
+        sharedPreferences = v!!.context.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
+        managerEmail = sharedPreferences.getString("manager", "").toString() // 현재 대표 반려견의 id
+
+        checkManager = v!!.findViewById(R.id.checkManager)
+        checkUser = v!!.findViewById(R.id.checkUser)
+
+        val userEmail = FBRef.userRef.child(uid).child("email").get().addOnSuccessListener {
+            userEmail = it.value.toString() // 현재 로그인된 사용자의 이메일을 가져옴
+
+            if(userEmail == managerEmail) { // 현재 사용자의 이메일과 관리자 이메일이 같다면
+                userManagement.visibility = VISIBLE // 사용자 관리 옵션이 보이도록 함
+                checkManager.visibility = VISIBLE // 관리자라는 표시가 보이도록 함
+                checkUser.visibility = GONE // 사용자라는 표시가 보이지 않도록 함
+                managerLine.visibility = VISIBLE
+            } else {
+                checkManager.visibility = GONE // 관리자라는 표시가 보이지 않도록 함
+                checkUser.visibility = VISIBLE // 사용자라는 표시가 보이도록 함
+                managerLine.visibility = GONE
+            }
+        }
+
+        userManagement.setOnClickListener { // 사용자 관리 화면으로 넘어감
+            val intent = Intent(v!!.context, UserManageActivity::class.java)
+            startActivity(intent)
+        }
 
         nickNameArea = v!!.findViewById(R.id.nickNameArea)
         userNameArea = v!!.findViewById(R.id.userNameArea)
