@@ -24,12 +24,14 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.LogoutActivity
 import org.techtown.myproject.R
+import org.techtown.myproject.comment.CommentModel
 import org.techtown.myproject.community.CommunityInActivity
 import org.techtown.myproject.community.CommunityListVAdapter
 import org.techtown.myproject.community.CommunityModel
 import org.techtown.myproject.utils.DogModel
 import org.techtown.myproject.utils.UserInfo
 import org.techtown.myproject.utils.FBRef
+import org.techtown.myproject.utils.ReCommentModel
 import androidx.recyclerview.widget.RecyclerView as RecyclerView
 
 class MyFragment : Fragment() {
@@ -46,14 +48,16 @@ class MyFragment : Fragment() {
 
     lateinit var profileFile : String
 
-    lateinit var dogListView : ListView
     lateinit var dogReView : RecyclerView
-    private val dogDataList = mutableListOf<DogModel>() // 각 반려견의 프로필을 넣는 리스트
     private val dogReDataList = ArrayList<DogModel>() // 각 반려견의 프로필을 넣는 리스트
     private val dogKeyList = mutableListOf<String>() // 각 반려견의 키값을 넣는 리스트
-    lateinit var dogRVAdapter : DogListVAdapter
     lateinit var dogReVAdapter: DogReVAdapter
     lateinit var layoutManager : RecyclerView.LayoutManager
+
+    lateinit var myCommunityArea : ConstraintLayout
+    lateinit var myWritingCnt : TextView
+    lateinit var myCommentCnt : TextView
+    lateinit var myReCommentCnt : TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,9 +75,11 @@ class MyFragment : Fragment() {
         userNameArea = v!!.findViewById(R.id.userNameArea)
         imageView = v!!.findViewById(R.id.imageView)
 
-        /* dogRVAdapter = DogListVAdapter(dogDataList)
-        dogListView = v!!.findViewById(R.id.dogListView)
-        dogListView.adapter = dogRVAdapter */
+        myCommunityArea = v!!.findViewById(R.id.myCommunityArea)
+
+        myWritingCnt = v!!.findViewById(R.id.myWritingCnt)
+        myCommentCnt = v!!.findViewById(R.id.myCommentCnt)
+        myReCommentCnt = v!!.findViewById(R.id.myReCommentCnt)
 
         dogReVAdapter = DogReVAdapter(dogReDataList)
         dogReView = v!!.findViewById(R.id.dogRecyclerView)
@@ -83,6 +89,7 @@ class MyFragment : Fragment() {
         dogReView.adapter = dogReVAdapter
 
         getFBDogData()
+        setMyCommunityCount()
 
         val profileEditBtn = v?.findViewById<Button>(R.id.editProfile)
         profileEditBtn!!.setOnClickListener {
@@ -94,6 +101,11 @@ class MyFragment : Fragment() {
         editDogBtn!!.setOnClickListener {
             val intent = Intent(context, WriteDogProfileActivity::class.java)
             startActivity(intent)
+        }
+
+        myCommunityArea.setOnClickListener { // 나의 활동을 보여주는 activity로 이동
+            val intent = Intent(v!!.context, ShowMyCommunityActivity::class.java)
+            requireActivity().startActivity(intent)
         }
 
         val mainDogChoice = v?.findViewById<LinearLayout>(R.id.choiceMainDog)
@@ -145,7 +157,7 @@ class MyFragment : Fragment() {
                                 Glide.with(context!!).load(task.result)
                                     .into(imageView) // 유저의 profile 사진을 게시자 이름의 왼편에 표시함
                             } else {
-                               imageView.isVisible = false
+                                imageView.isVisible = false
                             }
                         })
                     }
@@ -191,6 +203,84 @@ class MyFragment : Fragment() {
             }
         }
         FBRef.dogRef.child(uid).addValueEventListener(postListener)
+    }
+
+    private fun setMyCommunityCount() {
+        var myWriting = 0
+        var myComment = 0
+        var myReComment = 0
+
+        var categoryList : List<String> = listOf("정보", "후기", "자유", "질문", "거래")
+        for(index in categoryList) {
+            Log.d("categoryList", index)
+            val postListener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    try {
+
+                        for(dataModel in dataSnapshot.children) {
+                            Log.d(TAG, dataModel.toString())
+                            val item = dataModel.getValue(CommunityModel::class.java)
+                            if(item!!.uid == uid)
+                                myWriting++
+
+                            val postListener = object : ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    try {
+
+                                        for (dataModel in dataSnapshot.children) {
+                                            val item = dataModel.getValue(CommentModel::class.java)
+
+                                            if(item!!.uid == uid)
+                                                myComment++
+
+                                            val postListener = object : ValueEventListener {
+                                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                                    try {
+
+                                                        for(dataModel in dataSnapshot.children) {
+                                                            val item = dataModel.getValue(
+                                                                ReCommentModel::class.java)
+
+                                                            if(item!!.uid == uid)
+                                                                myReComment++
+                                                        }
+
+                                                        myReCommentCnt.text = myReComment.toString()
+                                                    } catch(e : Exception) {
+                                                    }
+                                                }
+
+                                                override fun onCancelled(databaseError: DatabaseError) {
+                                                }
+                                            }
+                                            FBRef.reCommentRef.child(item!!.communityId).child(item!!.commentId).addValueEventListener(postListener)
+                                        }
+
+                                        myCommentCnt.text = myComment.toString()
+                                    } catch(e : Exception) {
+                                    }
+                                }
+
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    // Getting Post failed, log a message
+                                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                                }
+                            }
+                            FBRef.commentRef.child(item!!.communityId).addValueEventListener(postListener)
+                        }
+
+                        myWritingCnt.text = myWriting.toString()
+                    } catch(e : Exception) {
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Getting Post failed, log a message
+                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                }
+            }
+            FBRef.communityRef.child(index).addValueEventListener(postListener)
+        }
     }
 
     // Fragment 새로고침

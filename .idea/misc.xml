@@ -95,6 +95,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_profile_edit.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_re_comment_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_receipt_record_edit.xml" value="0.536" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_show_my_community.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_specific_community_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_specific_community_in.xml" value="0.23541666666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_splash.xml" value="0.25104166666666666" />
@@ -141,6 +142,11 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_medicine.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_memo.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_my.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_my_deal.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_my_free.xml" value="0.2625" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_my_information.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_my_question.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_my_review.xml" value="0.2375" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_note.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_pee_statistics.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_question.xml" value="0.25104166666666666" />
@@ -172,6 +178,9 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/medicine_plan_list_item.xml" value="0.4" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/memo_image_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/memo_list_item.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/my_comment_list_item.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/my_recomment_list_item.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/my_writing_list_item.xml" value="0.2625" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/nav_header.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/pee_item_list.xml" value="0.4" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/pee_list_item.xml" value="0.25104166666666666" />

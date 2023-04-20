@@ -23,7 +23,6 @@ class QuestionFragment : Fragment() {
 
     private val communityDataList = mutableListOf<CommunityModel>() // 각 게시물을 넣는 리스트
     private val communityKeyList = mutableListOf<String>() // 각 게시물의 키값을 넣는 리스트
-
     lateinit var communityRVAdapter : CommunityListVAdapter
 
     override fun onCreateView(

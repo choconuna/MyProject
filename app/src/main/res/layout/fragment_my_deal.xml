@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".my.MyDealFragment">
+
+    <RadioGroup
+        android:id="@+id/categoryGroup"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="1dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+        <RadioButton
+            android:checked="true"
+            android:id="@+id/writing"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_radio_button"
+            android:textColor="@drawable/selector_radio_text"
+            android:button="@null"
+            android:textAlignment="center"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:fontFamily="@font/bold"
+            android:text="내가 쓴 글"
+            android:textSize="10dp"
+            android:layout_weight="1"/>
+
+        <RadioButton
+            android:id="@+id/comment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_radio_button"
+            android:textColor="@drawable/selector_radio_text"
+            android:button="@null"
+            android:textAlignment="center"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:fontFamily="@font/bold"
+            android:text="나의 댓글"
+            android:textSize="10dp"
+            android:layout_weight="1"/>
+
+        <RadioButton
+            android:id="@+id/reComment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_radio_button"
+            android:textColor="@drawable/selector_radio_text"
+            android:button="@null"
+            android:textAlignment="center"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:fontFamily="@font/bold"
+            android:text="나의 대댓글"
+            android:textSize="10dp"
+            android:layout_weight="1"/>
+    </RadioGroup>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_below="@+id/categoryGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/myWritingRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/myCommentRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/myReCommentRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"/>
+
+        </FrameLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

@@ -22,6 +22,9 @@
         android:theme="@style/Theme.MyProject"
         tools:replace="android:label">
         <activity
+            android:name=".my.ShowMyCommunityActivity"
+            android:exported="false" />
+        <activity
             android:name=".comment.WriteReCommentActivity"
             android:exported="false" />
         <activity

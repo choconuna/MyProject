@@ -215,13 +215,6 @@
                         android:background="@drawable/add"  />
                 </LinearLayout>
 
-                <!-- <ListView
-                    android:id="@+id/dogListView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"/>!-->
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/dogRecyclerView"
                     android:layout_width="match_parent"
@@ -236,12 +229,119 @@
                 android:layout_height="0.5dp"
                 android:layout_marginTop="5dp"/>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_marginTop="10dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/myCommunityArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints">
+
+                    <LinearLayout
+                        android:id="@+id/myWritingArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/myWritingCnt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="@font/bold"
+                            android:text="0"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="@font/regular"
+                            android:text="내가 쓴 글" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/myCommentArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toStartOf="@+id/myReCommentArea"
+                        app:layout_constraintStart_toEndOf="@+id/myWritingArea">
+
+                        <TextView
+                            android:id="@+id/myCommentCnt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="@font/bold"
+                            android:text="0"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/regular"
+                            android:layout_marginBottom="10dp"
+                            android:text="나의 댓글" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/myReCommentArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <TextView
+                            android:id="@+id/myReCommentCnt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="@font/bold"
+                            android:text="0"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/regular"
+                            android:layout_marginBottom="10dp"
+                            android:text="나의 대댓글" />
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp" />
+
             <LinearLayout
                 android:id="@+id/choiceMainDog"
                 android:background="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="10dp">
+                android:layout_height="60dp">
 
                 <TextView
                     android:id="@+id/textView2"

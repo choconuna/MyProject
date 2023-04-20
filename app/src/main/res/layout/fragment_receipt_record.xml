@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,9 +9,11 @@
     tools:context=".receipt.ReceiptRecordFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/showDateArea"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
 
         <Button
             android:id="@+id/backMonth"
@@ -48,12 +50,17 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
+        android:id="@+id/line1"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="10dp"
-        android:background="#999999" />
+        android:background="#999999"
+        android:layout_below="@+id/showDateArea"
+        android:orientation="horizontal" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_below="@+id/line1"
+        android:id="@+id/showPriceArea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
@@ -86,17 +93,19 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
+        android:id="@+id/line2"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#999999" />
+        android:layout_below="@+id/showPriceArea"
+        android:background="#999999"
+        android:orientation="horizontal" />
 
     <androidx.core.widget.NestedScrollView
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_below="@+id/line2"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:fillViewport="true"
         tools:ignore="MissingConstraints">
@@ -112,15 +121,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <ImageView
-                android:id="@+id/writeBtn"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/pluss"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/writeBtn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/pluss"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

@@ -43,7 +43,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:layout_gravity="center"
-            android:layout_marginTop="45dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <TextView
@@ -574,5 +574,5 @@
                 android:textSize="15sp" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>
