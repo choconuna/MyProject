@@ -101,9 +101,8 @@ class WalkPlayFragment : Fragment() {
         setData(v!!)
 
         mLocationRequest =  LocationRequest.create().apply {
-
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY //높은 정확도
+            interval = 1000 //1초에 한번씩 GPS 요청
         }
 
         if (checkPermissionForLocation(v!!.context)) {
@@ -292,8 +291,14 @@ class WalkPlayFragment : Fragment() {
             && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
         }
+
         // 기기의 위치에 관한 정기 업데이트를 요청하는 메서드 실행
         // 지정한 루퍼 스레드(Looper.myLooper())에서 콜백(mLocationCallback)으로 위치 업데이트를 요청
+        mLocationRequest =  LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY //높은 정확도
+            interval = 60 * 1000 //1초에 한번씩 GPS 요청
+        }
+
         mFusedLocationProviderClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
     }
 
@@ -310,8 +315,6 @@ class WalkPlayFragment : Fragment() {
     // 시스템으로 부터 받은 위치 정보를 화면에 갱신해주는 메소드
     fun onLocationChanged(location: Location) {
         mLastLocation = location
-
-        Toast.makeText(context, "호출", Toast.LENGTH_SHORT).show()
 
         val g = Geocoder(context)
         var address: MutableList<Address> = mutableListOf()
