@@ -2,11 +2,14 @@ package org.techtown.myproject.chat
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
@@ -21,6 +24,7 @@ import com.google.firebase.storage.ktx.storage
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
 import org.techtown.myproject.R
+import org.techtown.myproject.community.SpecificCommunityEditActivity
 import org.techtown.myproject.utils.ChatConnection
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.MessageModel

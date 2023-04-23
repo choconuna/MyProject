@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/deleteMessageBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/rectangle_box_brown"
+        android:text="메시지 삭제하기"
+        android:fontFamily="@font/bold"
+        android:textSize="15sp"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/copyMessageBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/deleteMessageBtn"
+        android:background="@drawable/rectangle_box_brown"
+        android:text="메시지 복사하기"
+        android:fontFamily="@font/bold"
+        android:textSize="15sp"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

@@ -1,15 +1,18 @@
 package org.techtown.myproject.chat
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -71,6 +74,37 @@ class MessageRVAdapter(val messageList : MutableList<MessageModel>) : BaseAdapte
 
         val timeSp = messageList[position].sendDate.split(" ")[1]
         view!!.findViewById<TextView>(R.id.sendTimeArea).text = timeSp
+
+        view!!.findViewById<TextView>(R.id.contentArea).setOnLongClickListener {
+
+            val mDialogView = LayoutInflater.from(view!!.context).inflate(R.layout.message_dialog, null)
+            val mBuilder = AlertDialog.Builder(view!!.context).setView(mDialogView)
+
+            val alertDialog = mBuilder.show()
+            val deleteMessageBtn = alertDialog.findViewById<Button>(R.id.deleteMessageBtn)
+            deleteMessageBtn?.setOnClickListener { // 메시지 삭제 버튼 클릭 시
+                Log.d("messageClicked", "delete Message Button Clicked")
+
+                FBRef.messageRef.child(messageList[position].chatConnectionId).child(messageList[position].messageId).removeValue() // 파이어베이스에서 해당 메시지 삭제
+                Toast.makeText(view!!.context, "메시지가 삭제되었습니다!", Toast.LENGTH_SHORT).show()
+
+                alertDialog.dismiss()
+            }
+
+            val copyMessageBtn = alertDialog.findViewById<Button>(R.id.copyMessageBtn)
+            copyMessageBtn?.setOnClickListener {  // 메시지 복사 버튼 클릭 시
+                Log.d("messageClicked", "copy Message Button Clicked")
+
+                val clipboard =  view?.context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData = ClipData.newPlainText("text", view!!.findViewById<TextView>(R.id.contentArea).text.trim())
+                clipboard.setPrimaryClip(clipData)
+                Toast.makeText(view!!.context, "메시지가 복사되었습니다!", Toast.LENGTH_SHORT).show()
+
+                alertDialog.dismiss()
+            }
+
+            true
+        }
 
         return view!!
     }
