@@ -20,6 +20,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/custom_progress_bar.xml" value="0.2435" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_arrow_left.xml" value="0.2355" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_arrow_right_24.xml" value="0.2355" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_baseline_chat_bubble_24.xml" value="0.197" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_chat.xml" value="0.1875" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_check.xml" value="0.24" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_community.xml" value="0.1875" />
@@ -38,6 +39,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_write_menu.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/layout_background.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/my_chat_custom.xml" value="0.1865" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/notification_icon_foreground.xml" value="0.197" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/photo_item_list.xml" value="0.1375" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/profile_image_dialog.xml" value="0.2535" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/rectangle_box.xml" value="0.1" />
@@ -223,6 +225,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/menu/bottom_menu.xml" value="0.25052083333333336" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/menu/main_navigation_menu.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.121" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher_appicon_round.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.12" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.122" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable/baseline_pets_24.xml" value="0.1" />

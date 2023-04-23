@@ -1,6 +1,8 @@
 package org.techtown.myproject.chat
 
+import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
@@ -17,18 +19,27 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import de.hdodenhof.circleimageview.CircleImageView
+import org.json.JSONObject
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.ChatConnection
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.MessageModel
+import java.io.OutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ChatInActivity : AppCompatActivity() {
 
     private val TAG = ChatInActivity::class.java.simpleName
 
+    private val FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send"
+    private val SERVER_KEY = "AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk"
+
     private lateinit var chatConnectionId : String
+    private lateinit var sharedPreferences: SharedPreferences
 
     lateinit var myUid : String
     lateinit var yourUid : String
@@ -56,8 +67,6 @@ class ChatInActivity : AppCompatActivity() {
         sendBtn.setOnClickListener {
             val content = contentArea.text.toString().trim()
 
-            Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
-
             val any = if (content.isNotEmpty()) {
                 val currentDataTime = Calendar.getInstance().time
                 val dateFormat =
@@ -67,10 +76,12 @@ class ChatInActivity : AppCompatActivity() {
                 FBRef.messageRef.child(chatConnectionId).child(key).setValue(MessageModel(chatConnectionId, key, myUid, content, dateFormat.toString(), "false"))
 
                 contentArea.setText("")
-
                 val mInputMethodManager: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-
                 mInputMethodManager.hideSoftInputFromWindow(contentArea.windowToken, 0)
+
+                val userName = FBRef.userRef.child(myUid).child("nickName").get().addOnSuccessListener {
+                    sendPostToFCM(chatConnectionId, it.value.toString(), content)
+                }
 
             } else {
                 Toast.makeText(this, "메시지 내용을 입력하세요!", Toast.LENGTH_SHORT).show()
@@ -111,6 +122,56 @@ class ChatInActivity : AppCompatActivity() {
         val userName = FBRef.userRef.child(yourUid).child("nickName").get().addOnSuccessListener {
             yourNickNameArea!!.text = it.value.toString() // 게시글에 작성자의 닉네임 표시
         }
+    }
+
+    private fun sendPostToFCM(chatConnectionId: String, nickName : String, message: String) { // FCM을 이용해서 상대방에게 채팅 전송 알림을 보내는 함수
+
+        Log.d("sendPostToFCM", "$chatConnectionId $nickName $message")
+
+        FBRef.chatConnectionRef
+            .child(chatConnectionId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val chatConnection = dataSnapshot.getValue(ChatConnection::class.java)
+                    var yourUid = ""
+                    if (chatConnection!!.userId1 != myUid)
+                        yourUid = chatConnection!!.userId1
+                    else if (chatConnection!!.userId2 != myUid)
+                        yourUid = chatConnection!!.userId2
+
+                    sharedPreferences =
+                        getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
+                    val yourToken = sharedPreferences.getString(yourUid + "Token", "").toString()
+                    Log.d("sendPostToFCM", "$yourToken")
+
+                    Thread {
+                        try {
+                            val root = JSONObject()
+                            val notification = JSONObject()
+                            notification.put("body", "$nickName: $message")
+                            notification.put("title", "멍노트")
+                            root.put("notification", notification)
+                            root.put("to", yourToken)
+                            val url = URL(FCM_MESSAGE_URL)
+                            val conn: HttpURLConnection = url.openConnection() as HttpURLConnection
+                            conn.requestMethod = "POST"
+                            conn.doOutput = true
+                            conn.doInput = true
+                            conn.addRequestProperty("Authorization", "key=$SERVER_KEY")
+                            conn.setRequestProperty("Accept", "application/json")
+                            conn.setRequestProperty("Content-type", "application/json")
+                            val os: OutputStream = conn.outputStream
+                            os.write(root.toString().toByteArray(charset("utf-8")))
+                            os.flush()
+                            conn.responseCode
+                        } catch (e: java.lang.Exception) {
+                            e.printStackTrace()
+                        }
+                    }.start()
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {}
+            })
     }
 
     private fun getMessages() {
