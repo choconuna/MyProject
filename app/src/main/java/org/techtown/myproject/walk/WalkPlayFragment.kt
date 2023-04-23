@@ -427,7 +427,10 @@ class WalkPlayFragment : Fragment() {
             }
             "clear sky" -> {
                 weatherArea.text = "맑음"
-                weatherImage.setImageResource(R.drawable.clear)
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.night)
+                else
+                    weatherImage.setImageResource(R.drawable.clear)
             }
             "shower rain" -> {
                 weatherArea.text = "소나기"
