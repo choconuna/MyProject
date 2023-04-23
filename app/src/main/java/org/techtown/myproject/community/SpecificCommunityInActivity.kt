@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -24,15 +22,13 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
+import org.techtown.myproject.chat.ChatInActivity
 import org.techtown.myproject.comment.CommentModel
 import org.techtown.myproject.comment.CommentReVAdapter
-import org.techtown.myproject.note.ImageDetailActivity
-import org.techtown.myproject.note.MemoImageAdapter
+import org.techtown.myproject.utils.ChatConnection
 import org.techtown.myproject.utils.FBRef
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Collections.max
-import java.util.Collections.min
 
 
 class SpecificCommunityInActivity : AppCompatActivity() {
@@ -47,6 +43,8 @@ class SpecificCommunityInActivity : AppCompatActivity() {
     lateinit var communitySetIcon : ImageView
     lateinit var commentArea : EditText
     private lateinit var key : String
+
+    private lateinit var writerArea : LinearLayout
 
     lateinit var imageListView : RecyclerView
     private val imageDataList = ArrayList<String>() // 게시글의 사진을 넣는 리스트
@@ -68,6 +66,8 @@ class SpecificCommunityInActivity : AppCompatActivity() {
         titleArea = findViewById(R.id.titleArea)
         contentArea = findViewById(R.id.contentArea)
         timeArea = findViewById(R.id.timeArea)
+
+        writerArea = findViewById(R.id.writerArea)
 
         commentArea = findViewById(R.id.commentArea)
 
@@ -101,6 +101,100 @@ class SpecificCommunityInActivity : AppCompatActivity() {
         category = intent.getStringExtra("category").toString() // 게시글의 카테고리 받아옴
         key = intent.getStringExtra("key").toString() // 게시글의 key 값을 받아옴
         getCommunityData(key)
+
+        writerArea.setOnClickListener { // 작성자의 프로필 사진이나 닉네임 부분 클릭 시
+            val postListener = object : ValueEventListener { // 파이어베이스 안의 값이 변화할 시 작동됨
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    try { // 게시글 삭제 후 그 키 값에 해당하는 게시글이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
+                        val dataModel = dataSnapshot.getValue(CommunityModel::class.java)
+
+                        val writerUid = dataModel!!.uid // 작성자 key id
+                        var userName = ""
+
+                        FBRef.userRef.child(writerUid).child("nickName").get()
+                            .addOnSuccessListener {
+                                userName = it.value.toString() // 게시글에 작성자의 닉네임을 가져옴
+
+                                if (myUid != writerUid) { // 작성자의 uid가 현재 사용자의 uid와 같지 않을 경우
+                                    val mDialogView = LayoutInflater.from(this@SpecificCommunityInActivity).inflate(R.layout.chatting_dialog, null)
+                                    val mBuilder = AlertDialog.Builder(this@SpecificCommunityInActivity).setView(mDialogView)
+
+                                    val alertDialog = mBuilder.show()
+
+                                    Log.d("getChat", "$writerUid $userName")
+
+                                    val userNameArea = alertDialog.findViewById<TextView>(R.id.userNameArea)
+                                    userNameArea!!.text = userName
+
+                                    val yesBtn = alertDialog.findViewById<Button>(R.id.yesBtn)
+                                    yesBtn?.setOnClickListener { // 예 버튼 클릭 시
+                                        Log.d(TAG, "yes Button Clicked")
+
+                                        val postListener = object : ValueEventListener {
+                                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                                try {
+                                                    var isExist = false
+                                                    for(dataModel in dataSnapshot.children) {
+                                                        Log.d(TAG, dataModel.toString())
+                                                        val item = dataModel.getValue(ChatConnection::class.java)
+
+                                                        Log.d("writerUid", "$writerUid $myUid")
+
+                                                        // 이미 글 작성자와 채팅 이력이 존재한다면
+                                                        if((item!!.userId1 == myUid && item!!.userId2 == writerUid) || (item!!.userId1 == writerUid && item!!.userId2 == myUid)) {
+                                                            isExist = true
+                                                            Log.d("writerUid", "isExist")
+                                                            val intent = Intent(applicationContext, ChatInActivity::class.java) // 글 작성자와의 기존 채팅방으로 이동
+                                                            intent.putExtra("chatConnectionId", item!!.chatConnectionId)
+                                                            intent.putExtra("yourUid", writerUid)
+                                                            startActivity(intent)
+                                                        }
+                                                    }
+                                                    if(!isExist) {
+
+                                                        Log.d("writerUid", "isNotExist")
+
+                                                        val key = FBRef.chatConnectionRef.push().key.toString() // 키 값을 먼저 받아옴
+                                                        FBRef.chatConnectionRef.child(key).setValue(ChatConnection(key, myUid, writerUid)) // 채팅 커넥션 데이터 생성
+
+                                                        val intent = Intent(applicationContext, ChatInActivity::class.java)
+                                                        intent.putExtra("chatConnectionId", key)
+                                                        intent.putExtra("yourUid", writerUid)
+                                                        startActivity(intent)
+                                                    }
+                                                } catch(e : Exception) { }
+                                            }
+
+                                            override fun onCancelled(databaseError: DatabaseError) {
+                                                // Getting Post failed, log a message
+                                                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                                            }
+                                        }
+                                        FBRef.chatConnectionRef.addValueEventListener(postListener)
+
+                                        alertDialog.dismiss()
+                                    }
+
+                                    val noBtn = alertDialog.findViewById<Button>(R.id.noBtn)
+                                    noBtn?.setOnClickListener {  // 아니오 버튼 클릭 시
+                                        Log.d(TAG, "no Button Clicked")
+
+                                        alertDialog.dismiss() // 다이얼로그 창 닫기
+                                    }
+                                }
+                            }
+                    } catch (e : Exception) {
+                        Log.d(TAG, "게시글 삭제 완료")
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Getting Post failed, log a message
+                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                }
+            }
+            FBRef.communityRef.child(category).child(key).addValueEventListener(postListener)
+        }
 
         // getImageData(key)
 

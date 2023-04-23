@@ -53,6 +53,10 @@ class FBRef {
 
         val walkDogRef = database.getReference("walkDog") // 산책하는 반려견 데이터를 DB에 삽입하는 경로
 
+        val chatConnectionRef = database.getReference("chatConnection") // 채팅 커넥션 데이터를 DB에 삽입하는 경로
+
+        val messageRef = database.getReference("message") // 메시지 데이터를 DB에 삽입하는 경로
+
         val alarmRef = database.getReference("alarm") // 알림 데이터를 DB에 삽입하는 경로
    }
 

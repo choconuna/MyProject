@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.techtown.myproject.*
+import org.techtown.myproject.chat.ChatFragment
 
 class CommunityFragment : Fragment() {
 
@@ -28,6 +29,7 @@ class CommunityFragment : Fragment() {
     private val freeFragment by lazy { FreeFragment() }
     private val questionFragment by lazy { QuestionFragment() }
     private val dealFragment by lazy { DealFragment() }
+    private val chatFragment by lazy { ChatFragment() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,12 +47,13 @@ class CommunityFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val pagerAdapter = PagerFragmentStateAdapter(requireActivity())
-        // 5개의 fragment add
+        // 6개의 fragment add
         pagerAdapter.addFragment(informationFragment)
         pagerAdapter.addFragment(reviewFragment)
         pagerAdapter.addFragment(freeFragment)
         pagerAdapter.addFragment(questionFragment)
         pagerAdapter.addFragment(dealFragment)
+        pagerAdapter.addFragment(chatFragment)
 
         // adapter
         viewPager.adapter = pagerAdapter
@@ -61,7 +64,7 @@ class CommunityFragment : Fragment() {
             }
         })
         // tablayout attach
-        val tabTitles = listOf<String>("정보", "후기", "자유", "질문", "거래")
+        val tabTitles = listOf<String>("정보", "후기", "자유", "질문", "거래", "채팅")
         TabLayoutMediator(tab_main, viewPager){ tab, position ->
             tab.text = tabTitles[position]
         }.attach()

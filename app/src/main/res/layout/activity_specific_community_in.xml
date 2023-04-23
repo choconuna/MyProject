@@ -127,25 +127,32 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/profileImageArea"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="20dp" />
-
-                        <TextView
-                            android:id="@+id/nickNameArea"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_margin="10dp"
-                            android:layout_weight="2"
-                            android:fontFamily="@font/regular"
-                            android:gravity="left"
-                            android:text=""
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:id="@+id/writerArea">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/profileImageArea"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="20dp" />
+
+                            <TextView
+                                android:id="@+id/nickNameArea"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10dp"
+                                android:layout_weight="2"
+                                android:fontFamily="@font/regular"
+                                android:gravity="left"
+                                android:text=""
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/timeArea"

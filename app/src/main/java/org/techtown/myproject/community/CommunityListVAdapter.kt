@@ -94,5 +94,4 @@ class CommunityListVAdapter(val communityList : MutableList<CommunityModel>) : B
 
         return view!!
     }
-
 }

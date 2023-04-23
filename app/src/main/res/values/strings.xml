@@ -11,6 +11,10 @@
 
     <string name="bottom_menu_my">MY</string>
 
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+
+    <string name="msg_token_fmt" translatable="false">토큰: %s</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_write_specific_community">WriteSpecificCommunityActivity</string>

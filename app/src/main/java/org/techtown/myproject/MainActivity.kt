@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.my.MyFragment
 import org.techtown.myproject.community.CommunityFragment
@@ -86,6 +87,25 @@ class MainActivity : AppCompatActivity() {
         editor = sharedPreferences.edit()
         editor.putString("manager", "test1@test.com")
         editor.commit()
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+            val msg = getString(R.string.msg_token_fmt, token)
+
+            editor = sharedPreferences.edit()
+            editor.putString(uid + "Token", token)
+            editor.commit()
+
+            Log.d("getToken", msg)
+        })
 
         bnv_main = findViewById(R.id.bottom_menu)
         initNavigationBar()
