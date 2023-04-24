@@ -214,6 +214,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:entries="@array/spinner"
+                android:spinnerMode="dialog"
                 android:theme="@style/mySpinner">
             </Spinner>
 

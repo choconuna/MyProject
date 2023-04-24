@@ -143,6 +143,7 @@
                 android:layout_height="40dp"
                 android:textAlignment="center"
                 android:layout_gravity="center"
+                android:spinnerMode="dialog"
                 android:entries="@array/snackSpinner"
                 android:theme="@style/mySpinner">
             </Spinner>

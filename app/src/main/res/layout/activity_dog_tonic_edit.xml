@@ -144,6 +144,7 @@
                 android:textAlignment="center"
                 android:layout_gravity="center"
                 android:entries="@array/PartSpinner"
+                android:spinnerMode="dialog"
                 android:theme="@style/mySpinner">
             </Spinner>
 

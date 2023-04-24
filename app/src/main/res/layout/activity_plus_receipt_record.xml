@@ -110,6 +110,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="20dp"
                     android:entries="@array/receiptCategorySpinner"
+                    android:spinnerMode="dialog"
                     android:theme="@style/receiptSpinner" />
 
             </LinearLayout>
@@ -172,6 +173,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="20dp"
                     android:entries="@array/payMethodSpinner"
+                    android:spinnerMode="dialog"
                     android:theme="@style/receiptSpinner" />
 
             </LinearLayout>

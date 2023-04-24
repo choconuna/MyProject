@@ -159,6 +159,7 @@
                     android:textAlignment="center"
                     android:layout_gravity="center"
                     android:entries="@array/checkUpCategorySpinner"
+                    android:spinnerMode="dialog"
                     android:theme="@style/mySpinner">
                 </Spinner>
 

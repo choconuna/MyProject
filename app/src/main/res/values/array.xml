@@ -320,4 +320,18 @@
         <item>월별</item>
         <item>연별</item>
     </string-array>
+
+    <string-array name="dealSpinner">
+        <item>사료</item>
+        <item>영양제</item>
+        <item>간식</item>
+        <item>용품</item>
+        <item>기타</item>
+    </string-array>
+
+    <string-array name="dealMethodSpinner">
+        <item>직거래</item>
+        <item>택배 거래</item>
+        <item>둘 다</item>
+    </string-array>
 </resources>

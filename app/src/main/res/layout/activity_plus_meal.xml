@@ -208,6 +208,7 @@
                 android:textAlignment="center"
                 android:layout_gravity="center"
                 android:entries="@array/mealSpinner"
+                android:spinnerMode="dialog"
                 android:theme="@style/mySpinner">
             </Spinner>
 

@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:backgroundTint="@color/mainColor"
+            android:spinnerMode="dialog"
             android:theme="@style/dateSpinner">
         </Spinner>
 

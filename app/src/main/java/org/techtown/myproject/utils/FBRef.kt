@@ -19,6 +19,8 @@ class FBRef {
 
         val commentRef = database.getReference("comment") // 게시판 댓글 데이터를 DB에 삽입하는 경로
 
+        val dealRef = database.getReference("deal") // 거래 데이터를 DB에 삽입하는 경로
+
         val reCommentRef = database.getReference("reComment") // 게시판 대댓글 데이터를 DB에 삽입하는 경로
 
         val mealRef = database.getReference("meal") // 반려견의 사료 데이터를 DB에 삽입하는 경로
