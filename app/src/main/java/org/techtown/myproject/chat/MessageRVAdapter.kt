@@ -3,6 +3,7 @@ package org.techtown.myproject.chat
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,15 +15,23 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
+import org.techtown.myproject.community.CommunityImageAdapter
+import org.techtown.myproject.community.CommunityImageDetailActivity
+import org.techtown.myproject.note.ImageDetailActivity
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.MessageModel
+import java.util.ArrayList
 
 class MessageRVAdapter(val messageList : MutableList<MessageModel>) : BaseAdapter() {
+
     override fun getCount(): Int {
         return messageList.size
     }
@@ -44,6 +53,20 @@ class MessageRVAdapter(val messageList : MutableList<MessageModel>) : BaseAdapte
             view = LayoutInflater.from(parent?.context).inflate(R.layout.my_chat_list_item, parent, false)
         else if(messageList[position].sendUid != myUid)
             view = LayoutInflater.from(parent?.context).inflate(R.layout.your_chat_list_item, parent, false)
+
+        Log.d("deleteMessage", messageList[position].chatConnectionId + messageList[position].messageId)
+        Log.d("deleteMessage", messageList[position].type)
+
+        val imageDataList = ArrayList<String>()
+        lateinit var imageListView : RecyclerView
+
+        var messageImageVAdapter = MessageImageAdapter(imageDataList)
+        imageListView = view!!.findViewById(R.id.imageRecyclerView)
+        imageListView.setItemViewCacheSize(20)
+        imageListView.setHasFixedSize(true)
+        var layoutManager = LinearLayoutManager(view!!.context, LinearLayoutManager.HORIZONTAL, false)
+        imageListView.layoutManager = layoutManager
+        imageListView.adapter = messageImageVAdapter
 
         val dateArea = view!!.findViewById<TextView>(R.id.dateArea)
 
@@ -70,37 +93,140 @@ class MessageRVAdapter(val messageList : MutableList<MessageModel>) : BaseAdapte
             else -> dateArea.visibility = GONE
         }
 
-        view!!.findViewById<TextView>(R.id.contentArea).text = messageList[position].content
+        if(messageList[position].type == "letter") {
+            view!!.findViewById<TextView>(R.id.contentArea).text = messageList[position].content
+            view!!.findViewById<TextView>(R.id.contentArea).visibility = VISIBLE
+            view!!.findViewById<RecyclerView>(R.id.imageRecyclerView).visibility = GONE
+        }
+        else if(messageList[position].type == "picture") {
+
+            messageImageVAdapter = MessageImageAdapter(imageDataList)
+            imageListView = view!!.findViewById(R.id.imageRecyclerView)
+            imageListView.setItemViewCacheSize(20)
+            imageListView.setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(view!!.context, LinearLayoutManager.HORIZONTAL, false)
+            imageListView.layoutManager = layoutManager
+            imageListView.adapter = messageImageVAdapter
+
+            var chatConnectionId = messageList[position].chatConnectionId
+            var messageId = messageList[position].messageId
+
+            Log.d("deleteMessage", "실행")
+
+            imageDataList.clear()
+
+            if(messageList[position].picNum.toInt() > 0) {
+                for(index in 0 until messageList[position].picNum.toInt()) {
+                    imageDataList.add("messageImage/$chatConnectionId/$messageId/$messageId$index.png")
+                }
+                Log.d("imageDataList", imageDataList.toString())
+            }
+            messageImageVAdapter.notifyDataSetChanged()
+
+            view!!.findViewById<TextView>(R.id.contentArea).visibility = GONE
+            view!!.findViewById<RecyclerView>(R.id.imageRecyclerView).visibility = VISIBLE
+        }
+
+        view!!.findViewById<TextView>(R.id.contentArea).maxWidth = 15 * view!!.findViewById<TextView>(R.id.contentArea).lineHeight
 
         val timeSp = messageList[position].sendDate.split(" ")[1]
         view!!.findViewById<TextView>(R.id.sendTimeArea).text = timeSp
 
+        messageImageVAdapter.setItemClickListener(object: MessageImageAdapter.OnItemClickListener{
+            override fun onClick(v: View, p: Int) {
+                if(messageList[position].sendUid != myUid) { // 메시지를 보낸 사람이 사용자가 아닐 경우
+                    val intent = Intent(view!!.context, ImageDetailActivity::class.java)
+                    Log.d("imageDataList", imageDataList[p])
+                    intent.putExtra("image", imageDataList[p]) // 사진 링크 넘기기
+                    view!!.context.startActivity(intent)
+                } else if(messageList[position].sendUid == myUid) { // 메시지를 보낸 사람이 사용자일 경우
+                    val mDialogView = LayoutInflater.from(view!!.context).inflate(R.layout.message_image_dialog, null)
+                    val mBuilder = AlertDialog.Builder(view!!.context).setView(mDialogView)
+
+                    val alertDialog = mBuilder.show()
+
+                    val deleteMessageBtn = alertDialog.findViewById<Button>(R.id.deleteMessageBtn)
+                    deleteMessageBtn?.setOnClickListener { // 메시지 삭제 버튼 클릭 시
+                        Log.d("messageClicked", "delete Message Button Clicked")
+
+                        var chatConnectionId = messageList[position].chatConnectionId
+                        var messageId = messageList[position].messageId
+
+                        Log.d("deleteMessage", messageList[position].chatConnectionId + messageList[position].messageId)
+                        Log.d("deleteMessage", messageList[position].type)
+
+                        if (messageList[position].type == "picture") {
+                            for (index in 0 until messageList[position].picNum.toInt()) {
+                                Firebase.storage.reference.child("messageImage/$chatConnectionId/$messageId/$messageId$index.png")
+                                    .delete().addOnSuccessListener { // 사진 삭제
+                                    }.addOnFailureListener {
+                                    }
+                            }
+                            FBRef.messageRef.child(messageList[position].chatConnectionId).child(messageList[position].messageId).removeValue() // 파이어베이스에서 해당 메시지 삭제
+                            Toast.makeText(view!!.context, "메시지가 삭제되었습니다!", Toast.LENGTH_SHORT).show()
+                        }
+
+                        alertDialog.dismiss()
+                    }
+
+                    val showMessageBtn = alertDialog.findViewById<Button>(R.id.showMessageBtn)
+                    showMessageBtn?.setOnClickListener {  // 메시지 보기 버튼 클릭 시
+                        Log.d("messageClicked", "show Message Button Clicked")
+
+                        val intent = Intent(view!!.context, ImageDetailActivity::class.java)
+                        Log.d("imageDataList", imageDataList[p])
+                        intent.putExtra("image", imageDataList[p]) // 사진 링크 넘기기
+                        view!!.context.startActivity(intent)
+
+                        alertDialog.dismiss()
+                    }
+                }
+            }
+        })
+
         view!!.findViewById<TextView>(R.id.contentArea).setOnLongClickListener {
 
-            val mDialogView = LayoutInflater.from(view!!.context).inflate(R.layout.message_dialog, null)
-            val mBuilder = AlertDialog.Builder(view!!.context).setView(mDialogView)
+            if(messageList[position].sendUid == myUid) { // 메시지를 작성한 사람이 현재 사용자일 경우
 
-            val alertDialog = mBuilder.show()
-            val deleteMessageBtn = alertDialog.findViewById<Button>(R.id.deleteMessageBtn)
-            deleteMessageBtn?.setOnClickListener { // 메시지 삭제 버튼 클릭 시
-                Log.d("messageClicked", "delete Message Button Clicked")
+                val mDialogView =
+                    LayoutInflater.from(view!!.context).inflate(R.layout.message_dialog, null)
+                val mBuilder = AlertDialog.Builder(view!!.context).setView(mDialogView)
 
-                FBRef.messageRef.child(messageList[position].chatConnectionId).child(messageList[position].messageId).removeValue() // 파이어베이스에서 해당 메시지 삭제
-                Toast.makeText(view!!.context, "메시지가 삭제되었습니다!", Toast.LENGTH_SHORT).show()
+                val alertDialog = mBuilder.show()
+                val deleteMessageBtn = alertDialog.findViewById<Button>(R.id.deleteMessageBtn)
+                deleteMessageBtn?.setOnClickListener { // 메시지 삭제 버튼 클릭 시
+                    Log.d("messageClicked", "delete Message Button Clicked")
 
-                alertDialog.dismiss()
-            }
+                    FBRef.messageRef.child(messageList[position].chatConnectionId).child(messageList[position].messageId).removeValue() // 파이어베이스에서 해당 메시지 삭제
+                    Toast.makeText(view!!.context, "메시지가 삭제되었습니다!", Toast.LENGTH_SHORT).show()
 
-            val copyMessageBtn = alertDialog.findViewById<Button>(R.id.copyMessageBtn)
-            copyMessageBtn?.setOnClickListener {  // 메시지 복사 버튼 클릭 시
-                Log.d("messageClicked", "copy Message Button Clicked")
+                    alertDialog.dismiss()
+                }
 
-                val clipboard =  view?.context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clipData = ClipData.newPlainText("text", view!!.findViewById<TextView>(R.id.contentArea).text.trim())
+                val copyMessageBtn = alertDialog.findViewById<Button>(R.id.copyMessageBtn)
+                copyMessageBtn?.setOnClickListener {  // 메시지 복사 버튼 클릭 시
+                    Log.d("messageClicked", "copy Message Button Clicked")
+
+                    val clipboard =
+                        view?.context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipData = ClipData.newPlainText(
+                        "text",
+                        view!!.findViewById<TextView>(R.id.contentArea).text.trim()
+                    )
+                    clipboard.setPrimaryClip(clipData)
+                    Toast.makeText(view!!.context, "메시지가 복사되었습니다!", Toast.LENGTH_SHORT).show()
+
+                    alertDialog.dismiss()
+                }
+            } else if(messageList[position].sendUid != myUid) { // 메시지를 작성한 사람이 현재 사용자가 아닐 경우
+                val clipboard =
+                    view?.context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData = ClipData.newPlainText(
+                    "text",
+                    view!!.findViewById<TextView>(R.id.contentArea).text.trim()
+                )
                 clipboard.setPrimaryClip(clipData)
                 Toast.makeText(view!!.context, "메시지가 복사되었습니다!", Toast.LENGTH_SHORT).show()
-
-                alertDialog.dismiss()
             }
 
             true

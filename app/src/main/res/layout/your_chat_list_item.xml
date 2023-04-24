@@ -18,28 +18,42 @@
         android:id="@+id/sendTimeArea"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/contentArea"
+        android:layout_alignBottom="@+id/frame"
         android:layout_marginLeft="10dp"
         android:layout_marginBottom="5dp"
-        android:layout_toRightOf="@+id/contentArea"
+        android:layout_toRightOf="@+id/frame"
         android:fontFamily="@font/regular"
         android:text="12:12"
         android:textSize="12sp" />
 
-    <TextView
-        android:id="@+id/contentArea"
+    <FrameLayout
+        android:id="@+id/frame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/regular"
-        android:textSize="15sp"
         android:layout_below="@+id/dateArea"
         android:layout_marginTop="10dp"
         android:layout_alignParentLeft="true"
-        android:text="안녕하세요!"
-        android:layout_marginLeft="10dp"
-        android:maxLength="20"
-        android:padding="10dp"
-        android:textColor="@color/black"
-        android:background="@drawable/your_chat_custom"/>
+        android:layout_marginLeft="10dp">
+
+        <TextView
+            android:id="@+id/contentArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/regular"
+            android:textSize="15sp"
+            android:text="안녕하세요!"
+            android:maxWidth="15sp"
+            android:singleLine="false"
+            android:padding="10dp"
+            android:textColor="@color/black"
+            android:background="@drawable/your_chat_custom"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/imageRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+    </FrameLayout>
 
 </RelativeLayout>

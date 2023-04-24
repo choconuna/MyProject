@@ -80,7 +80,10 @@ class ChatReVAdapter(val chatList : ArrayList<ChatConnection>):
                         messageList.add(item!!)
                     }
 
-                    holder!!.contentArea!!.text = messageList[messageList.size - 1].content // 맨 마지막 메시지 내용을 띄움
+                    if(messageList[messageList.size - 1].type == "letter") // 맨 마지막 메시지 내용이 글일 경우
+                        holder!!.contentArea!!.text = messageList[messageList.size - 1].content // 맨 마지막 메시지 내용을 띄움
+                    else if(messageList[messageList.size - 1].type == "picture") // 맨 마지막 메시지 내용이 사진일 경우
+                        holder!!.contentArea!!.text = "사진을 보냈습니다."
 
                     val currentDataTime = Calendar.getInstance().time
                     val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.KOREA).format(currentDataTime)

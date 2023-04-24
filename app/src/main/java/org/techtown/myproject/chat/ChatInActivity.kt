@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -27,6 +30,7 @@ import org.techtown.myproject.R
 import org.techtown.myproject.community.SpecificCommunityEditActivity
 import org.techtown.myproject.utils.ChatConnection
 import org.techtown.myproject.utils.FBRef
+import org.techtown.myproject.utils.FCMToken
 import org.techtown.myproject.utils.MessageModel
 import java.io.OutputStream
 import java.net.HttpURLConnection
@@ -55,6 +59,10 @@ class ChatInActivity : AppCompatActivity() {
     private val messageDataList = mutableListOf<MessageModel>()
     private lateinit var messageRVAdapter : MessageRVAdapter
 
+    var imageList : ArrayList<Uri> = ArrayList()
+    private lateinit var plusImageBtn : Button
+    private var count = 0 // 첨부한 사진 수
+
     lateinit var contentArea : EditText
     private lateinit var sendBtn : Button
 
@@ -68,16 +76,22 @@ class ChatInActivity : AppCompatActivity() {
 
         setData()
 
+        plusImageBtn.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            activityResult.launch(intent)
+        }
+
         sendBtn.setOnClickListener {
             val content = contentArea.text.toString().trim()
 
             val any = if (content.isNotEmpty()) {
                 val currentDataTime = Calendar.getInstance().time
-                val dateFormat =
-                    SimpleDateFormat("yyyy.MM.dd.E HH:mm", Locale.KOREA).format(currentDataTime)
+                val dateFormat = SimpleDateFormat("yyyy.MM.dd.E HH:mm", Locale.KOREA).format(currentDataTime)
 
                 val key = FBRef.messageRef.child(chatConnectionId).push().key.toString() // 키 값을 먼저 받아옴
-                FBRef.messageRef.child(chatConnectionId).child(key).setValue(MessageModel(chatConnectionId, key, myUid, content, dateFormat.toString(), "false"))
+                FBRef.messageRef.child(chatConnectionId).child(key).setValue(MessageModel(chatConnectionId, key, myUid, "letter", 0.toString(), content, dateFormat.toString(), "false"))
 
                 contentArea.setText("")
                 val mInputMethodManager: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -108,6 +122,7 @@ class ChatInActivity : AppCompatActivity() {
         messageRVAdapter = MessageRVAdapter(messageDataList)
         messageContentListView.adapter = messageRVAdapter
 
+        plusImageBtn = findViewById(R.id.plusImageBtn)
         contentArea = findViewById(R.id.contentArea)
         sendBtn = findViewById(R.id.sendBtn)
 
@@ -143,35 +158,59 @@ class ChatInActivity : AppCompatActivity() {
                     else if (chatConnection!!.userId2 != myUid)
                         yourUid = chatConnection!!.userId2
 
-                    sharedPreferences =
-                        getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
-                    val yourToken = sharedPreferences.getString(yourUid + "Token", "").toString()
-                    Log.d("sendPostToFCM", "$yourToken")
+                    Log.d("yourToken", yourUid)
 
-                    Thread {
-                        try {
-                            val root = JSONObject()
-                            val notification = JSONObject()
-                            notification.put("body", "$nickName: $message")
-                            notification.put("title", "멍노트")
-                            root.put("notification", notification)
-                            root.put("to", yourToken)
-                            val url = URL(FCM_MESSAGE_URL)
-                            val conn: HttpURLConnection = url.openConnection() as HttpURLConnection
-                            conn.requestMethod = "POST"
-                            conn.doOutput = true
-                            conn.doInput = true
-                            conn.addRequestProperty("Authorization", "key=$SERVER_KEY")
-                            conn.setRequestProperty("Accept", "application/json")
-                            conn.setRequestProperty("Content-type", "application/json")
-                            val os: OutputStream = conn.outputStream
-                            os.write(root.toString().toByteArray(charset("utf-8")))
-                            os.flush()
-                            conn.responseCode
-                        } catch (e: java.lang.Exception) {
-                            e.printStackTrace()
-                        }
-                    }.start()
+                    FBRef.tokenRef.child(yourUid).addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                                for (dataModel in dataSnapshot.children) {
+
+                                    val item = dataModel.getValue(FCMToken::class.java)
+                                    Log.d("yourToken", item!!.toString())
+                                    Log.d("yourToken", item!!.fcmTokenId)
+                                    Log.d("yourToken", item!!.userId)
+                                    Log.d("yourToken", item!!.token)
+
+                                    val yourToken = item!!.token
+
+                                    Thread {
+                                        try {
+                                            val root = JSONObject()
+                                            val notification = JSONObject()
+                                            notification.put("body", "$nickName: $message")
+                                            notification.put("title", "멍노트")
+                                            root.put("notification", notification)
+                                            root.put("to", yourToken)
+                                            val url = URL(FCM_MESSAGE_URL)
+                                            val conn: HttpURLConnection =
+                                                url.openConnection() as HttpURLConnection
+                                            conn.requestMethod = "POST"
+                                            conn.doOutput = true
+                                            conn.doInput = true
+                                            conn.addRequestProperty(
+                                                "Authorization",
+                                                "key=$SERVER_KEY"
+                                            )
+                                            conn.setRequestProperty("Accept", "application/json")
+                                            conn.setRequestProperty(
+                                                "Content-type",
+                                                "application/json"
+                                            )
+                                            val os: OutputStream = conn.outputStream
+                                            os.write(root.toString().toByteArray(charset("utf-8")))
+                                            os.flush()
+                                            conn.responseCode
+                                        } catch (e: java.lang.Exception) {
+                                            e.printStackTrace()
+                                        }
+                                    }.start()
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e("yourToken", "Failed to read value.", error.toException())
+                            }
+                        })
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {}
@@ -238,5 +277,56 @@ class ChatInActivity : AppCompatActivity() {
             }
         }
         FBRef.chatConnectionRef.addValueEventListener(postListener)
+    }
+
+    private fun imageUpload(chatConnectionId: String, key : String) { // 이미지를 storage에 업로드하는 함수
+        val storage = Firebase.storage
+        val storageRef = storage.reference
+
+        for(cnt in 0 until count) {
+            val mountainsRef = storageRef.child("messageImage/$chatConnectionId/$key/$key$cnt.png")
+
+            var uploadTask = mountainsRef.putFile(imageList[cnt])
+            uploadTask.addOnFailureListener {
+                // Handle unsuccessful uploads
+            }.addOnSuccessListener { taskSnapshot ->
+                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+            }
+        }
+    }
+
+    private val activityResult : ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) {
+
+        if(it.resultCode == RESULT_OK) { // 결과 코드 OK, 아니면 null
+            if(it.data!!.clipData != null) { // 멀티 이미지일 경우
+                count += it.data!!.clipData!!.itemCount // 선택한 이미지 개수
+
+                for(index in 0 until it.data!!.clipData!!.itemCount) {
+                    val imageUri = it.data!!.clipData!!.getItemAt(index).uri // 이미지 담기
+                    imageList.add(imageUri) // 이미지 추가
+                }
+            } else { // 싱글 이미지일 경우
+                count += it.data!!.clipData!!.itemCount
+                val imageUri = it.data!!.data
+                imageList.add(imageUri!!)
+            }
+            Log.d("imageList", imageList.toString())
+
+            if(count > 0) {
+
+                val currentDataTime = Calendar.getInstance().time
+                val dateFormat = SimpleDateFormat("yyyy.MM.dd.E HH:mm", Locale.KOREA).format(currentDataTime)
+
+                val key = FBRef.messageRef.child(chatConnectionId).push().key.toString() // 키 값을 먼저 받아옴
+                FBRef.messageRef.child(chatConnectionId).child(key).setValue(MessageModel(chatConnectionId, key, myUid, "picture", count.toString(), "", dateFormat.toString(), "false"))
+
+                imageUpload(chatConnectionId, key) // 이미지를 firebase storage에 업로드
+
+                val userName = FBRef.userRef.child(myUid).child("nickName").get().addOnSuccessListener {
+                    sendPostToFCM(chatConnectionId, it.value.toString(), "사진을 보냈습니다.")
+                }
+            }
+        }
     }
 }

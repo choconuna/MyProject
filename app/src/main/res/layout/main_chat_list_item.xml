@@ -10,6 +10,7 @@
         android:id="@+id/frame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_margin="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -19,10 +20,13 @@
             tools:ignore="MissingConstraints" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/frame2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/yourProfile"
             app:layout_constraintTop_toTopOf="parent"
@@ -46,6 +50,9 @@
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/regular"
                 android:text="내용"
+                android:maxLength="20"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textSize="15sp"
                 tools:ignore="MissingConstraints" />
 
@@ -54,6 +61,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,12 +82,12 @@
                 android:id="@+id/noShownCntArea"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/bold"
                 android:layout_gravity="center"
+                android:background="@drawable/circle_red"
+                android:fontFamily="@font/bold"
                 android:gravity="center"
                 android:padding="5dp"
                 android:textColor="@color/white"
-                android:background="@drawable/circle_red"
                 android:textSize="10sp"
                 android:visibility="gone"
                 tools:ignore="MissingConstraints" />

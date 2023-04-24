@@ -35,7 +35,9 @@ import org.techtown.myproject.my.MyActivity
 import org.techtown.myproject.note.NoteFragment
 import org.techtown.myproject.note.RecordFragment
 import org.techtown.myproject.receipt.ReceiptFragment
+import org.techtown.myproject.utils.DogDungModel
 import org.techtown.myproject.utils.FBRef
+import org.techtown.myproject.utils.FCMToken
 import org.techtown.myproject.walk.WalkFragment
 import com.google.firebase.database.DataSnapshot as DataSnapshot1
 
@@ -99,6 +101,30 @@ class MainActivity : AppCompatActivity() {
 
             // Log and toast
             val msg = getString(R.string.msg_token_fmt, token)
+
+            FBRef.tokenRef.child(uid).addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot1) {
+                    try {
+                        // 경로에 대한 데이터 변경 발생 시 실행되는 코드
+                        val data = dataSnapshot.getValue(FCMToken::class.java)
+                        Log.d("tokenRef", data!!.toString())
+                        if (data != null) {
+                            Log.d("tokenRef", "data 존재")
+                        } else if(data == null) {
+
+                            Log.d("tokenRef", "data 존재 X")
+
+                            val key = FBRef.tokenRef.child(uid).push().key.toString() // 키 값을 먼저 받아옴
+
+                            FBRef.tokenRef.child(uid).child(key).setValue(FCMToken(uid, token, key)) // 토큰 정보 데이터베이스에 저장
+                        }
+                    } catch(e : Exception) { }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // 데이터 조회에 실패한 경우 실행되는 코드
+                }
+            })
 
             editor = sharedPreferences.edit()
             editor.putString(uid + "Token", token)

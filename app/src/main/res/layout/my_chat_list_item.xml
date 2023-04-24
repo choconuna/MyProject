@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/sendTimeArea"
         android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/contentArea"
+        android:layout_toLeftOf="@+id/content"
         android:fontFamily="@font/bold"
         android:text="1"
         android:textColor="#FFD700	"
@@ -30,28 +30,43 @@
         android:id="@+id/sendTimeArea"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/contentArea"
+        android:layout_alignBottom="@+id/content"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="1dp"
-        android:layout_toLeftOf="@+id/contentArea"
+        android:layout_toLeftOf="@+id/content"
         android:fontFamily="@font/regular"
         android:text="12:12"
         android:textSize="12sp" />
 
-    <TextView
-        android:id="@+id/contentArea"
+    <FrameLayout
+        android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dateArea"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/my_chat_custom"
-        android:fontFamily="@font/regular"
-        android:maxLength="20"
-        android:padding="10dp"
-        android:text="안녕하세요!"
-        android:layout_marginRight="10dp"
-        android:textColor="@color/white"
-        android:textSize="15sp" />
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/contentArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/my_chat_custom"
+            android:fontFamily="@font/regular"
+            android:padding="10dp"
+            android:text="안녕하세요!"
+            android:layout_marginRight="10dp"
+            android:maxWidth="15sp"
+            android:singleLine="false"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/imageRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"/>
+
+    </FrameLayout>
 
 </RelativeLayout>
