@@ -16,11 +16,11 @@
 
         <ImageView
             android:id="@+id/back"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginStart="20dp"
             android:layout_marginRight="120dp"
-            android:src="@drawable/xx"
+            android:src="@drawable/ic_round_close_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/textView"
             app:layout_constraintStart_toStartOf="parent"

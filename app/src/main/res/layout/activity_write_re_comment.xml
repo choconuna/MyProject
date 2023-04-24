@@ -16,11 +16,11 @@
 
             <ImageView
                 android:id="@+id/back"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginRight="110dp"
-                android:src="@drawable/backk"
+                android:src="@drawable/ic_round_keyboard_arrow_left_brown"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/textView"
                 app:layout_constraintStart_toStartOf="parent"

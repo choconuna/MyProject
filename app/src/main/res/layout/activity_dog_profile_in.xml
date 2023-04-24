@@ -18,7 +18,7 @@
             android:id="@+id/back"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:src="@drawable/backk"
+            android:src="@drawable/ic_arrow_left"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="90dp"
             app:layout_constraintBottom_toBottomOf="parent"
