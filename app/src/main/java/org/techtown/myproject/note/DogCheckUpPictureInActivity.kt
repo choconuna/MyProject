@@ -100,10 +100,10 @@ class DogCheckUpPictureInActivity : AppCompatActivity() {
         editBtn?.setOnClickListener { // 수정 버튼 클릭 시
             Log.d(TAG, "edit Button Clicked")
 
-            /* val intent = Intent(this, DogCheckUpPictureEditActivity::class.java)
+            val intent = Intent(this, DogCheckUpPictureEditActivity::class.java)
             intent.putExtra("id", id) // dogCheckUpPicture Id 전송
             intent.putExtra("date", date) // 선택된 날짜 전송
-            startActivity(intent) // 수정 페이지로 이동 */
+            startActivity(intent) // 수정 페이지로 이동
 
             alertDialog.dismiss()
         }

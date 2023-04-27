@@ -54,6 +54,11 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="SpinnerTextStyle" parent="android:Widget.TextView.SpinnerItem">
+        <item name="android:fontFamily">@font/bold</item>
+    </style>
+
+
     <style name="MyItemFont" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/bold</item>
         <item name="android:textSize">10sp</item>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_round_close_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/textView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:gravity="center"
+            android:text="필터 설정"
+            android:textColor="@color/mainColor"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/checkBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_round_check"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="MissingConstraints" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/frame1"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#DCDCDC"
+        android:layout_below="@+id/topBar"
+        android:orientation="horizontal" />
+
+    <TextView
+        android:id="@+id/frame2"
+        android:layout_below="@+id/frame1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bold"
+        android:gravity="left"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:text="위치"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_below="@+id/frame2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/location1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/radiobutton_custom"
+            android:button="@null"
+            android:textColor="@color/mainColor"
+            android:fontFamily="@font/regular"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:text="전체 지역" />
+
+        <RadioButton
+            android:id="@+id/location2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/radiobutton_custom"
+            android:button="@null"
+            android:textColor="@color/mainColor"
+            android:fontFamily="@font/regular"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:text="서울특별시" />
+
+        <RadioButton
+            android:id="@+id/location3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radiobutton_custom"
+            android:button="@null"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:fontFamily="@font/regular"
+            android:textColor="@color/mainColor"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:text="동대문구" />
+
+        <RadioButton
+            android:id="@+id/location4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/regular"
+            android:textColor="@color/mainColor"
+            android:background="@drawable/radiobutton_custom"
+            android:button="@null"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:text="장안동"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/frame4"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#DCDCDC"
+        android:layout_below="@+id/radioGroup"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal" />
+
+    <TextView
+        android:id="@+id/frame5"
+        android:layout_below="@+id/frame4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bold"
+        android:gravity="left"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:text="카테고리"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
+
+    <LinearLayout
+        android:id="@+id/frame6"
+        android:layout_below="@+id/frame5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/categoryBox1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/radiobutton_custom"
+            android:button="@null"
+            android:textColor="@color/checkbox_text_color"
+            android:fontFamily="@font/regular"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:text="전체" />
+
+        <CheckBox
+            android:id="@+id/categoryBox2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/radiobutton_custom"
+            android:button="@null"
+            android:textColor="@color/checkbox_text_color"
+            android:fontFamily="@font/regular"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:text="사료" />
+
+        <CheckBox
+            android:id="@+id/categoryBox3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radiobutton_custom"
+            android:button="@null"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:fontFamily="@font/regular"
+            android:textColor="@color/checkbox_text_color"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:text="영양제" />
+
+        <CheckBox
+            android:id="@+id/categoryBox4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/regular"
+            android:textColor="@color/checkbox_text_color"
+            android:background="@drawable/radiobutton_custom"
+            android:button="@null"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:text="간식"/>
+
+        <CheckBox
+            android:id="@+id/categoryBox5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radiobutton_custom"
+            android:button="@null"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:fontFamily="@font/regular"
+            android:textColor="@color/checkbox_text_color"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:text="용품" />
+
+        <CheckBox
+            android:id="@+id/categoryBox6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/regular"
+            android:textColor="@color/checkbox_text_color"
+            android:background="@drawable/radiobutton_custom"
+            android:button="@null"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:text="기타"/>
+    </LinearLayout>
+
+</RelativeLayout>

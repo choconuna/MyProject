@@ -1,8 +1,13 @@
 package org.techtown.myproject
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -11,12 +16,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
@@ -39,27 +47,20 @@ import org.techtown.myproject.utils.DogDungModel
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.FCMToken
 import org.techtown.myproject.walk.WalkFragment
+import java.io.IOException
 import com.google.firebase.database.DataSnapshot as DataSnapshot1
 
 class MainActivity : AppCompatActivity() {
 
     private val TAG : String = MainActivity::class.java.simpleName
 
-    lateinit var navMenu : ImageView
-    lateinit var navigationView : NavigationView
-    lateinit var drawerLayout: DrawerLayout
-    lateinit var navHeaderView : View
-    private lateinit var headerEmailText : TextView
-    private lateinit var headerDogName : TextView
-    lateinit var toolbar : Toolbar
+    private val LOCATION_PERMISSION_REQUEST_CODE = 800
 
     lateinit var sharedPreferences: SharedPreferences
     lateinit var mDatabaseReference: DatabaseReference
     lateinit var editor : SharedPreferences.Editor
     lateinit var mAuth : FirebaseAuth
     lateinit var uid : String
-    private val prefUserEmail = "userEmail"
-    lateinit var email : String
     lateinit var dogName : String
     lateinit var userName : String
 
@@ -67,7 +68,6 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var bnv_main : BottomNavigationView
 
-    private val noteFragment by lazy { NoteFragment() }
     private val recordFragment by lazy { RecordFragment() }
     private val receiptFragment by lazy { ReceiptFragment() }
     private val walkFragment by lazy { WalkFragment() }
@@ -130,6 +130,10 @@ class MainActivity : AppCompatActivity() {
             editor.putString(uid + "Token", token)
             editor.commit()
 
+            if (!sharedPreferences.contains(uid + "Location")) { // 앱에 처음 접속했을 때 사용자의 위치 정보를 가져와 저장
+                checkLocationPermission()
+            }
+
             Log.d("getToken", msg)
         })
 
@@ -137,23 +141,44 @@ class MainActivity : AppCompatActivity() {
         initNavigationBar()
     }
 
-    /* private fun getUserDB() {
-        mDatabaseReference = Firebase.database.reference.child("Users").child(uid)
-
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot1) {
-                val post = dataSnapshot.getValue(UserInfo::class.java)
-                dogName = post!!.dogName
-                Log.d(TAG, "dogName: $dogName")
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
+    private fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        } else {
+            getLastLocation()
         }
-        mDatabaseReference.addValueEventListener(postListener)
-    } */
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLastLocation() {
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationProviderClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+
+                    val g = Geocoder(this)
+                    var address: MutableList<Address> = mutableListOf()
+
+                    try {
+                        address = g.getFromLocation(location.latitude, location.longitude, 10)
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+
+                    if (address != null && address.isNotEmpty()) {
+                        var adminArea = address[0].adminArea
+                        var subLocality = address[0].subLocality
+                        var thoroughfare = address[0].thoroughfare
+
+                        sharedPreferences.edit()
+                            .putString(uid + "Location", "$adminArea $subLocality $thoroughfare")
+                            .apply()
+                    }
+                }
+            }
+    }
 
     private fun initNavigationBar() { // 하단 탭에 맞는 fragment 띄우기
         bnv_main.run {

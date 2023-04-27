@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 파일 시스템의 루트 디렉토리를 참조하는 경우 -->
+    <root-path
+        name="root"
+        path="/" />
+
+    <!-- 앱의 내부 저장소 디렉토리를 참조하는 경우 -->
+    <files-path
+        name="my_images"
+        path="my_images/" />
+</paths>

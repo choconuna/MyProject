@@ -374,6 +374,7 @@ class WalkPlayFragment : Fragment() {
                                 "아이콘: " + weatherResponse!!.weather!![0].icon + "\n" +
                                 "습도: " + weatherResponse!!.main!!.humidity + "%"
 
+                    Log.d("weatherDescription", weatherResponse!!.weather!![0].description!!)
                     transferWeather(weatherResponse!!.weather!![0].description!!, hour)
 
                     val df = DecimalFormat("#.#")
@@ -404,6 +405,42 @@ class WalkPlayFragment : Fragment() {
             "fog" -> {
                 weatherArea.text = "안개"
                 weatherImage.setImageResource(R.drawable.fog)
+            }
+            "drizzle" -> {
+                weatherArea.text = "이슬비"
+                weatherImage.setImageResource(R.drawable.drizzle)
+            }
+            "light intensity drizzle" -> {
+                weatherArea.text = "가벼운 이슬비"
+                weatherImage.setImageResource(R.drawable.drizzle)
+            }
+            "heavy intensity drizzle" -> {
+                weatherArea.text = "심한 이슬비"
+                weatherImage.setImageResource(R.drawable.drizzle)
+            }
+            "light intensity drizzle rain" -> {
+                weatherArea.text = "가벼운 이슬비가 동반된 비"
+                weatherImage.setImageResource(R.drawable.drizzle)
+            }
+            "drizzle rain" -> {
+                weatherArea.text = "이슬비가 동반된 비"
+                weatherImage.setImageResource(R.drawable.drizzle)
+            }
+            "heavy intensity drizzle rain" -> {
+                weatherArea.text = "심한 이슬비가 동반된 비"
+                weatherImage.setImageResource(R.drawable.drizzle)
+            }
+            "shower rain and drizzle" -> {
+                weatherArea.text = "소나기와 이슬비"
+                weatherImage.setImageResource(R.drawable.drizzle)
+            }
+            "heavy shower rain and drizzle" -> {
+                weatherArea.text = "심한 소나기와 이슬비"
+                weatherImage.setImageResource(R.drawable.drizzle)
+            }
+            "shower drizzle" -> {
+                weatherArea.text = "가벼운 소나기와 이슬비"
+                weatherImage.setImageResource(R.drawable.drizzle)
             }
             "clouds" -> {
                 weatherArea.text = "구름"
@@ -441,10 +478,120 @@ class WalkPlayFragment : Fragment() {
             }
             "rain" -> {
                 weatherArea.text = "비"
-                weatherImage.setImageResource(R.drawable.rain)
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.dark_rain)
+                else
+                    weatherImage.setImageResource(R.drawable.rain)
+            }
+            "light rain" -> {
+                weatherArea.text = "가벼운 비"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.dark_rain)
+                else
+                    weatherImage.setImageResource(R.drawable.rain)
+            }
+            "moderate rain" -> {
+                weatherArea.text = "보통 비"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.dark_rain)
+                else
+                    weatherImage.setImageResource(R.drawable.rain)
+            }
+            "heavy intensity rain" -> {
+                weatherArea.text = "심한 비"
+                weatherImage.setImageResource(R.drawable.heavy_rain)
+            }
+            "very heavy rain" -> {
+                weatherArea.text = "매우 심한 비"
+                weatherImage.setImageResource(R.drawable.heavy_rain)
+            }
+            "extreme rain" -> {
+                weatherArea.text = "극심한 비"
+                weatherImage.setImageResource(R.drawable.heavy_rain)
+            }
+            "freezing rain" -> {
+                weatherArea.text = "우박"
+                weatherImage.setImageResource(R.drawable.hailstorm)
+            }
+            "light intensity shower rain" -> {
+                weatherArea.text = "가벼운 소나기"
+                if(hour.toInt() >= 18)
+                weatherImage.setImageResource(R.drawable.dark_rain)
+                else
+                    weatherImage.setImageResource(R.drawable.shower_rain)
+            }
+            "ragged shower rain" -> {
+                weatherArea.text = "불규칙한 소나기"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.dark_rain)
+                else
+                    weatherImage.setImageResource(R.drawable.shower_rain)
             }
             "thunderstorm" -> {
                 weatherArea.text = "뇌우"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.night_thunderstorm)
+                else
+                    weatherImage.setImageResource(R.drawable.thunderstorm)
+            }
+            "thunderstorm with light rain" -> {
+                weatherArea.text = "가벼운 비가 동반된 천둥번개"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.night_thunderstorm)
+                else
+                    weatherImage.setImageResource(R.drawable.thunderstorm)
+            }
+            "thunderstorm with rain" -> {
+                weatherArea.text = "비를 동반한 천둥번개"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.night_thunderstorm)
+                else
+                    weatherImage.setImageResource(R.drawable.thunderstorm)
+            }
+            "thunderstorm with heavy rain" -> {
+                weatherArea.text = "심한 비를 동반한 천둥번개"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.night_thunderstorm)
+                else
+                    weatherImage.setImageResource(R.drawable.thunderstorm)
+            }
+            "light thunderstorm" -> {
+                weatherArea.text = "약한 천둥번개"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.thunder)
+                else
+                    weatherImage.setImageResource(R.drawable.thunder)
+            }
+            "heavy thunderstorm" -> {
+                weatherArea.text = "심한 천둥번개"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.thunder)
+                else
+                    weatherImage.setImageResource(R.drawable.thunder)
+            }
+            "ragged thunderstorm" -> {
+                weatherArea.text = "불규칙한 천둥번개"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.thunder)
+                else
+                    weatherImage.setImageResource(R.drawable.thunder)
+            }
+            "thunderstorm with light drizzle" -> {
+                weatherArea.text = "가벼운 이슬비를 동반한 천둥번개"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.night_thunderstorm)
+                else
+                    weatherImage.setImageResource(R.drawable.thunderstorm)
+            }
+            "thunderstorm with drizzle" -> {
+                weatherArea.text = "이슬비를 동반한 천둥번개"
+                if(hour.toInt() >= 18)
+                    weatherImage.setImageResource(R.drawable.night_thunderstorm)
+                else
+                    weatherImage.setImageResource(R.drawable.thunderstorm)
+            }
+            "thunderstorm with heavy drizzle" -> {
+                weatherArea.text = "심한 이슬비를 동반한 천둥번개"
                 if(hour.toInt() >= 18)
                     weatherImage.setImageResource(R.drawable.night_thunderstorm)
                 else

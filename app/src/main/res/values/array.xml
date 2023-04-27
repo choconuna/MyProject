@@ -334,4 +334,10 @@
         <item>택배 거래</item>
         <item>둘 다</item>
     </string-array>
+
+    <string-array name="sellState">
+        <item>판매 중</item>
+        <item>예약 중</item>
+        <item>거래 완료</item>
+    </string-array>
 </resources>

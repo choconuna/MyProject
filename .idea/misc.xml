@@ -9,12 +9,17 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/button_clicked_color.xml" value="0.146" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/button_icon_color.xml" value="0.146" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/button_ok.xml" value="0.146" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/checkbox_custom.xml" value="0.1" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/checkbox_text_color.xml" value="0.1465" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/checked_checkbox.xml" value="0.1" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/checked_shape.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_button.xml" value="0.25" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_button_brown.xml" value="0.25" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_inner.xml" value="0.1685" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_outer.xml" value="0.1685" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_red.xml" value="0.1865" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circle_white.xml" value="0.243" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/circular_custom.xml" value="0.196" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/click_circle.xml" value="0.1315" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/custom_checkbox.xml" value="0.118" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/custom_progress_bar.xml" value="0.2435" />
@@ -42,6 +47,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/notification_icon_foreground.xml" value="0.197" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/photo_item_list.xml" value="0.1375" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/profile_image_dialog.xml" value="0.2535" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/radiobutton_custom.xml" value="0.192" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/rectangle_box.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/rectangle_box_brown.xml" value="0.187" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/round_button.xml" value="0.146" />
@@ -50,8 +56,12 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/selector_radio_button.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/selector_radio_text.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/spinner_background.xml" value="0.2005" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/spinner_custom.xml" value="0.204" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/unchecked_checkbox.xml" value="0.1" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/unchecked_shape.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/yout_chat_custom.xml" value="0.1865" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_alarm.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_all_chat_fragment.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_chat_in.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_check_up_picture_statistics.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_check_up_picture_statistics_in.xml" value="0.25104166666666666" />
@@ -61,9 +71,12 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_community_image_detail.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_community_in.xml" value="0.2" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_community_inside.xml" value="0.10648148148148148" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_deal_edit.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_deal_in.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_check_up_input.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_check_up_input_edit.xml" value="0.2375" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_check_up_picture.xml" value="0.2375" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_check_up_picture_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_check_up_picture_in.xml" value="0.2375" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_dung_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_dog_meal_edit.xml" value="0.25104166666666666" />
@@ -103,6 +116,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_profile_edit.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_re_comment_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_receipt_record_edit.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_search_local.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_show_my_community.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_show_user_detail.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_specific_community_edit.xml" value="0.25104166666666666" />
@@ -116,7 +130,10 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_write_dog_profile.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_write_re_comment.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_write_specific_community.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/category_dialog.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/category_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/chatting_dialog.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/check_box_checked.xml" value="0.13425925925925927" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/check_up_dialog.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/check_up_input_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/check_up_input_statistics_list_item.xml" value="0.25104166666666666" />
@@ -128,6 +145,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/community_image_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/community_list_item.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/custom_dialog.xml" value="0.4" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/deal_image_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/deal_list_item.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/dog_list_item.xml" value="0.4" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/dog_list_item_two.xml" value="0.4" />
@@ -136,6 +154,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/eat_dialog.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/eat_image_dialog.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_all.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_all_chat.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_chat.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_check_up.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_check_up_picture.xml" value="0.25104166666666666" />
@@ -143,6 +162,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_check_up_statistics.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_community.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_deal.xml" value="0.25104166666666666" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_deal_chat.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_dung_statistics.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_eat.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/fragment_etc.xml" value="0.25104166666666666" />
@@ -183,6 +203,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/heart_list_item.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/image_item_list.xml" value="0.4" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/layout_background.xml" value="0.13518518518518519" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/local_item_list.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/main_chat_list_item.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/meal_dialog.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/meal_list_ite.xml" value="0.25104166666666666" />
@@ -235,6 +256,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.121" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher_appicon_round.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.12" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/xml/file_paths.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.122" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable/baseline_pets_24.xml" value="0.1" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/MyProject2/app/src/main/res/drawable/border.xml" value="0.1" />

@@ -22,7 +22,22 @@
         android:theme="@style/Theme.MyProject"
         tools:replace="android:label">
         <activity
-            android:name=".community.WriteDealActivity"
+            android:name=".chat.AllChatFragment"
+            android:exported="false" />
+        <activity
+            android:name=".note.DogCheckUpPictureEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".deal.DealEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".deal.DealInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".deal.SearchLocalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".deal.WriteDealActivity"
             android:exported="false" />
         <activity
             android:name=".chat.ChatInActivity"
@@ -200,6 +215,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".StartActivity" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="org.techtown.myproject.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <receiver android:name=".my.AlarmReceiver" /> <!-- <meta-data -->
         <!-- android:name="com.google.android.geo.API_KEY" -->

@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.FBRef
+import java.io.File
 import java.text.DateFormat
 import java.util.ArrayList
 
@@ -120,6 +122,15 @@ class SpecificCommunityEditActivity : AppCompatActivity() {
         val storage = Firebase.storage
         val storageRef = storage.reference
 
+        if (originCount >= 1) { // 기존의 이미지가 존재했다면 전부 삭제함
+            for (index in 0 until originCount) {
+                Firebase.storage.reference.child("communityImage/$key/$key$index.png")
+                    .delete().addOnSuccessListener { // 사진 삭제
+                    }.addOnFailureListener {
+                    }
+            }
+        }
+
         for(cnt in 0 until count) {
             var num = originCount + cnt // 기존 사진 수 + 현재 사진 인덱스 -> 기존 사진 뒤에 이어붙임
             val mountainsRef = storageRef.child("communityImage/$key/$key$num.png")
@@ -143,6 +154,32 @@ class SpecificCommunityEditActivity : AppCompatActivity() {
                 originCount = dataModel!!.count.toInt()
                 writerUid = dataModel!!.uid
                 time = dataModel!!.time
+
+                originCount = dataModel!!.count.toInt()
+                count = dataModel!!.count.toInt()
+
+                imageCnt.text = dataModel!!.count
+
+                if(dataModel!!.count.toInt() >= 1) { // 기존의 이미지들을 불러옴
+                    var fetchedImageCount = 0
+                    for(index in 0 until dataModel!!.count.toInt()) {
+                        val storageRef = Firebase.storage.reference.child("communityImage/$key/$key$index.png")
+                        val localFile = File.createTempFile("image", "png")
+                        storageRef.getFile(localFile)
+                            .addOnSuccessListener {
+                                val uri = FileProvider.getUriForFile(applicationContext, "org.techtown.myproject.fileprovider", localFile)
+                                imageList.add(uri)
+                                fetchedImageCount++
+
+                                if (fetchedImageCount == dataModel!!.count.toInt()) {
+                                    galleryAdapter.notifyDataSetChanged()
+                                }
+                            }
+                            .addOnFailureListener {
+                                Log.d("imageEditList", "이미지 가져오기 실패")
+                            }
+                    }
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
