@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/yourProfile"
+            tools:ignore="MissingConstraints" />
+
+        <LinearLayout
+            android:id="@+id/frame2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/yourProfile"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/yourNickNameArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/bold"
+                    android:text="닉네임"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/yourLocationArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/regular"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:text="동"
+                    android:textColor="#778899"
+                    android:textSize="15sp"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/regular"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="3dp"
+                    android:text="•"
+                    android:textColor="#778899"
+                    android:textSize="15sp"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/timeArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/regular"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="3dp"
+                    android:text="날짜"
+                    android:textColor="#778899"
+                    android:textSize="15sp"
+                    tools:ignore="MissingConstraints" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/contentArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/regular"
+                android:text="내용"
+                android:maxLength="20"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="15sp"
+                tools:ignore="MissingConstraints" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/noShownCntArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_red"
+                android:fontFamily="@font/bold"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:visibility="gone"
+                tools:ignore="MissingConstraints" />
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/itemImageArea" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#DCDCDC"
+        android:layout_below="@+id/frame"/>
+
+</RelativeLayout>

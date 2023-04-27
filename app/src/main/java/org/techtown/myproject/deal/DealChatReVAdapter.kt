@@ -1,10 +1,11 @@
-package org.techtown.myproject.chat
+package org.techtown.myproject.deal
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +19,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import de.hdodenhof.circleimageview.CircleImageView
 import org.techtown.myproject.R
-import org.techtown.myproject.utils.ChatConnection
+import org.techtown.myproject.utils.DealChatConnection
+import org.techtown.myproject.utils.DealMessageModel
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.MessageModel
 import java.text.SimpleDateFormat
@@ -26,8 +28,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class ChatReVAdapter(val chatList : ArrayList<ChatConnection>):
-    RecyclerView.Adapter<ChatReVAdapter.ChatViewHolder>() {
+class DealChatReVAdapter(val dealChatList : ArrayList<DealChatConnection>):
+    RecyclerView.Adapter<DealChatReVAdapter.DealChatViewHolder>() {
 
     interface OnItemClickListener {
         fun onClick(v: View, position: Int)
@@ -40,17 +42,17 @@ class ChatReVAdapter(val chatList : ArrayList<ChatConnection>):
     private lateinit var itemClickListener : OnItemClickListener
 
     override fun getItemCount(): Int {
-        return chatList.count()
+        return dealChatList.count()
     }
 
-    override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DealChatViewHolder, position: Int) {
         val myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
         var yourUid = ""
 
-        if(chatList[position].userId1 == myUid)
-            yourUid = chatList[position].userId2
-        else if(chatList[position].userId2 == myUid)
-            yourUid = chatList[position].userId1
+        if(dealChatList[position].userId1 == myUid)
+            yourUid = dealChatList[position].userId2
+        else if(dealChatList[position].userId2 == myUid)
+            yourUid = dealChatList[position].userId1
 
         val profileFile = FBRef.userRef.child(yourUid).child("profileImage").get().addOnSuccessListener {
             val storageReference = Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴
@@ -68,14 +70,35 @@ class ChatReVAdapter(val chatList : ArrayList<ChatConnection>):
             holder!!.yourNickNameArea!!.text = it.value.toString() // 채팅 상대방의 닉네임 표시
         }
 
-        var messageList : MutableList<MessageModel> = mutableListOf()
+        val sharedPreferences = holder!!.view!!.context.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
+        val pullLocationName = sharedPreferences.getString(yourUid + "Location", "").toString() // 상대방의 위치 정보를 받아옴
+        val thoroughfare = pullLocationName.split(" ")[2] // 상대방의 동네 위치를 알아옴
+        holder!!.yourLocationArea!!.text = thoroughfare
+
+        val dealId = dealChatList[position].dealId
+        val imgCnt = FBRef.dealRef.child(dealId).child("imgCnt").get().addOnSuccessListener {
+            if(it.value.toString().toInt() >= 1) {
+
+                val storageReference = Firebase.storage.reference.child("dealImage/$dealId/$dealId"+"0.png") // 커뮤니티에 첨부된 사진을 DB의 storage로부터 가져옴 -> 첨부된 사진이 여러 장이라면, 제일 첫 번째 사진을 대표 사진으로 띄움
+
+                storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
+                    if(task.isSuccessful) {
+                        Glide.with(holder!!.view!!.context).load(task.result).into(holder!!.itemImageArea!!) // 게시글에 첫 번째 이미지를 표시함
+                    } else {
+                        holder!!.itemImageArea!!.visibility = GONE
+                    }
+                })
+            }
+        }
+
+        var messageList : MutableList<DealMessageModel> = mutableListOf()
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
 
                     for(dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(MessageModel::class.java)
+                        val item = dataModel.getValue(DealMessageModel::class.java)
 
                         messageList.add(item!!)
                     }
@@ -118,7 +141,7 @@ class ChatReVAdapter(val chatList : ArrayList<ChatConnection>):
             override fun onCancelled(databaseError: DatabaseError) {
             }
         }
-        FBRef.messageRef.child(chatList[position].chatConnectionId).addValueEventListener(postListener)
+        FBRef.dealMessageRef.child(dealChatList[position].dealId).child(dealChatList[position].chatConnectionId).addValueEventListener(postListener)
 
         val shownPostListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -137,9 +160,9 @@ class ChatReVAdapter(val chatList : ArrayList<ChatConnection>):
 
                     if(noShownCnt > 0) {
                         holder!!.noShownCntArea!!.text = noShownCnt.toString()
-                        holder!!.noShownCntArea!!.visibility = VISIBLE
+                        holder!!.noShownCntArea!!.visibility = View.VISIBLE
                     } else if(noShownCnt == 0) {
-                        holder!!.noShownCntArea!!.visibility = GONE
+                        holder!!.noShownCntArea!!.visibility = View.GONE
                     }
 
                 } catch(e : Exception) { }
@@ -148,24 +171,26 @@ class ChatReVAdapter(val chatList : ArrayList<ChatConnection>):
             override fun onCancelled(databaseError: DatabaseError) {
             }
         }
-        FBRef.messageRef.child(chatList[position].chatConnectionId).addValueEventListener(shownPostListener)
+        FBRef.dealMessageRef.child(dealChatList[position].dealId).child(dealChatList[position].chatConnectionId).addValueEventListener(shownPostListener)
 
         holder.itemView.setOnClickListener {
             itemClickListener.onClick(it, position)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
-        val view = LayoutInflater.from(parent!!.context).inflate(R.layout.main_chat_list_item, parent, false)
-        return ChatViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DealChatViewHolder {
+        val view = LayoutInflater.from(parent!!.context).inflate(R.layout.deal_chat_list_item, parent, false)
+        return DealChatViewHolder(view)
     }
 
-    inner class ChatViewHolder(view : View?) : RecyclerView.ViewHolder(view!!) {
+    inner class DealChatViewHolder(view : View?) : RecyclerView.ViewHolder(view!!) {
         val view = view
         val yourProfile = view?.findViewById<CircleImageView>(R.id.yourProfile)
         val yourNickNameArea = view?.findViewById<TextView>(R.id.yourNickNameArea)
+        val yourLocationArea = view?.findViewById<TextView>(R.id.yourLocationArea)
         val contentArea = view?.findViewById<TextView>(R.id.contentArea)
         val timeArea = view?.findViewById<TextView>(R.id.timeArea)
         val noShownCntArea = view?.findViewById<TextView>(R.id.noShownCntArea)
+        val itemImageArea = view?.findViewById<ImageView>(R.id.itemImageArea)
     }
 }

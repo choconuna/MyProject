@@ -22,6 +22,12 @@
         android:theme="@style/Theme.MyProject"
         tools:replace="android:label">
         <activity
+            android:name=".deal.SpecificChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".deal.DealChatInActivity"
+            android:exported="false" />
+        <activity
             android:name=".chat.AllChatFragment"
             android:exported="false" />
         <activity

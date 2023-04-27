@@ -59,6 +59,10 @@ class FBRef {
 
         val messageRef = database.getReference("message") // 메시지 데이터를 DB에 삽입하는 경로
 
+        val dealChatConnectionRef = database.getReference("dealChatConnection") // 거래 채팅 커넥션 데이터를 DB에 삽입하는 경로
+
+        val dealMessageRef = database.getReference("dealMessage") // 거래 메시지 데이터를 DB에 삽입하는 경로
+
         val tokenRef = database.getReference("FCMToken") // FCM 토큰 데이터를 DB에 삽입하는 경로
 
         val alarmRef = database.getReference("alarm") // 알림 데이터를 DB에 삽입하는 경로

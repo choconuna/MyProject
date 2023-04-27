@@ -202,19 +202,19 @@
                 android:id="@+id/frame3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_alignParentBottom="true"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="10dp"
-                android:layout_alignParentBottom="true">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:orientation="vertical"
                     tools:ignore="MissingConstraints">
 
                     <TextView
@@ -230,8 +230,8 @@
                         android:id="@+id/methodArea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/bold"
                         android:layout_marginTop="5dp"
+                        android:fontFamily="@font/bold"
                         android:textColor="#778899"
                         android:textSize="14sp"
                         tools:ignore="MissingConstraints" />

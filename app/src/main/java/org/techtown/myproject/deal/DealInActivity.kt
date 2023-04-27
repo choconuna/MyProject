@@ -1,7 +1,6 @@
 package org.techtown.myproject.deal
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +9,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,12 +18,16 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
-import org.techtown.myproject.note.CheckUpInputReVAdapter
+import org.techtown.myproject.chat.ChatInActivity
+import org.techtown.myproject.community.CommunityModel
 import org.techtown.myproject.note.ImageDetailActivity
+import org.techtown.myproject.utils.ChatConnection
+import org.techtown.myproject.utils.DealChatConnection
 import org.techtown.myproject.utils.DealModel
 import org.techtown.myproject.utils.FBRef
 import java.text.DecimalFormat
@@ -32,6 +36,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 class DealInActivity : AppCompatActivity() {
 
@@ -105,6 +110,72 @@ class DealInActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         })
+
+        sellerChatBtn.setOnClickListener {
+
+            val postListener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    try { // 거래글 삭제 후 그 키 값에 해당하는 게시글이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
+                        if (dataSnapshot.exists()) {
+                            val intent = Intent(applicationContext, SpecificChatActivity::class.java)
+                            intent.putExtra("dealId", dealId)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(applicationContext, "채팅 기록이 없습니다!", Toast.LENGTH_SHORT).show()
+                        }
+                    } catch(e : Exception) {
+                        Toast.makeText(applicationContext, "채팅 기록이 없습니다!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Getting Post failed, log a message
+                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                }
+            }
+            FBRef.dealChatConnectionRef.child(dealId).addValueEventListener(postListener)
+        }
+
+
+        customerChatBtn.setOnClickListener {
+            val postListener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    try { // 거래글 삭제 후 그 키 값에 해당하는 게시글이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
+                        for(dataModel in dataSnapshot.children) {
+                            val item = dataModel.getValue(DealChatConnection::class.java)
+
+                            if(item!!.userId1 == myUid || item!!.userId2 == myUid) {
+                                val intent = Intent(applicationContext, DealChatInActivity::class.java) // 해당 채팅방으로 이동
+                                intent.putExtra("dealId", dealId)
+                                intent.putExtra("chatConnectionId", item!!.chatConnectionId)
+
+                                val your1 = FBRef.chatConnectionRef.child(item!!.chatConnectionId).child("userId1").get().addOnSuccessListener {
+                                    if(it.value.toString() != myUid) {
+                                        intent.putExtra("yourUid", it.value.toString())
+                                        startActivity(intent)
+                                    }
+                                }
+                                val your2 = FBRef.chatConnectionRef.child(item!!.chatConnectionId).child("userId2").get().addOnSuccessListener {
+                                    if(it.value.toString() != myUid) {
+                                        intent.putExtra("yourUid", it.value.toString())
+                                        startActivity(intent)
+                                    }
+                                }
+                            }
+                        }
+                    } catch(e : Exception) {
+                        Toast.makeText(applicationContext, "채팅 기록이 없습니다!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Getting Post failed, log a message
+                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                    Toast.makeText(applicationContext, "채팅 기록이 없습니다!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            FBRef.dealChatConnectionRef.child(dealId).addValueEventListener(postListener)
+        }
 
         val backBtn = findViewById<ImageView>(R.id.back)
         backBtn.setOnClickListener {
