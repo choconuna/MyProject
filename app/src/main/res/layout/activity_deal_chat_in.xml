@@ -6,87 +6,87 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/ic_round_keyboard_arrow_left_brown"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/yourProfile"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp" />
+
+                    <TextView
+                        android:id="@+id/yourNickNameArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/bold"
+                        android:gravity="center"
+                        android:text="닉네임"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#DCDCDC" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/back"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_margin="10dp"
-                        android:src="@drawable/ic_round_keyboard_arrow_left_brown"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="MissingConstraints" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="MissingConstraints">
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/yourProfile"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_gravity="center"
-                            android:layout_marginRight="5dp" />
-
-                        <TextView
-                            android:id="@+id/yourNickNameArea"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:fontFamily="@font/bold"
-                            android:gravity="center"
-                            android:text="닉네임"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-
-                    </LinearLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/itemImageArea" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="#DCDCDC" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
+                    android:layout_marginLeft="10dp"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:id="@+id/itemImageArea" />
-
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:orientation="vertical">
-
-                        <FrameLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="30dp">
+                        android:layout_height="wrap_content">
 
                         <Spinner
                             android:id="@+id/stateSpinner"
@@ -99,108 +99,109 @@
                             android:visibility="gone"
                             android:theme="@style/receiptSpinner" />
 
-                            <TextView
-                                android:id="@+id/stateText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="판매 중"
-                                android:fontFamily="@font/bold"
-                                android:textColor="@color/black"
-                                android:visibility="gone"
-                                android:layout_gravity="center" />
-
-                    </FrameLayout>
-
                         <TextView
+                            android:id="@+id/stateText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/bold"
                             android:textColor="@color/black"
-                            android:layout_marginTop="5dp"
-                            android:layout_gravity="center"
-                            android:id="@+id/priceArea" />
+                            android:gravity="center"
+                            android:layout_marginTop="3dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center" />
 
-                    </LinearLayout>
+                    </FrameLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/titleArea"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/bold"
                         android:textColor="@color/black"
-                        android:fontFamily="@font/regular"
-                        android:textSize="15sp" />
+                        android:layout_marginTop="5dp"
+                        android:layout_gravity="center"
+                        android:id="@+id/priceArea" />
 
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/titleArea"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/regular"
+                    android:textSize="15sp" />
+
             </LinearLayout>
 
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/mainColor"></LinearLayout>
+
+        <ListView
+            android:id="@+id/messageContentListView"
+            android:layout_below="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/rectangle_box"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/plusImageBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_round_add_24" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/mainColor"></LinearLayout>
-
-            <ListView
-                android:id="@+id/messageContentListView"
-                android:layout_below="@+id/title"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@null"
-                android:dividerHeight="0dp"
-                android:layout_weight="1"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/rectangle_box"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/plusImageBtn"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/ic_round_add_24" />
-
-                <LinearLayout
+                <EditText
+                    android:id="@+id/contentArea"
+                    android:fontFamily="@font/regular"
+                    android:textSize="15sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/rectangle_box"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/contentArea"
-                        android:fontFamily="@font/regular"
-                        android:textSize="15sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="15dp"
-                        android:paddingBottom="15dp"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:layout_marginLeft="15dp"
-                        android:background="@android:color/transparent"/>
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/sendBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="7"
-                    android:text="전송"
-                    android:fontFamily="@font/bold"
-                    android:textColor="@color/white"
-                    android:background="@drawable/rectangle_box_brown"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingConstraints" />
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@android:color/transparent"/>
 
             </LinearLayout>
+
+            <Button
+                android:id="@+id/sendBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:text="전송"
+                android:fontFamily="@font/bold"
+                android:textColor="@color/white"
+                android:background="@drawable/rectangle_box_brown"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
+
         </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

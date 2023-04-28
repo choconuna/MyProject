@@ -122,7 +122,7 @@ class DealMessageReVAdapter(val messageList : MutableList<DealMessageModel>) : B
 
             if (messageList[position].picNum.toInt() > 0) {
                 for (index in 0 until messageList[position].picNum.toInt()) {
-                    imageDataList.add("messageImage/$chatConnectionId/$messageId/$messageId$index.png")
+                    imageDataList.add("dealMessageImage/$chatConnectionId/$messageId/$messageId$index.png")
                 }
                 Log.d("imageDataList", imageDataList.toString())
             }
@@ -167,7 +167,7 @@ class DealMessageReVAdapter(val messageList : MutableList<DealMessageModel>) : B
 
                         if (messageList[position].type == "picture") {
                             for (index in 0 until messageList[position].picNum.toInt()) {
-                                Firebase.storage.reference.child("messageImage/$chatConnectionId/$messageId/$messageId$index.png")
+                                Firebase.storage.reference.child("dealMessageImage/$chatConnectionId/$messageId/$messageId$index.png")
                                     .delete().addOnSuccessListener { // 사진 삭제
                                     }.addOnFailureListener {
                                     }

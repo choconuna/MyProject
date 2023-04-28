@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -167,9 +168,9 @@ class DealChatReVAdapter(val dealChatList : ArrayList<DealChatConnection>):
 
                     if(noShownCnt > 0) {
                         holder!!.noShownCntArea!!.text = noShownCnt.toString()
-                        holder!!.noShownCntArea!!.visibility = View.VISIBLE
+                        holder!!.noShownCntArea!!.visibility = VISIBLE
                     } else if(noShownCnt == 0) {
-                        holder!!.noShownCntArea!!.visibility = View.GONE
+                        holder!!.noShownCntArea!!.visibility = GONE
                     }
 
                 } catch(e : Exception) { }

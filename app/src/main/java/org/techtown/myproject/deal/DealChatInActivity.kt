@@ -15,6 +15,9 @@ import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
@@ -37,7 +40,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DealChatInActivity : AppCompatActivity() {
+class DealChatInActivity : AppCompatActivity(), LifecycleObserver {
 
     private val TAG = ChatInActivity::class.java.simpleName
 
@@ -75,6 +78,9 @@ class DealChatInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_deal_chat_in)
+
+        // 현재 Activity의 수명주기 이벤트를 수신하는 Lifecycle 객체 생성
+        lifecycle.addObserver(this)
 
         myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
         yourUid = intent.getStringExtra("yourUid").toString() // 채팅할 상대의 uid
@@ -170,12 +176,16 @@ class DealChatInActivity : AppCompatActivity() {
             }
         }
 
+        val showState = FBRef.dealRef.child(dealId).child("state").get().addOnSuccessListener {
+            stateText.text = it.value.toString()
+        }
+
         val profileFile = FBRef.userRef.child(yourUid).child("profileImage").get().addOnSuccessListener {
             val storageReference = Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴
 
             storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
                 if(task.isSuccessful) {
-                    Glide.with(applicationContext).load(task.result).thumbnail(Glide.with(applicationContext).load(task.result)).into(yourProfile) // 유저의 profile 사진을 작성자 이름의 왼편에 표시함
+                    Glide.with(this@DealChatInActivity).load(task.result).thumbnail(Glide.with(this@DealChatInActivity).load(task.result)).into(yourProfile) // 유저의 profile 사진을 작성자 이름의 왼편에 표시함
                 } else {
                     yourProfile.isVisible = false
                 }
@@ -218,6 +228,12 @@ class DealChatInActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    override fun onStop() {
+        super.onStop()
+        Glide.with(this).clear(yourProfile)
     }
 
     private fun getMessages() {

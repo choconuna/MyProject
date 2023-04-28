@@ -88,25 +88,24 @@ class DealChatFragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
 
+                    dealChatDataList.clear()
+
                     for(dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DealModel::class.java)
 
                         val postListener = object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 try {
-                                    dealChatDataList.clear()
 
                                     for(dataModel in dataSnapshot.children) {
                                         val item = dataModel.getValue(DealChatConnection::class.java)
 
-
                                         if(item!!.userId1 == myUid || item!!.userId2 == myUid) {
                                             Log.d("showChatList", item!!.toString())
                                             dealChatDataList.add(item!!)
+                                            dealChatRVAdapter.notifyDataSetChanged()
                                         }
                                     }
-
-                                    dealChatRVAdapter.notifyDataSetChanged()
 
                                 } catch(e : Exception) {
                                     Log.d("showChatList", e.toString())

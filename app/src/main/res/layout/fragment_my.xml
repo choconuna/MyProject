@@ -400,12 +400,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/managerLine"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="#DCDCDC"
-                android:orientation="horizontal"
-                android:visibility="gone"/>
+                android:background="#DCDCDC" />
 
             <LinearLayout
                 android:id="@+id/myBuyRecord"
@@ -435,9 +432,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/managerLine"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="#DCDCDC" />
+                android:background="#DCDCDC"
+                android:orientation="horizontal"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:id="@+id/userManagement"
