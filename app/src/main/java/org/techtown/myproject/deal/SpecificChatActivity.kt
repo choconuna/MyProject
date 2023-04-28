@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -25,6 +27,8 @@ class SpecificChatActivity : AppCompatActivity() {
     private lateinit var myUid : String
 
     private lateinit var dealId : String
+
+    private lateinit var itemNameArea : TextView
 
     private lateinit var dealChatRecyclerView : RecyclerView
     private val dealChatDataList = ArrayList<DealChatConnection>() // 거래 채팅 목록 리스트
@@ -47,13 +51,13 @@ class SpecificChatActivity : AppCompatActivity() {
                 intent.putExtra("dealId", dealChatDataList[position]!!.dealId)
                 intent.putExtra("chatConnectionId", dealChatDataList[position]!!.chatConnectionId)
 
-                val your1 = FBRef.chatConnectionRef.child(dealChatDataList[position]!!.chatConnectionId).child("userId1").get().addOnSuccessListener {
+                val your1 = FBRef.dealChatConnectionRef.child(dealChatDataList[position]!!.dealId).child(dealChatDataList[position]!!.chatConnectionId).child("userId1").get().addOnSuccessListener {
                     if(it.value.toString() != myUid) {
                         intent.putExtra("yourUid", it.value.toString())
                         startActivity(intent)
                     }
                 }
-                val your2 = FBRef.chatConnectionRef.child(dealChatDataList[position]!!.chatConnectionId).child("userId2").get().addOnSuccessListener {
+                val your2 = FBRef.dealChatConnectionRef.child(dealChatDataList[position]!!.dealId).child(dealChatDataList[position]!!.chatConnectionId).child("userId2").get().addOnSuccessListener {
                     if(it.value.toString() != myUid) {
                         intent.putExtra("yourUid", it.value.toString())
                         startActivity(intent)
@@ -61,9 +65,20 @@ class SpecificChatActivity : AppCompatActivity() {
                 }
             }
         })
+
+        val backBtn = findViewById<ImageView>(R.id.back)
+        backBtn.setOnClickListener {
+            finish()
+        }
     }
 
     private fun setData() {
+
+        itemNameArea = findViewById(R.id.itemNameArea)
+        val item = FBRef.dealRef.child(dealId).child("title").get().addOnSuccessListener {
+            itemNameArea.text = "\'" + it.value.toString() + "\'"
+        }
+
         dealChatRVAdapter = DealChatReVAdapter(dealChatDataList)
         dealChatRecyclerView = findViewById(R.id.dealChatRecyclerView)
         dealChatRecyclerView.setItemViewCacheSize(20)

@@ -55,13 +55,13 @@ class DealChatFragment : Fragment() {
                 intent.putExtra("dealId", dealChatDataList[position]!!.dealId)
                 intent.putExtra("chatConnectionId", dealChatDataList[position]!!.chatConnectionId)
 
-                val your1 = FBRef.chatConnectionRef.child(dealChatDataList[position]!!.chatConnectionId).child("userId1").get().addOnSuccessListener {
+                val your1 = FBRef.dealChatConnectionRef.child(dealChatDataList[position]!!.dealId).child(dealChatDataList[position]!!.chatConnectionId).child("userId1").get().addOnSuccessListener {
                     if(it.value.toString() != myUid) {
                         intent.putExtra("yourUid", it.value.toString())
                         startActivity(intent)
                     }
                 }
-                val your2 = FBRef.chatConnectionRef.child(dealChatDataList[position]!!.chatConnectionId).child("userId2").get().addOnSuccessListener {
+                val your2 = FBRef.dealChatConnectionRef.child(dealChatDataList[position]!!.dealId).child(dealChatDataList[position]!!.chatConnectionId).child("userId2").get().addOnSuccessListener {
                     if(it.value.toString() != myUid) {
                         intent.putExtra("yourUid", it.value.toString())
                         startActivity(intent)

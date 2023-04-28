@@ -11,6 +11,8 @@ class FBRef {
 
         val userRef = database.getReference("Users") // 가입한 사용자 데이터를 DB에 삽입하는 경로
 
+        val userLocationRef = database.getReference("location") // 사용자의 위치 데이터를 DB에 삽입하는 경로
+
         val dogRef = database.getReference("dogs") // 가입한 사용자의 반려견 데이터를 DB에 삽입하는 경로
 
         val userMainDogRef = database.getReference("userMainDog") // 사용자의 대표 강아지의 id를 DB에 삽입하는 경로

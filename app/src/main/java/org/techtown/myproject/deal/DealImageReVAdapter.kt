@@ -37,7 +37,7 @@ class DealImageReVAdapter(val imageList : MutableList<String>) :
 
         Firebase.storage.reference.child(imageList[position]).downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
             if(task.isSuccessful) {
-                Glide.with(holder.view!!).load(task.result).into(holder.gallerView!!) // 사진을 게시
+                Glide.with(holder.view!!).load(task.result).into(holder.galleryView!!) // 사진을 게시
             } else {
                 holder.view?.findViewById<ImageView>(R.id.galleryView)!!.isVisible = false
             }
@@ -48,12 +48,17 @@ class DealImageReVAdapter(val imageList : MutableList<String>) :
         }
     }
 
+    override fun onViewRecycled(holder: DealImageViewHolder) { // glide가 해당 activity가 종료되어도 실행되어 오류가 발생. 그 오류를 해결하기 위한 코드
+        Glide.with(holder.view!!).clear(holder.galleryView!!)
+        super.onViewRecycled(holder)
+    }
+
     override fun getItemCount(): Int {
         return imageList.count()
     }
 
     inner class DealImageViewHolder(view : View?) : RecyclerView.ViewHolder(view!!) {
         val view = view
-        val gallerView = view?.findViewById<ImageView>(R.id.galleryView)
+        val galleryView = view?.findViewById<ImageView>(R.id.galleryView)
     }
 }

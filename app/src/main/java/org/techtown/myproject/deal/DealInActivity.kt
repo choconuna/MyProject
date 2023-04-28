@@ -141,21 +141,25 @@ class DealInActivity : AppCompatActivity() {
             val postListener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     try { // 거래글 삭제 후 그 키 값에 해당하는 게시글이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
+
+                        var isExist = false
+
                         for(dataModel in dataSnapshot.children) {
                             val item = dataModel.getValue(DealChatConnection::class.java)
 
                             if(item!!.userId1 == myUid || item!!.userId2 == myUid) {
+                                isExist = true
                                 val intent = Intent(applicationContext, DealChatInActivity::class.java) // 해당 채팅방으로 이동
                                 intent.putExtra("dealId", dealId)
                                 intent.putExtra("chatConnectionId", item!!.chatConnectionId)
 
-                                val your1 = FBRef.chatConnectionRef.child(item!!.chatConnectionId).child("userId1").get().addOnSuccessListener {
+                                val your1 = FBRef.dealChatConnectionRef.child(item!!.dealId).child(item!!.chatConnectionId).child("userId1").get().addOnSuccessListener {
                                     if(it.value.toString() != myUid) {
                                         intent.putExtra("yourUid", it.value.toString())
                                         startActivity(intent)
                                     }
                                 }
-                                val your2 = FBRef.chatConnectionRef.child(item!!.chatConnectionId).child("userId2").get().addOnSuccessListener {
+                                val your2 = FBRef.dealChatConnectionRef.child(item!!.dealId).child(item!!.chatConnectionId).child("userId2").get().addOnSuccessListener {
                                     if(it.value.toString() != myUid) {
                                         intent.putExtra("yourUid", it.value.toString())
                                         startActivity(intent)
@@ -163,6 +167,18 @@ class DealInActivity : AppCompatActivity() {
                                 }
                             }
                         }
+
+                        if(!isExist) {
+                            val key = FBRef.dealChatConnectionRef.child(dealId).push().key.toString() // 키 값을 먼저 받아옴
+                            FBRef.dealChatConnectionRef.child(dealId).child(key).setValue(DealChatConnection(dealId, key, myUid, sellerId)) // 채팅 커넥션 데이터 생성
+
+                            val intent = Intent(applicationContext, DealChatInActivity::class.java)
+                            intent.putExtra("dealId", dealId)
+                            intent.putExtra("chatConnectionId", key)
+                            intent.putExtra("yourUid", sellerId)
+                            startActivity(intent)
+                        }
+
                     } catch(e : Exception) {
                         Toast.makeText(applicationContext, "채팅 기록이 없습니다!", Toast.LENGTH_SHORT).show()
                     }

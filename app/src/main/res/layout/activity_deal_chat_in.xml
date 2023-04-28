@@ -34,25 +34,27 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="MissingConstraints">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/yourProfile"
                             android:layout_width="35dp"
                             android:layout_height="35dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_gravity="center" />
+                            android:layout_gravity="center"
+                            android:layout_marginRight="5dp" />
 
                         <TextView
                             android:id="@+id/yourNickNameArea"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:fontFamily="@font/bold"
                             android:gravity="center"
                             android:text="닉네임"
-                            android:layout_gravity="center"
                             android:textColor="@color/black"
                             android:textSize="18sp" />
 
@@ -82,6 +84,10 @@
                         android:layout_marginLeft="10dp"
                         android:orientation="vertical">
 
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp">
+
                         <Spinner
                             android:id="@+id/stateSpinner"
                             android:layout_width="wrap_content"
@@ -90,8 +96,20 @@
                             android:background="@drawable/spinner_custom"
                             android:entries="@array/sellState"
                             android:spinnerMode="dialog"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             android:theme="@style/receiptSpinner" />
+
+                            <TextView
+                                android:id="@+id/stateText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="판매 중"
+                                android:fontFamily="@font/bold"
+                                android:textColor="@color/black"
+                                android:visibility="gone"
+                                android:layout_gravity="center" />
+
+                    </FrameLayout>
 
                         <TextView
                             android:layout_width="wrap_content"

@@ -53,10 +53,10 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/regular"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="6dp"
                     android:text="동"
                     android:textColor="#778899"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     tools:ignore="MissingConstraints" />
 
                 <TextView
@@ -65,9 +65,9 @@
                     android:fontFamily="@font/regular"
                     android:layout_gravity="center"
                     android:layout_marginLeft="3dp"
-                    android:text="•"
+                    android:text="·"
                     android:textColor="#778899"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     tools:ignore="MissingConstraints" />
 
                 <TextView
@@ -79,7 +79,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="날짜"
                     android:textColor="#778899"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     tools:ignore="MissingConstraints" />
 
             </LinearLayout>
@@ -115,13 +115,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/circle_red"
                 android:fontFamily="@font/bold"
                 android:gravity="center"
                 android:padding="5dp"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                android:visibility="gone"
+                android:textColor="@color/mainColor"
+                android:textSize="13dp"
+                android:visibility="visible"
                 tools:ignore="MissingConstraints" />
 
             <ImageView

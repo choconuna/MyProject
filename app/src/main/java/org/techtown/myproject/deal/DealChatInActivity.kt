@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -57,6 +59,7 @@ class DealChatInActivity : AppCompatActivity() {
     private lateinit var messageRVAdapter : DealMessageReVAdapter
 
     private lateinit var itemImageArea : ImageView
+    private lateinit var stateText : TextView
     private lateinit var stateSpinner: Spinner
     private lateinit var state : String
     private lateinit var priceArea : TextView
@@ -77,6 +80,8 @@ class DealChatInActivity : AppCompatActivity() {
         yourUid = intent.getStringExtra("yourUid").toString() // 채팅할 상대의 uid
         chatConnectionId = intent.getStringExtra("chatConnectionId").toString()
         dealId = intent.getStringExtra("dealId").toString()
+
+        Log.d("chatInf", "$yourUid $dealId $chatConnectionId")
 
         setData()
 
@@ -140,6 +145,7 @@ class DealChatInActivity : AppCompatActivity() {
         yourNickNameArea = findViewById(R.id.yourNickNameArea)
 
         itemImageArea = findViewById(R.id.itemImageArea)
+        stateText = findViewById(R.id.stateText)
         stateSpinner = findViewById(R.id.stateSpinner)
         priceArea = findViewById(R.id.priceArea)
         titleArea = findViewById(R.id.titleArea)
@@ -151,6 +157,18 @@ class DealChatInActivity : AppCompatActivity() {
         plusImageBtn = findViewById(R.id.plusImageBtn)
         contentArea = findViewById(R.id.contentArea)
         sendBtn = findViewById(R.id.sendBtn)
+
+
+        val deal = FBRef.dealRef.child(dealId).child("sellerId").get().addOnSuccessListener {
+            if(myUid != it.value.toString()) {
+                stateSpinner.visibility = GONE
+                stateText.visibility = VISIBLE
+            }
+            else {
+                stateSpinner.visibility = VISIBLE
+                stateText.visibility = GONE
+            }
+        }
 
         val profileFile = FBRef.userRef.child(yourUid).child("profileImage").get().addOnSuccessListener {
             val storageReference = Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴

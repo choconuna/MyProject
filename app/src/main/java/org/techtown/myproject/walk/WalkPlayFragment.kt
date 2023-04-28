@@ -320,7 +320,7 @@ class WalkPlayFragment : Fragment() {
         var address: MutableList<Address> = mutableListOf()
 
         try {
-            address = g.getFromLocation(location.latitude, location.longitude, 10)
+            address = g.getFromLocation(location.latitude, location.longitude, 200)
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -330,7 +330,7 @@ class WalkPlayFragment : Fragment() {
                 Log.d("getLocation", "위치 찾기 오류")
             } else {
                 Log.d("getLocation", address[0].toString())
-                locationArea.text = address[0].adminArea + " " + address[0].thoroughfare
+                locationArea.text = address[0].adminArea + " " + address[0].getAddressLine(0).split(" ")[3]
             }
         }
 

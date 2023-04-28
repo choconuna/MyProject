@@ -10,25 +10,14 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -46,6 +35,7 @@ import org.techtown.myproject.receipt.ReceiptFragment
 import org.techtown.myproject.utils.DogDungModel
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.FCMToken
+import org.techtown.myproject.utils.UserLocationModel
 import org.techtown.myproject.walk.WalkFragment
 import java.io.IOException
 import com.google.firebase.database.DataSnapshot as DataSnapshot1
@@ -130,9 +120,11 @@ class MainActivity : AppCompatActivity() {
             editor.putString(uid + "Token", token)
             editor.commit()
 
-            if (!sharedPreferences.contains(uid + "Location")) { // 앱에 처음 접속했을 때 사용자의 위치 정보를 가져와 저장
-                checkLocationPermission()
-            }
+//            if (!sharedPreferences.contains(uid + "Location")) { // 앱에 처음 접속했을 때 사용자의 위치 정보를 가져와 저장
+//                checkLocationPermission()
+//            }
+
+            checkLocationPermission()
 
             Log.d("getToken", msg)
         })
@@ -162,7 +154,9 @@ class MainActivity : AppCompatActivity() {
                     var address: MutableList<Address> = mutableListOf()
 
                     try {
-                        address = g.getFromLocation(location.latitude, location.longitude, 10)
+                        address = g.getFromLocation(location.latitude, location.longitude, 200)
+                        Log.d("getLocation", address.toString())
+                        Log.d("getLocation", address[0].getAddressLine(0).split(" ")[3])
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -170,11 +164,42 @@ class MainActivity : AppCompatActivity() {
                     if (address != null && address.isNotEmpty()) {
                         var adminArea = address[0].adminArea
                         var subLocality = address[0].subLocality
-                        var thoroughfare = address[0].thoroughfare
+//                        var thoroughfare = address[0].thoroughfare
+                        var thoroughfare = address[0].getAddressLine(0).split(" ")[3]
 
                         sharedPreferences.edit()
                             .putString(uid + "Location", "$adminArea $subLocality $thoroughfare")
                             .apply()
+
+                        FBRef.userLocationRef.child(uid).addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot1) {
+                                var location = "$adminArea $subLocality $thoroughfare"
+                                var dataExists = false
+
+                                // dataSnapshot에서 모든 데이터를 반복
+                                dataSnapshot.children.forEach { childSnapshot ->
+                                    val data = childSnapshot.getValue(UserLocationModel::class.java)
+                                    if (data?.id != null) {
+                                        dataExists = true
+                                        Log.d("userLocationRef", "data 존재")
+                                        // id가 null이 아닌 경우 기존 데이터 업데이트
+                                        FBRef.userLocationRef.child(uid).child(data.id).setValue(UserLocationModel(uid, data.id, location))
+                                    }
+                                }
+
+                                if (!dataExists) {
+                                    // 데이터가 없는 경우 새로운 키 생성
+                                    Log.d("userLocationRef", "data 존재 X")
+                                    val key = FBRef.userLocationRef.child(uid).push().key.toString()
+                                    FBRef.userLocationRef.child(uid).child(key).setValue(UserLocationModel(uid, key, location))
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                // 데이터 조회에 실패한 경우 실행되는 코드
+                                Log.d("userLocationRefError", error.toString())
+                            }
+                        })
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package org.techtown.myproject.deal
 
 import android.app.Activity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -19,10 +20,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import de.hdodenhof.circleimageview.CircleImageView
 import org.techtown.myproject.R
-import org.techtown.myproject.utils.DealChatConnection
-import org.techtown.myproject.utils.DealMessageModel
-import org.techtown.myproject.utils.FBRef
-import org.techtown.myproject.utils.MessageModel
+import org.techtown.myproject.utils.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -54,6 +52,7 @@ class DealChatReVAdapter(val dealChatList : ArrayList<DealChatConnection>):
         else if(dealChatList[position].userId2 == myUid)
             yourUid = dealChatList[position].userId1
 
+
         val profileFile = FBRef.userRef.child(yourUid).child("profileImage").get().addOnSuccessListener {
             val storageReference = Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴
 
@@ -70,10 +69,18 @@ class DealChatReVAdapter(val dealChatList : ArrayList<DealChatConnection>):
             holder!!.yourNickNameArea!!.text = it.value.toString() // 채팅 상대방의 닉네임 표시
         }
 
-        val sharedPreferences = holder!!.view!!.context.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
-        val pullLocationName = sharedPreferences.getString(yourUid + "Location", "").toString() // 상대방의 위치 정보를 받아옴
-        val thoroughfare = pullLocationName.split(" ")[2] // 상대방의 동네 위치를 알아옴
-        holder!!.yourLocationArea!!.text = thoroughfare
+        val userLocationRef = FBRef.userLocationRef.child(yourUid) // uid를 기반으로 데이터베이스 참조를 만듦
+        userLocationRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (locationSnapshot in dataSnapshot.children) {
+                    val item = locationSnapshot.getValue(UserLocationModel::class.java)
+                    Log.d("yourLocation", item!!.location)
+                    holder!!.yourLocationArea!!.text = item!!.location.split(" ")[2]
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
 
         val dealId = dealChatList[position].dealId
         val imgCnt = FBRef.dealRef.child(dealId).child("imgCnt").get().addOnSuccessListener {
