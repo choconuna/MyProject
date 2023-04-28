@@ -252,7 +252,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    tools:listitem="@layout/dog_list_item"/>
+                    tools:listitem="@layout/dog_list_item" />
             </LinearLayout>
 
             <LinearLayout
@@ -366,9 +366,42 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
-                android:id="@+id/managerLine"
+                android:id="@+id/mySellLine"
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
+                android:layout_height="0.5dp"
+                android:background="#DCDCDC"
+                android:orientation="horizontal" />
+
+            <LinearLayout
+                android:id="@+id/mySellRecord"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/white"
+                    android:fontFamily="@font/regular"
+                    android:text="판매 내역"
+                    android:textColor="@color/mainColor"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="17sp" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/next"
+                    tools:ignore="MissingConstraints" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/managerLine"
+                android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="#DCDCDC"
                 android:orientation="horizontal"

@@ -151,6 +151,12 @@ class MyFragment : Fragment() {
             requireActivity().startActivity(intent)
         }
 
+        val mySellRecord = v?.findViewById<LinearLayout>(R.id.mySellRecord)
+        mySellRecord.setOnClickListener {
+            val intent = Intent(v!!.context, ShowMyDealActivity::class.java)
+            startActivity(intent)
+        }
+
         val mainDogChoice = v?.findViewById<LinearLayout>(R.id.choiceMainDog)
         mainDogChoice!!.setOnClickListener {
             val intent = Intent(context, ChoiceMainDogActivity::class.java)
@@ -253,7 +259,7 @@ class MyFragment : Fragment() {
         var myComment = 0
         var myReComment = 0
 
-        var categoryList : List<String> = listOf("정보", "후기", "자유", "질문", "거래")
+        var categoryList : List<String> = listOf("정보", "후기", "자유", "질문")
         for(index in categoryList) {
             Log.d("categoryList", index)
             val postListener = object : ValueEventListener {

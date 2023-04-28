@@ -8,23 +8,22 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.techtown.myproject.R
-import org.techtown.myproject.community.*
+import org.techtown.myproject.community.PagerFragmentStateAdapter
 
-class ShowMyCommunityActivity : AppCompatActivity() {
+class ShowMyDealActivity : AppCompatActivity() {
 
     lateinit var tab_main : TabLayout
     lateinit var viewPager : ViewPager2
 
     lateinit var backBtn : ImageView
 
-    private val myInformationFragment by lazy { MyInformationFragment() }
-    private val myReviewFragment by lazy { MyReviewFragment() }
-    private val myFreeFragment by lazy { MyFreeFragment() }
-    private val myQuestionFragment by lazy { MyQuestionFragment() }
+    private val dealSellFragment by lazy { DealSellFragment() }
+    private val dealReservationFragment by lazy { DealReservationFragment() }
+    private val dealCompleteFragment by lazy { DealCompleteFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_show_my_community)
+        setContentView(R.layout.activity_show_my_deal)
 
         viewPager = findViewById(R.id.viewpager)
         tab_main = findViewById(R.id.tabs)
@@ -35,11 +34,10 @@ class ShowMyCommunityActivity : AppCompatActivity() {
         }
 
         val pagerAdapter = PagerFragmentStateAdapter(this)
-        // 4개의 fragment add
-        pagerAdapter.addFragment(myInformationFragment)
-        pagerAdapter.addFragment(myReviewFragment)
-        pagerAdapter.addFragment(myFreeFragment)
-        pagerAdapter.addFragment(myQuestionFragment)
+        // 3개의 fragment add
+        pagerAdapter.addFragment(dealSellFragment)
+        pagerAdapter.addFragment(dealReservationFragment)
+        pagerAdapter.addFragment(dealCompleteFragment)
 
         // adapter
         viewPager.adapter = pagerAdapter
@@ -50,7 +48,7 @@ class ShowMyCommunityActivity : AppCompatActivity() {
             }
         })
         // tablayout attach
-        val tabTitles = listOf<String>("정보", "후기", "자유", "질문")
+        val tabTitles = listOf<String>("판매 중", "예약 중", "거래 완료")
         TabLayoutMediator(tab_main, viewPager){ tab, position ->
             tab.text = tabTitles[position]
         }.attach()

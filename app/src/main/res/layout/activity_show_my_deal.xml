@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".my.ShowMyCommunityActivity">
+    tools:context=".my.ShowMyDealActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/bold"
             android:gravity="center"
-            android:text="활동 내역"
+            android:text="판매 내역"
             android:textColor="@color/mainColor"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -56,28 +56,22 @@
         app:tabTextAppearance="@style/TabText">
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/information"
+            android:id="@+id/sell"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="정보"/>
+            android:text="판매 중"/>
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/review"
+            android:id="@+id/reservation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="후기" />
+            android:text="예약 중"/>
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/freedom"
+            android:id="@+id/complete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="자유"/>
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/question"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="질문"/>
+            android:text="거래 완료" />
 
     </com.google.android.material.tabs.TabLayout>
 
