@@ -157,6 +157,12 @@ class MyFragment : Fragment() {
             startActivity(intent)
         }
 
+        val myBuyRecord = v?.findViewById<LinearLayout>(R.id.myBuyRecord)
+        myBuyRecord.setOnClickListener {
+            val intent = Intent(v!!.context, ShowMyBuyActivity::class.java)
+            startActivity(intent)
+        }
+
         val mainDogChoice = v?.findViewById<LinearLayout>(R.id.choiceMainDog)
         mainDogChoice!!.setOnClickListener {
             val intent = Intent(context, ChoiceMainDogActivity::class.java)

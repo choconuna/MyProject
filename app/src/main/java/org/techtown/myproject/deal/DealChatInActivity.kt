@@ -362,7 +362,15 @@ class DealChatInActivity : AppCompatActivity() {
                 try { // 거래글 삭제 후 그 키 값에 해당하는 게시글이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
                     val dataModel = dataSnapshot.getValue(DealModel::class.java)
 
-                    FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date)) // 게시물 정보 데이터베이스에 저장
+                    if(state == "거래 완료") {
+                        FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, "거래 완료", dataModel!!.date, yourUid))
+
+                        val buyerNickName = FBRef.userRef.child(yourUid).child("nickName").get().addOnSuccessListener {
+                            Toast.makeText(applicationContext, it.value.toString() + "님이 구매자로 선택되었습니다!", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date, "")) // 게시물 정보 데이터베이스에 저장
+                    }
                 } catch(e : Exception) { }
             }
 

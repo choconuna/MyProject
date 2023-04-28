@@ -154,7 +154,7 @@ class WriteDealActivity : AppCompatActivity() {
                 else -> {
                     val key = FBRef.dealRef.push().key.toString() // 게시물의 키 값을 먼저 받아옴 -> 게시물에 해당하는 이미지의 이름을 게시물의 키 값으로 설정하기 위함
 
-                    FBRef.dealRef.child(key).setValue(DealModel(key, myUid, pullLocationName, category, price, title, content, count.toString(), method, "판매 중", dateFormat)) // 거래 정보 데이터베이스에 저장
+                    FBRef.dealRef.child(key).setValue(DealModel(key, myUid, pullLocationName, category, price, title, content, count.toString(), method, "판매 중", dateFormat, "")) // 거래 정보 데이터베이스에 저장
 
                     Toast.makeText(this, "게시글 입력 완료", Toast.LENGTH_LONG).show()
 

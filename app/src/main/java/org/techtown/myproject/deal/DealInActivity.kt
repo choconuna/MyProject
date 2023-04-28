@@ -89,7 +89,27 @@ class DealInActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long
             ) {
                 val originState = FBRef.dealRef.child(dealId).child("state").get().addOnSuccessListener {
-                    if(it.value.toString() != parent.getItemAtPosition(position).toString()) {
+                    if(parent.getItemAtPosition(position).toString() == "거래 완료" && it.value.toString() != "거래 완료") {
+                        state = parent.getItemAtPosition(position).toString()
+
+                        for (i in 0 until stateSpinner.count) {
+                            if (stateSpinner.getItemAtPosition(i).toString() == it.value.toString()) {
+                                stateSpinner.setSelection(i)
+                                break
+                            }
+                        }
+
+                        changeDealState(state)
+                    } else if(parent.getItemAtPosition(position).toString() == "거래 완료" && it.value.toString() == "거래 완료") {
+
+                        for (i in 0 until stateSpinner.count) {
+                            if (stateSpinner.getItemAtPosition(i).toString() == it.value.toString()) {
+                                stateSpinner.setSelection(i)
+                                break
+                            }
+                        }
+
+                    } else if(it.value.toString() != parent.getItemAtPosition(position).toString()) {
                         state = parent.getItemAtPosition(position).toString()
                         changeDealState(state)
                         if(state.last() == '중')
@@ -336,7 +356,14 @@ class DealInActivity : AppCompatActivity() {
                 try { // 거래글 삭제 후 그 키 값에 해당하는 게시글이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
                     val dataModel = dataSnapshot.getValue(DealModel::class.java)
 
-                    FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date)) // 게시물 정보 데이터베이스에 저장
+                    if(state == "거래 완료") {
+                        val intent = Intent(applicationContext, ChoiceBuyerActivity::class.java)
+                        intent.putExtra("dealId", dealId)
+                        startActivity(intent)
+                    } else {
+                        FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date, "")) // 게시물 정보 데이터베이스에 저장
+                    }
+
                 } catch(e : Exception) { }
             }
 

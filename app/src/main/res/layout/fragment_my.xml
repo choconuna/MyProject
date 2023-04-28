@@ -408,6 +408,38 @@
                 android:visibility="gone"/>
 
             <LinearLayout
+                android:id="@+id/myBuyRecord"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/white"
+                    android:fontFamily="@font/regular"
+                    android:text="구매 내역"
+                    android:textColor="@color/mainColor"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="17sp" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/next"
+                    tools:ignore="MissingConstraints" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#DCDCDC" />
+
+            <LinearLayout
                 android:id="@+id/userManagement"
                 android:background="@color/white"
                 android:layout_width="match_parent"
