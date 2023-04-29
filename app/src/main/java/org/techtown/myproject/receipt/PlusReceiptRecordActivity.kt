@@ -63,6 +63,13 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
             val month = datepickercalendar.get(Calendar.MONTH)
             val day = datepickercalendar.get(Calendar.DAY_OF_MONTH)
 
+            // 이전에 선택된 날짜 가져오기
+            val selectedBeforeDate = selectedDateArea.text.toString().split(" ")
+            val selectedBeforeDateSp = selectedBeforeDate[0].split(".")
+            val selectedYear = selectedBeforeDateSp[0].toIntOrNull()
+            val selectedMonth = selectedBeforeDateSp[1].toIntOrNull()?.minus(1) // 월은 0부터 시작하기 때문에 1을 빼줌
+            val selectedDay = selectedBeforeDateSp[2].toIntOrNull()
+
             if(!this.isFinishing) {
                 val dpd = DatePickerDialog(
                     this@PlusReceiptRecordActivity, R.style.MySpinnerDatePickerStyle,
@@ -89,7 +96,7 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
                         }
 
                         Log.d("selectedDate", selectedDate)
-                    }, year, month, day
+                    }, selectedYear!!, selectedMonth!!, selectedDay!!
                 )
                 dpd.show()
             }

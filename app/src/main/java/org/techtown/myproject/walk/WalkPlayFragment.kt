@@ -325,7 +325,7 @@ class WalkPlayFragment : Fragment() {
             e.printStackTrace()
         }
 
-        if (address != null) {
+        if (address != null && address.isNotEmpty()) {
             if (address.size == 0) {
                 Log.d("getLocation", "위치 찾기 오류")
             } else {

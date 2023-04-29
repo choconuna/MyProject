@@ -97,15 +97,22 @@ class DealChatFragment : Fragment() {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 try {
 
+                                    val unsortedDealChatDataList = mutableListOf<DealChatConnection>()
+
                                     for(dataModel in dataSnapshot.children) {
                                         val item = dataModel.getValue(DealChatConnection::class.java)
 
                                         if(item!!.userId1 == myUid || item!!.userId2 == myUid) {
                                             Log.d("showChatList", item!!.toString())
-                                            dealChatDataList.add(item!!)
-                                            dealChatRVAdapter.notifyDataSetChanged()
+                                            unsortedDealChatDataList.add(item)
                                         }
                                     }
+
+                                    val sortedDealChatDataList = unsortedDealChatDataList.sortedByDescending { it.lastTime.toLong() }
+
+                                    dealChatDataList.clear()
+                                    dealChatDataList.addAll(sortedDealChatDataList)
+                                    dealChatRVAdapter.notifyDataSetChanged()
 
                                 } catch(e : Exception) {
                                     Log.d("showChatList", e.toString())

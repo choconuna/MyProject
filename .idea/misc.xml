@@ -120,6 +120,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_re_comment_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_receipt_record_edit.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_search_local.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_search_receipt.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_show_my_buy.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_show_my_community.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_show_my_deal.xml" value="0.25104166666666666" />
@@ -243,6 +244,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/receipt_list.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/receipt_list_item.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/receipt_pie_list_item.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/receipt_search_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/recomment_custom_dialog.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/recomment_list_item.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/snack_list_item.xml" value="0.25104166666666666" />

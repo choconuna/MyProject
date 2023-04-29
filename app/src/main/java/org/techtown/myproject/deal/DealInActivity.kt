@@ -191,7 +191,7 @@ class DealInActivity : AppCompatActivity() {
 
                         if(!isExist) {
                             val key = FBRef.dealChatConnectionRef.child(dealId).push().key.toString() // 키 값을 먼저 받아옴
-                            FBRef.dealChatConnectionRef.child(dealId).child(key).setValue(DealChatConnection(dealId, key, myUid, sellerId)) // 채팅 커넥션 데이터 생성
+                            FBRef.dealChatConnectionRef.child(dealId).child(key).setValue(DealChatConnection(dealId, key, myUid, sellerId, System.currentTimeMillis().toString())) // 채팅 커넥션 데이터 생성
 
                             val intent = Intent(applicationContext, DealChatInActivity::class.java)
                             intent.putExtra("dealId", dealId)

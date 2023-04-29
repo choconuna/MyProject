@@ -154,14 +154,14 @@ class MainActivity : AppCompatActivity() {
                     var address: MutableList<Address> = mutableListOf()
 
                     try {
-                        address = g.getFromLocation(location.latitude, location.longitude, 200)
+                        address = g.getFromLocation(location.latitude, location.longitude, 20)
                         Log.d("getLocation", address.toString())
-                        Log.d("getLocation", address[0].getAddressLine(0).split(" ")[3])
+//                        Log.d("getLocation", address[0].getAddressLine(0).split(" ")[3])
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
 
-                    if (address != null && address.isNotEmpty()) {
+                    if (address != null && address.isNotEmpty() && address[0].getAddressLine(0).split(" ").size > 3 && address[0].getAddressLine(0).split(" ")[2].last() == '구') {
                         var adminArea = address[0].adminArea
                         var subLocality = address[0].subLocality
 //                        var thoroughfare = address[0].thoroughfare

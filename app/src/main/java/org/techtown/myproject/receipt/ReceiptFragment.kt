@@ -1,5 +1,6 @@
 package org.techtown.myproject.receipt
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +31,8 @@ class ReceiptFragment : Fragment() {
 
     private val TAG = ReceiptFragment::class.java.simpleName
 
+    private lateinit var searchBtn : ImageView
+
     lateinit var sharedPreferences: SharedPreferences
 
     private val receiptRecordFragment by lazy { ReceiptRecordFragment() }
@@ -43,6 +46,12 @@ class ReceiptFragment : Fragment() {
 
         viewPager = v!!.findViewById(R.id.viewpager)
         tab_main = v!!.findViewById(R.id.tabs)
+
+        searchBtn = v!!.findViewById(R.id.searchBtn)
+        searchBtn.setOnClickListener {
+            val intent = Intent(v!!.context, SearchReceiptActivity::class.java)
+            v!!.context.startActivity(intent)
+        }
 
         return v
     }
