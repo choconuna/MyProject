@@ -55,10 +55,8 @@
             android:id="@+id/dealRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/writeBtn"
             android:layout_below="@+id/frame"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:clipToPadding="false"
             android:scrollbars="vertical" />
 
@@ -66,7 +64,9 @@
             android:id="@+id/writeBtn"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background = "@drawable/pluss"
+            android:background="@drawable/pluss"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true" />
     </RelativeLayout>

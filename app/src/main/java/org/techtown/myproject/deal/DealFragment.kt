@@ -319,22 +319,15 @@ class DealFragment : Fragment() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(dialogView)
 
-        val window = dialog.window
-
-        val width = resources.displayMetrics.widthPixels
         val height = (resources.displayMetrics.heightPixels * 0.5).toInt()
-        dialog.window?.setLayout(width, height)
-
-        val wlp = window?.attributes
-        wlp?.gravity = Gravity.BOTTOM
-        wlp?.width = width
-        wlp?.height = height
-        window?.attributes = wlp
-
-        dialog.window?.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        dialog.window?.apply {
+            setLayout(WindowManager.LayoutParams.MATCH_PARENT, height)
+            setGravity(Gravity.BOTTOM)
+            setBackgroundDrawable(ColorDrawable(Color.WHITE))
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+            setWindowAnimations(android.R.style.Animation_InputMethod)
+        }
 
         dialog.show()
 

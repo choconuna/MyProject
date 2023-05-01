@@ -171,6 +171,10 @@ class MainActivity : AppCompatActivity() {
                             .putString(uid + "Location", "$adminArea $subLocality $thoroughfare")
                             .apply()
 
+                        sharedPreferences.edit()
+                            .putString(uid + "SearchLocation", "$adminArea $subLocality $thoroughfare")
+                            .apply()
+
                         FBRef.userLocationRef.child(uid).addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot1) {
                                 var location = "$adminArea $subLocality $thoroughfare"
