@@ -1,5 +1,6 @@
 package org.techtown.myproject.community
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,21 +8,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ListView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.techtown.myproject.*
 import org.techtown.myproject.chat.AllChatFragment
-import org.techtown.myproject.chat.ChatFragment
+import org.techtown.myproject.community_search.SearchCommunityActivity
 import org.techtown.myproject.deal.DealFragment
 
 class CommunityFragment : Fragment() {
 
     private val TAG = CommunityFragment::class.java.simpleName
 
-    lateinit var writeBtn : ImageView
-    lateinit var communityListView : ListView
+    private lateinit var searchBtn : ImageView
 
     lateinit var tab_main : TabLayout
     lateinit var viewPager : ViewPager2
@@ -41,6 +40,12 @@ class CommunityFragment : Fragment() {
 
         viewPager = v!!.findViewById(R.id.viewpager)
         tab_main = v!!.findViewById(R.id.tabs)
+
+        searchBtn = v!!.findViewById(R.id.searchBtn)
+        searchBtn.setOnClickListener {
+            val intent = Intent(v!!.context, SearchCommunityActivity::class.java)
+            v!!.context.startActivity(intent)
+        }
 
         return v
     }
