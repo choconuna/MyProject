@@ -61,7 +61,7 @@ class MyFragment : Fragment() {
     lateinit var layoutManager : RecyclerView.LayoutManager
 
     lateinit var managerLine : LinearLayout
-    lateinit var userManagement : LinearLayout
+    lateinit var userManagement : ConstraintLayout
 
     lateinit var userEmail : String
     lateinit var managerEmail : String
@@ -151,25 +151,25 @@ class MyFragment : Fragment() {
             requireActivity().startActivity(intent)
         }
 
-        val mySellRecord = v?.findViewById<LinearLayout>(R.id.mySellRecord)
+        val mySellRecord = v?.findViewById<ConstraintLayout>(R.id.mySellRecord)
         mySellRecord.setOnClickListener {
             val intent = Intent(v!!.context, ShowMyDealActivity::class.java)
             startActivity(intent)
         }
 
-        val myBuyRecord = v?.findViewById<LinearLayout>(R.id.myBuyRecord)
+        val myBuyRecord = v?.findViewById<ConstraintLayout>(R.id.myBuyRecord)
         myBuyRecord.setOnClickListener {
             val intent = Intent(v!!.context, ShowMyBuyActivity::class.java)
             startActivity(intent)
         }
 
-        val mainDogChoice = v?.findViewById<LinearLayout>(R.id.choiceMainDog)
+        val mainDogChoice = v?.findViewById<ConstraintLayout>(R.id.choiceMainDog)
         mainDogChoice!!.setOnClickListener {
             val intent = Intent(context, ChoiceMainDogActivity::class.java)
             startActivity(intent)
         }
 
-        val logout = v?.findViewById<LinearLayout>(R.id.logout)
+        val logout = v?.findViewById<ConstraintLayout>(R.id.logout)
         logout!!.setOnClickListener {
             val intent = Intent(context, LogoutActivity::class.java)
             startActivity(intent) // 로그아웃 액티비티 실행시키기

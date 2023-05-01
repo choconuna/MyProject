@@ -243,7 +243,7 @@ class SearchReceiptActivity : AppCompatActivity() {
 
                         Log.d("receiptModel", receiptModel!!.toString())
 
-                        if (receiptModel!!.content.contains(searchText)) {
+                        if (receiptModel!!.content.contains(searchText) || receiptModel!!.place.contains(searchText)) {
                             if (date == "전체") { // 전체 기간일 경우
                                 if (category == "전체") { // 전체 카테고리를 선택했을 경우
 

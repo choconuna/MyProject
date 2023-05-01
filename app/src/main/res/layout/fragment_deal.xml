@@ -62,9 +62,9 @@
 
         <Button
             android:id="@+id/writeBtn"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/pluss"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/ic_round_add_circle_outline_24"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
             android:layout_alignParentBottom="true"

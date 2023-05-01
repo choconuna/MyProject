@@ -373,7 +373,7 @@
                 android:background="#DCDCDC"
                 android:orientation="horizontal" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/mySellRecord"
                 android:background="@color/white"
                 android:layout_width="match_parent"
@@ -382,29 +382,35 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
                     android:background="@color/white"
                     android:fontFamily="@font/regular"
                     android:text="판매 내역"
-                    android:textColor="@color/mainColor"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="5dp"
-                    android:textSize="17sp" />
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/next"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_round_keyboard_arrow_right_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="MissingConstraints" />
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="#DCDCDC" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/myBuyRecord"
                 android:background="@color/white"
                 android:layout_width="match_parent"
@@ -414,22 +420,28 @@
                     android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
                     android:background="@color/white"
                     android:fontFamily="@font/regular"
                     android:text="구매 내역"
-                    android:textColor="@color/mainColor"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="5dp"
-                    android:textSize="17sp" />
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/next"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_round_keyboard_arrow_right_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="MissingConstraints" />
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/managerLine"
@@ -439,7 +451,7 @@
                 android:orientation="horizontal"
                 android:visibility="gone"/>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/userManagement"
                 android:background="@color/white"
                 android:layout_width="match_parent"
@@ -449,22 +461,28 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
                     android:background="@color/white"
                     android:fontFamily="@font/regular"
                     android:text="사용자 관리"
-                    android:textColor="@color/mainColor"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="5dp"
-                    android:textSize="17sp" />
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/next"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_round_keyboard_arrow_right_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="MissingConstraints" />
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -475,7 +493,7 @@
                 android:layout_height="0.5dp"
                 android:background="#DCDCDC"/>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/choiceMainDog"
                 android:background="@color/white"
                 android:layout_width="match_parent"
@@ -485,52 +503,67 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
                     android:background="@color/white"
                     android:fontFamily="@font/regular"
                     android:text="대표 반려견 관리"
-                    android:textColor="@color/mainColor"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="5dp"
-                    android:textSize="17sp" />
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints"/>
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/next"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_round_keyboard_arrow_right_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="MissingConstraints" />
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="#DCDCDC" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/logout"
                 android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
+
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/textView5"
                     android:background="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
                     android:text="로그아웃"
                     android:fontFamily="@font/regular"
                     android:layout_gravity="center"
                     android:textSize="17sp"
-                    android:textColor="@color/mainColor"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="5dp"/>
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints"/>
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/next" />
-            </LinearLayout>
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_round_keyboard_arrow_right_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
