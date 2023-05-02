@@ -291,7 +291,6 @@ class DealInActivity : AppCompatActivity() {
                 Log.e(TAG, "Failed to update visitors count.", databaseError.toException())
             }
         })
-
     }
 
     private fun getDealData() {

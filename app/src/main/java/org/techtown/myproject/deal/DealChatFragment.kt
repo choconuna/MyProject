@@ -104,18 +104,33 @@ class DealChatFragment : Fragment() {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 try {
                                     val unsortedDealChatDataList = mutableListOf<DealChatConnection>()
+
                                     for(dataModel in dataSnapshot.children) {
                                         val item = dataModel.getValue(DealChatConnection::class.java)
 
                                         if(item!!.userId1 == myUid || item!!.userId2 == myUid) {
-                                            Log.d("showChatList", item!!.toString())
-                                            unsortedDealChatDataList.add(item!!)
+                                            // 기존 리스트에 이미 존재하는 채팅인지 확인
+                                            val index = dealChatDataList.indexOfFirst { it.dealId == item.dealId }
+                                            if(index == -1) {
+                                                Log.d("showChatList", item!!.toString())
+                                                unsortedDealChatDataList.add(item!!)
+                                            }
                                         }
                                     }
 
-                                    val sortedDealChatDataList = unsortedDealChatDataList.sortedByDescending { it.lastTime.toLong() } // 채팅을 최신순으로 정렬
-                                    dealChatDataList.addAll(sortedDealChatDataList)
-                                    Log.d("whyListAdd", dealChatDataList.toString())
+                                    val sortedDealChatDataList = unsortedDealChatDataList.sortedByDescending { it.lastTime.toLong() }
+
+                                    // 마지막으로 추가된 채팅 시간 저장
+                                    val lastAddedChatTime = if (dealChatDataList.isEmpty()) 0L else dealChatDataList[0].lastTime.toLong()
+
+                                    for (chat in sortedDealChatDataList) { // 중복되지 않는 새로운 채팅만 추가
+                                        if (chat.lastTime.toLong() > lastAddedChatTime) {
+                                            dealChatDataList.add(0, chat)
+                                        } else {
+                                            break
+                                        }
+                                    }
+
                                     dealChatRVAdapter.notifyDataSetChanged()
 
                                 } catch(e : Exception) {

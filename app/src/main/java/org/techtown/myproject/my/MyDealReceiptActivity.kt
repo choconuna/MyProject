@@ -255,6 +255,9 @@ class MyDealReceiptActivity : AppCompatActivity() {
                     buyPrice = 0
                     shareCnt = 0
 
+                    sellCountArea.text = ""
+                    buyCountArea.text = ""
+
                     for(dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DealModel::class.java)
 
@@ -285,7 +288,7 @@ class MyDealReceiptActivity : AppCompatActivity() {
                         }
                     }
 
-                    monthPrice = sellPrice - buyPrice // 한달 거래 비용은 판매 비용 - 구매 비용
+                    monthPrice = sellPrice + buyPrice // 한달 거래 비용은 판매 비용 - 구매 비용
                     val decimalFormat = DecimalFormat("#,###")
                     monthPriceArea!!.text = decimalFormat.format(monthPrice.toString().replace(",","").toDouble()) + "원"
 
