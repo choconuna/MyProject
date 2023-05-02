@@ -108,7 +108,7 @@ class DealChatFragment : Fragment() {
                                         }
                                     }
 
-                                    val sortedDealChatDataList = unsortedDealChatDataList.sortedByDescending { it.lastTime.toLong() }
+                                    val sortedDealChatDataList = unsortedDealChatDataList.sortedByDescending { it.lastTime.toLong() } // 채팅을 최신순으로 정렬
 
                                     dealChatDataList.clear()
                                     dealChatDataList.addAll(sortedDealChatDataList)

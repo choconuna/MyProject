@@ -692,6 +692,7 @@ class SearchDealFragment : Fragment() {
 
                                                     dealMap[item!!] = dayNum.toLong()
 
+                                                    dealList.clear()
                                                     val sortedDealMap = sortMapByKey(dealMap)
                                                     for((key, value) in dealMap.entries) {
                                                         dealList.add(key)
@@ -710,6 +711,7 @@ class SearchDealFragment : Fragment() {
 
                                                             dealMap[item!!] = dayNum.toLong()
 
+                                                            dealList.clear()
                                                             val sortedDealMap = sortMapByKey(dealMap)
                                                             for((key, value) in dealMap.entries) {
                                                                 dealList.add(key)
@@ -728,6 +730,7 @@ class SearchDealFragment : Fragment() {
 
                                                                     dealMap[item!!] = dayNum.toLong()
 
+                                                                    dealList.clear()
                                                                     val sortedDealMap = sortMapByKey(dealMap)
                                                                     for((key, value) in dealMap.entries) {
                                                                         dealList.add(key)
@@ -750,6 +753,7 @@ class SearchDealFragment : Fragment() {
 
                                                                     dealMap[item!!] = dayNum.toLong()
 
+                                                                    dealList.clear()
                                                                     val sortedDealMap = sortMapByKey(dealMap)
                                                                     for((key, value) in dealMap.entries) {
                                                                         dealList.add(key)
@@ -770,6 +774,7 @@ class SearchDealFragment : Fragment() {
 
                                                                             dealMap[item!!] = dayNum.toLong()
 
+                                                                            dealList.clear()
                                                                             val sortedDealMap = sortMapByKey(dealMap)
                                                                             for((key, value) in dealMap.entries) {
                                                                                 dealList.add(key)
@@ -792,6 +797,7 @@ class SearchDealFragment : Fragment() {
 
                                                                     dealMap[item!!] = dayNum.toLong()
 
+                                                                    dealList.clear()
                                                                     val sortedDealMap = sortMapByKey(dealMap)
                                                                     for((key, value) in dealMap.entries) {
                                                                         dealList.add(key)
@@ -812,6 +818,7 @@ class SearchDealFragment : Fragment() {
 
                                                                             dealMap[item!!] = dayNum.toLong()
 
+                                                                            dealList.clear()
                                                                             val sortedDealMap = sortMapByKey(dealMap)
                                                                             for((key, value) in dealMap.entries) {
                                                                                 dealList.add(key)
@@ -843,6 +850,7 @@ class SearchDealFragment : Fragment() {
 
                                                         dealMap[item] = nowDate.toLong()
 
+                                                        dealList.clear()
                                                         val sortedDealMap = sortMapByKey(dealMap)
                                                         for((key, value) in dealMap.entries) {
                                                             dealList.add(key)
@@ -868,6 +876,7 @@ class SearchDealFragment : Fragment() {
 
                                                                 dealMap[item] = nowDate.toLong()
 
+                                                                dealList.clear()
                                                                 val sortedDealMap = sortMapByKey(dealMap)
                                                                 for((key, value) in dealMap.entries) {
                                                                     dealList.add(key)
@@ -893,6 +902,7 @@ class SearchDealFragment : Fragment() {
 
                                                                         dealMap[item] = nowDate.toLong()
 
+                                                                        dealList.clear()
                                                                         val sortedDealMap = sortMapByKey(dealMap)
                                                                         for((key, value) in dealMap.entries) {
                                                                             dealList.add(key)
@@ -922,6 +932,7 @@ class SearchDealFragment : Fragment() {
 
                                                                         dealMap[item] = nowDate.toLong()
 
+                                                                        dealList.clear()
                                                                         val sortedDealMap = sortMapByKey(dealMap)
                                                                         for((key, value) in dealMap.entries) {
                                                                             dealList.add(key)
@@ -949,6 +960,7 @@ class SearchDealFragment : Fragment() {
 
                                                                                 dealMap[item] = nowDate.toLong()
 
+                                                                                dealList.clear()
                                                                                 val sortedDealMap = sortMapByKey(dealMap)
                                                                                 for((key, value) in dealMap.entries) {
                                                                                     dealList.add(key)
@@ -978,6 +990,7 @@ class SearchDealFragment : Fragment() {
 
                                                                         dealMap[item] = nowDate.toLong()
 
+                                                                        dealList.clear()
                                                                         val sortedDealMap = sortMapByKey(dealMap)
                                                                         for((key, value) in dealMap.entries) {
                                                                             dealList.add(key)
@@ -1005,6 +1018,7 @@ class SearchDealFragment : Fragment() {
 
                                                                                 dealMap[item] = nowDate.toLong()
 
+                                                                                dealList.clear()
                                                                                 val sortedDealMap = sortMapByKey(dealMap)
                                                                                 for((key, value) in dealMap.entries) {
                                                                                     dealList.add(key)

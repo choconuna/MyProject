@@ -22,6 +22,9 @@
         android:theme="@style/Theme.MyProject"
         tools:replace="android:label">
         <activity
+            android:name=".my.MyDealReceiptActivity"
+            android:exported="false" />
+        <activity
             android:name=".community_search.SearchDealLocalActivity"
             android:exported="false" />
         <activity

@@ -166,9 +166,13 @@ class DealEditActivity : AppCompatActivity() {
                 }
                 else -> {
 
-                    val buyerUid = FBRef.dealRef.child(dealId).child("buyerId").get().addOnSuccessListener {
-                        FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, locationArea.text.toString(), category, price, title, content, count.toString(), method, state, dateFormat, it.value.toString())) // 거래 정보 수정
+                    val buyerUid = FBRef.dealRef.child(dealId).child("buyerId").get().addOnSuccessListener { buyerIdSnapshot ->
+                        FBRef.dealRef.child(dealId).child("buyDate").get().addOnSuccessListener { buyDateSnapshot ->
+                            val buyDate = buyDateSnapshot.value.toString()
+                            FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, locationArea.text.toString(), category, price, title, content, count.toString(), method, state, dateFormat, buyerIdSnapshot.value.toString(), buyDate))
+                        }
                     }
+
 
                     Toast.makeText(this, "게시글 수정 완료", Toast.LENGTH_LONG).show()
 

@@ -135,8 +135,6 @@ class DealInActivity : AppCompatActivity() {
                     try { // 거래글 삭제 후 그 키 값에 해당하는 게시글이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
                         if (dataSnapshot.exists()) {
                             val intent = Intent(applicationContext, SpecificChatActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             intent.putExtra("dealId", dealId)
                             startActivity(intent)
                         } else {
@@ -169,8 +167,6 @@ class DealInActivity : AppCompatActivity() {
                             if(item!!.userId1 == myUid || item!!.userId2 == myUid) {
                                 isExist = true
                                 val intent = Intent(applicationContext, DealChatInActivity::class.java) // 해당 채팅방으로 이동
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 intent.putExtra("dealId", dealId)
                                 intent.putExtra("chatConnectionId", item!!.chatConnectionId)
 
@@ -362,7 +358,7 @@ class DealInActivity : AppCompatActivity() {
                         intent.putExtra("dealId", dealId)
                         startActivity(intent)
                     } else {
-                        FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date, "")) // 게시물 정보 데이터베이스에 저장
+                        FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date, "", "")) // 게시물 정보 데이터베이스에 저장
                     }
 
                 } catch(e : Exception) { }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -14,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -31,7 +31,6 @@ import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
 import org.techtown.myproject.R
 import org.techtown.myproject.chat.ChatInActivity
-import org.techtown.myproject.chat.MessageRVAdapter
 import org.techtown.myproject.utils.*
 import java.io.OutputStream
 import java.net.HttpURLConnection
@@ -147,6 +146,16 @@ class DealChatInActivity : AppCompatActivity(), LifecycleObserver {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Glide.with(this).resumeRequests()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Glide.with(this).pauseRequests()
+    }
+
     private fun setData() {
         yourProfile = findViewById(R.id.yourProfile)
         yourNickNameArea = findViewById(R.id.yourNickNameArea)
@@ -229,12 +238,6 @@ class DealChatInActivity : AppCompatActivity(), LifecycleObserver {
                 }
             }
         }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    override fun onStop() {
-        super.onStop()
-        Glide.with(this).clear(yourProfile)
     }
 
     private fun getMessages() {
@@ -380,13 +383,17 @@ class DealChatInActivity : AppCompatActivity(), LifecycleObserver {
                     val dataModel = dataSnapshot.getValue(DealModel::class.java)
 
                     if(state == "거래 완료") {
-                        FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, "거래 완료", dataModel!!.date, yourUid))
+
+                        val currentDataTime = Calendar.getInstance().time
+                        val dateFormat = SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.KOREA).format(currentDataTime)
+
+                        FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, "거래 완료", dataModel!!.date, yourUid, dateFormat))
 
                         val buyerNickName = FBRef.userRef.child(yourUid).child("nickName").get().addOnSuccessListener {
                             Toast.makeText(applicationContext, it.value.toString() + "님이 구매자로 선택되었습니다!", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date, "")) // 게시물 정보 데이터베이스에 저장
+                        FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date, "", "")) // 게시물 정보 데이터베이스에 저장
                     }
                 } catch(e : Exception) { }
             }

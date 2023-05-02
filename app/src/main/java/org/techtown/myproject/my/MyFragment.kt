@@ -163,6 +163,12 @@ class MyFragment : Fragment() {
             startActivity(intent)
         }
 
+        val myDealReceiptRecord = v?.findViewById<ConstraintLayout>(R.id.myDealReceiptRecord)
+        myDealReceiptRecord.setOnClickListener {
+            val intent = Intent(v!!.context, MyDealReceiptActivity::class.java)
+            startActivity(intent)
+        }
+
         val mainDogChoice = v?.findViewById<ConstraintLayout>(R.id.choiceMainDog)
         mainDogChoice!!.setOnClickListener {
             val intent = Intent(context, ChoiceMainDogActivity::class.java)

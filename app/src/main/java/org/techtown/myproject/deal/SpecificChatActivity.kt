@@ -68,7 +68,7 @@ class SpecificChatActivity : AppCompatActivity() {
 
         val backBtn = findViewById<ImageView>(R.id.back)
         backBtn.setOnClickListener {
-            finish()
+            onBackPressed()
         }
     }
 
@@ -117,5 +117,13 @@ class SpecificChatActivity : AppCompatActivity() {
             }
         }
         FBRef.dealChatConnectionRef.child(dealId).addValueEventListener(postListener)
+    }
+
+    override fun onBackPressed() {
+        try {
+            super.onBackPressed()
+        } catch (e: Exception) {
+            Log.d("backError", "onBackPressed", e)
+        }
     }
 }
