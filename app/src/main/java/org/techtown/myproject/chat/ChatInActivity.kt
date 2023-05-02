@@ -92,6 +92,7 @@ class ChatInActivity : AppCompatActivity() {
 
                 val key = FBRef.messageRef.child(chatConnectionId).push().key.toString() // 키 값을 먼저 받아옴
                 FBRef.messageRef.child(chatConnectionId).child(key).setValue(MessageModel(chatConnectionId, key, myUid, "letter", 0.toString(), content, dateFormat.toString(), "false"))
+                FBRef.chatConnectionRef.child(chatConnectionId).child("lastTime").setValue(System.currentTimeMillis().toString())
 
                 contentArea.setText("")
                 val mInputMethodManager: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

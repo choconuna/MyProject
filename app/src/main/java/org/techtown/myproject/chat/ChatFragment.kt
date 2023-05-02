@@ -103,6 +103,9 @@ class ChatFragment : Fragment() {
                         }
                     }
 
+                    // 채팅을 최신순으로 정렬
+                    chatDataList.sortByDescending { it.lastTime.toLong() }
+
                     chatRVAdapter.notifyDataSetChanged()
 
                 } catch(e : Exception) {
@@ -115,6 +118,7 @@ class ChatFragment : Fragment() {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
+
         FBRef.chatConnectionRef.addValueEventListener(postListener)
     }
 }

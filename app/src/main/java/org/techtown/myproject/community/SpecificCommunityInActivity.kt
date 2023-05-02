@@ -155,7 +155,7 @@ class SpecificCommunityInActivity : AppCompatActivity() {
                                                         Log.d("writerUid", "isNotExist")
 
                                                         val key = FBRef.chatConnectionRef.push().key.toString() // 키 값을 먼저 받아옴
-                                                        FBRef.chatConnectionRef.child(key).setValue(ChatConnection(key, myUid, writerUid)) // 채팅 커넥션 데이터 생성
+                                                        FBRef.chatConnectionRef.child(key).setValue(ChatConnection(key, myUid, writerUid, System.currentTimeMillis().toString())) // 채팅 커넥션 데이터 생성
 
                                                         val intent = Intent(applicationContext, ChatInActivity::class.java)
                                                         intent.putExtra("chatConnectionId", key)
