@@ -65,12 +65,14 @@ class ChoiceBuyerActivity : AppCompatActivity() {
                                     val currentDataTime = Calendar.getInstance().time
                                     val dateFormat = SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.KOREA).format(currentDataTime)
 
-                                    FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, item!!.location, item!!.category, item!!.price, item!!.title, item!!.content, item!!.imgCnt, item!!.method, "거래 완료", item!!.date, it.value.toString(), dateFormat))
+                                    FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, item!!.location, item!!.category, item!!.price, item!!.title, item!!.content, item!!.imgCnt, item!!.method, "거래 완료", item!!.date, it.value.toString(), dateFormat, item!!.visitors))
 
                                     val buyerNickName = FBRef.userRef.child(it.value.toString()).child("nickName").get().addOnSuccessListener {
                                         Toast.makeText(applicationContext, it.value.toString() + "님이 구매자로 선택되었습니다!", Toast.LENGTH_SHORT).show()
-                                        finish()
+//                                        finish()
                                     }
+
+                                    finish()
 
                                 } else {
                                     Toast.makeText(applicationContext, it.value.toString() + "채팅 내역이 존재하지 않습니다!", Toast.LENGTH_SHORT).show()
@@ -96,11 +98,11 @@ class ChoiceBuyerActivity : AppCompatActivity() {
                                     val currentDataTime = Calendar.getInstance().time
                                     val dateFormat = SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.KOREA).format(currentDataTime)
 
-                                    FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, item!!.location, item!!.category, item!!.price, item!!.title, item!!.content, item!!.imgCnt, item!!.method, "거래 완료", item!!.date, it.value.toString(), dateFormat))
+                                    FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, item!!.location, item!!.category, item!!.price, item!!.title, item!!.content, item!!.imgCnt, item!!.method, "거래 완료", item!!.date, it.value.toString(), dateFormat, item!!.visitors))
 
                                     val buyerNickName = FBRef.userRef.child(it.value.toString()).child("nickName").get().addOnSuccessListener {
                                         Toast.makeText(applicationContext, it.value.toString() + "님이 구매자로 선택되었습니다!", Toast.LENGTH_SHORT).show()
-                                        finish()
+//                                        finish()
                                     }
 
                                     finish()

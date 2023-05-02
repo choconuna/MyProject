@@ -172,7 +172,7 @@ class DealMessageReVAdapter(val messageList : MutableList<DealMessageModel>) : B
                                     }.addOnFailureListener {
                                     }
                             }
-                            FBRef.messageRef.child(messageList[position].chatConnectionId)
+                            FBRef.dealMessageRef.child(messageList[position].dealId).child(messageList[position].chatConnectionId)
                                 .child(messageList[position].messageId)
                                 .removeValue() // 파이어베이스에서 해당 메시지 삭제
                             Toast.makeText(view!!.context, "메시지가 삭제되었습니다!", Toast.LENGTH_SHORT)
@@ -210,7 +210,7 @@ class DealMessageReVAdapter(val messageList : MutableList<DealMessageModel>) : B
                 deleteMessageBtn?.setOnClickListener { // 메시지 삭제 버튼 클릭 시
                     Log.d("messageClicked", "delete Message Button Clicked")
 
-                    FBRef.messageRef.child(messageList[position].chatConnectionId)
+                    FBRef.dealMessageRef.child(messageList[position].dealId).child(messageList[position].chatConnectionId)
                         .child(messageList[position].messageId).removeValue() // 파이어베이스에서 해당 메시지 삭제
                     Toast.makeText(view!!.context, "메시지가 삭제되었습니다!", Toast.LENGTH_SHORT).show()
 

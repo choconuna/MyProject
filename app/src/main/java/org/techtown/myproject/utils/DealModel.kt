@@ -13,5 +13,6 @@ class DealModel (
     val state : String = "", // 판매 상태 (판매 중, 거래 중, 거래 완료)
     val date : String = "", // 판매 날짜
     val buyerId : String = "", // 구매자 uid
-    val buyDate : String = "" // 판매 날짜
+    val buyDate : String = "", // 판매 날짜
+    val visitors : String = "" // 방문 횟수
 )

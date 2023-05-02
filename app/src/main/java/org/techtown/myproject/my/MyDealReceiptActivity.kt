@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -30,6 +32,7 @@ import org.techtown.myproject.utils.DealModel
 import org.techtown.myproject.utils.FBRef
 import java.lang.Math.abs
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -68,6 +71,12 @@ class MyDealReceiptActivity : AppCompatActivity() {
     private var buyPrice = 0
     private var shareCnt = 0
 
+    private lateinit var previousMonthArea : TextView
+    private lateinit var lessMore : TextView
+    private lateinit var priceDiffArea : TextView
+    private lateinit var moreLessArea : TextView
+    private lateinit var averagePriceArea : TextView
+
     private lateinit var receiptChart : BarChart
 
     private var dateList : ArrayList<String> = ArrayList()
@@ -105,14 +114,17 @@ class MyDealReceiptActivity : AppCompatActivity() {
 
             showDealReceipt(year, month)
 
-            for (i in 0 until 12) {
+            labelList.clear()
+            dateList.clear()
+
+            for (i in 0 until 6) {
                 val f = "MM"
                 val s = DateTimeFormatter.ofPattern(f)
 
                 val df = "yyyy.MM"
                 var sd = DateTimeFormatter.ofPattern(df)
 
-                if(selectedDate.minusMonths(i.toLong()).format(s).toInt() < 12)
+                if(selectedDate.minusMonths(i.toLong()).format(s).toInt() < 10)
                     labelList.add(selectedDate.minusMonths(i.toLong()).format(s).replace("0", ""))
                 else
                     labelList.add(selectedDate.minusMonths(i.toLong()).format(s))
@@ -143,14 +155,17 @@ class MyDealReceiptActivity : AppCompatActivity() {
 
             showDealReceipt(year, month)
 
-            for (i in 0 until 12) {
+            labelList.clear()
+            dateList.clear()
+
+            for (i in 0 until 6) {
                 val f = "MM"
                 val s = DateTimeFormatter.ofPattern(f)
 
                 val df = "yyyy.MM"
                 var sd = DateTimeFormatter.ofPattern(df)
 
-                if(selectedDate.minusMonths(i.toLong()).format(s).toInt() < 12)
+                if(selectedDate.minusMonths(i.toLong()).format(s).toInt() < 10)
                     labelList.add(selectedDate.minusMonths(i.toLong()).format(s).replace("0", ""))
                 else
                     labelList.add(selectedDate.minusMonths(i.toLong()).format(s))
@@ -185,14 +200,20 @@ class MyDealReceiptActivity : AppCompatActivity() {
         year = date2[0]
         month = date2[1]
 
-        for (i in 0 until 12) {
+        previousMonthArea = findViewById(R.id.previousMonthArea)
+        lessMore = findViewById(R.id.lessMore)
+        priceDiffArea = findViewById(R.id.priceDiffArea)
+        moreLessArea = findViewById(R.id.moreLessArea)
+        averagePriceArea = findViewById(R.id.averagePriceArea)
+
+        for (i in 0 until 6) {
             val f = "MM"
             val s = DateTimeFormatter.ofPattern(f)
 
             val df = "yyyy.MM"
             var sd = DateTimeFormatter.ofPattern(df)
 
-            if(selectedDate.minusMonths(i.toLong()).format(s).toInt() < 12)
+            if(selectedDate.minusMonths(i.toLong()).format(s).toInt() < 10)
                 labelList.add(selectedDate.minusMonths(i.toLong()).format(s).replace("0", ""))
             else
                 labelList.add(selectedDate.minusMonths(i.toLong()).format(s))
@@ -302,8 +323,12 @@ class MyDealReceiptActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
 
-                    for(i in 1 until 13)
+                    Log.d("showReceipt", dateList.toString())
+
+                    for(i in 0 until 6)
                         valueList[i] = 0.toFloat()
+
+                    previousMonthArea.text = labelList[1]
 
                     for(dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DealModel::class.java)
@@ -312,7 +337,7 @@ class MyDealReceiptActivity : AppCompatActivity() {
 
                         if (item!!.state == "거래 완료") { // 거래가 완료된 데이터만
 
-                            for(i in 1 until 13) {
+                            for(i in 0 until 6) {
 
                                 var y = dateList[i].split(".")[0]
                                 var m = dateList[i].split(".")[1]
@@ -320,6 +345,7 @@ class MyDealReceiptActivity : AppCompatActivity() {
                                 var dateSp = item!!.buyDate.split(" ")[0].split(".")
                                 var dateYear = dateSp[0]
                                 var dateMonth = dateSp[1]
+                                Log.d("showReceipt", "$dateYear $dateMonth")
 
                                 if (dateYear.toInt() == y.toInt() && dateMonth.toInt() == m.toInt()) {
 
@@ -350,10 +376,46 @@ class MyDealReceiptActivity : AppCompatActivity() {
 
     private fun getDealReceiptChart(labelList : ArrayList<String>, valueList : MutableMap<Int, Float>) {
 
+        Log.d("showReceipt", labelList.toString())
+        Log.d("showReceipt", valueList.toString())
+
+        val decimalFormat = DecimalFormat("#,###")
+
         var rLabelList = ArrayList<String>()
-        for (i in 11 downTo 0) {
-            rLabelList.add(labelList[i])
+        for (i in 5 downTo 0) {
+            rLabelList.add(labelList[i] + "월")
         }
+
+        Log.d("showReceipt", rLabelList.toString())
+
+        var diffPrice = valueList[0]!!.toInt() - valueList[1]!!.toInt()
+        when {
+            diffPrice > 0 -> {
+                priceDiffArea.text = decimalFormat.format(diffPrice.toString().replace(",","").toDouble()) + "원"
+                moreLessArea.text = " 더 "
+                priceDiffArea.visibility = VISIBLE
+                moreLessArea.visibility = VISIBLE
+                lessMore.text = "보다 "
+            }
+            diffPrice == 0 -> {
+                priceDiffArea.visibility = GONE
+                moreLessArea.visibility = GONE
+                lessMore.text = "과 똑같이 "
+            }
+            else -> {
+                priceDiffArea.text = decimalFormat.format(kotlin.math.abs(diffPrice).toString().replace(",","").toDouble()) + "원"
+                moreLessArea.text = " 덜 "
+                priceDiffArea.visibility = VISIBLE
+                moreLessArea.visibility = VISIBLE
+                lessMore.text = "보다 "
+            }
+        }
+
+        var average = 0
+        for(i in 0 until 6)
+            average += valueList[i]!!.toInt()
+
+        averagePriceArea.text = decimalFormat.format((average / 6).toString().replace(",","").toDouble())
 
         receiptChart.run {
             description.isEnabled = false
@@ -367,7 +429,8 @@ class MyDealReceiptActivity : AppCompatActivity() {
                 setDrawLabels(true)
                 setDrawGridLines(true)
                 setDrawAxisLine(false)
-                textSize = 10f
+                isEnabled = false
+                textSize = 15f
             }
 
             xAxis.run {
@@ -375,7 +438,7 @@ class MyDealReceiptActivity : AppCompatActivity() {
                 granularity = 1f
                 setDrawAxisLine(true)
                 setDrawGridLines(false)
-                textSize = 8f
+                textSize = 11f
                 valueFormatter = IndexAxisValueFormatter(rLabelList)
             }
 
@@ -386,100 +449,32 @@ class MyDealReceiptActivity : AppCompatActivity() {
         }
 
         val entries = ArrayList<BarEntry>()
-        for (i in 11 downTo 0) {
-            entries.add(BarEntry(i.toFloat(), valueList[i]!!))
+        for (i in 5 downTo 0){
+            entries.add(BarEntry((5 - i).toFloat(), valueList[i]!!))
         }
 
 
         var depenses = BarDataSet(entries, "날짜")
         depenses.axisDependency = YAxis.AxisDependency.LEFT
-         depenses.color = Color.parseColor("#87CEEB")
+        depenses.color = Color.parseColor("#c08457")
         depenses.valueFormatter = CustomFormatter()
 
         val data = BarData(depenses)
-        data.barWidth = 0.5f
+        data.barWidth = 0.8f
 
-        receiptChart.setFitBars(true)
-        receiptChart.animateY(2000)
-        receiptChart.setDrawGridBackground(false)
-        receiptChart.setDrawBarShadow(false)
-        receiptChart.legend.isEnabled = false
-        receiptChart.setPinchZoom(false)
-        receiptChart.setScaleEnabled(false)
-        receiptChart.setTouchEnabled(true)
-        receiptChart.isDragEnabled = true
-        receiptChart.axisRight.isEnabled = false
-        receiptChart.axisLeft.setDrawGridLines(false)
-        receiptChart.axisRight.setDrawGridLines(false)
-        receiptChart.xAxis.setDrawGridLines(false)
-        receiptChart.axisLeft.axisMinimum = 0f
-        receiptChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-
-        receiptChart.setScaleEnabled(true)
-        receiptChart.setPinchZoom(false)
-
-        receiptChart.setVisibleXRangeMaximum(12f)
-        receiptChart.moveViewToX(0f)
         receiptChart.run {
             notifyDataSetChanged()
             this.data = data
+            data.setValueTextSize(11f)
             setFitBars(true)
             invalidate()
-        }
-
-        receiptChart.onChartGestureListener = object : OnChartGestureListener {
-            private var lastX = 0f
-            private val minimumSwipeDistance = 50f // 이동할 수 있는 최소한의 거리
-
-            override fun onChartGestureEnd(
-                me: MotionEvent?,
-                lastPerformedGesture: ChartTouchListener.ChartGesture?
-            ) {
-                if (lastPerformedGesture != ChartTouchListener.ChartGesture.SINGLE_TAP) {
-                    receiptChart.moveViewToX(receiptChart.lowestVisibleX)
-                }
-            }
-
-            override fun onChartGestureStart(
-                me: MotionEvent?,
-                lastPerformedGesture: ChartTouchListener.ChartGesture?
-            ) {
-                lastX = receiptChart.lowestVisibleX
-            }
-
-            override fun onChartSingleTapped(me: MotionEvent?) {
-            }
-
-            override fun onChartDoubleTapped(me: MotionEvent?) {
-            }
-
-            override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {
-            }
-
-            override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {
-                if (abs(dX) > minimumSwipeDistance) {
-                    receiptChart.moveViewToX(lastX - dX)
-                }
-            }
-
-            override fun onChartLongPressed(me: MotionEvent?) {
-            }
-
-            override fun onChartFling(
-                me1: MotionEvent?,
-                me2: MotionEvent?,
-                velocityX: Float,
-                velocityY: Float
-            ) {
-                // No-op
-            }
         }
     }
 
     class CustomFormatter : ValueFormatter() {
         override fun getFormattedValue(value: Float): String {
-            val waterWeight = value.toString().split(".")
-            return waterWeight[0] + "원"
+            val formattedValue = NumberFormat.getNumberInstance(Locale.KOREA).format(value.toInt())
+            return "$formattedValue" + "원"
         }
     }
 }

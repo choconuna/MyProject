@@ -280,8 +280,10 @@ class DealFragment : Fragment() {
                         }
                     }
 
+                    Log.d("sortedDealMap", dealMap.toString())
                     val sortedDealMap = sortMapByKey(dealMap)
-                    for((key, value) in dealMap.entries) {
+                    Log.d("sortedDealMap", sortedDealMap.toString())
+                    for((key, value) in sortedDealMap.entries) {
                         dealList.add(key)
                     }
 
@@ -302,7 +304,6 @@ class DealFragment : Fragment() {
 
     private fun sortMapByKey(map: MutableMap<DealModel, Long>): LinkedHashMap<DealModel, Long> { // 시간순으로 정렬
         val entries = LinkedList(map.entries)
-
         entries.sortByDescending { it.value }
 
         val result = LinkedHashMap<DealModel, Long>()

@@ -76,6 +76,9 @@ class DealInActivity : AppCompatActivity() {
 
         setData()
 
+        if(myUid != sellerId)
+            updateVisitors()
+
         getDealData()
 
         communitySet.setOnClickListener {
@@ -271,6 +274,26 @@ class DealInActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateVisitors() {
+        val dealRef = FBRef.dealRef.child(dealId)
+        dealRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    val visitors = dataSnapshot.child("visitors").value.toString().toInt()
+                    val newVisitors = visitors + 1
+                    val childUpdates = HashMap<String, Any>()
+                    childUpdates["visitors"] = newVisitors.toString()
+                    dealRef.updateChildren(childUpdates)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e(TAG, "Failed to update visitors count.", databaseError.toException())
+            }
+        })
+
+    }
+
     private fun getDealData() {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -358,7 +381,7 @@ class DealInActivity : AppCompatActivity() {
                         intent.putExtra("dealId", dealId)
                         startActivity(intent)
                     } else {
-                        FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date, "", "")) // 게시물 정보 데이터베이스에 저장
+                        FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date, "", "", dataModel!!.visitors)) // 게시물 정보 데이터베이스에 저장
                     }
 
                 } catch(e : Exception) { }
@@ -439,35 +462,35 @@ class DealInActivity : AppCompatActivity() {
                     for(dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DealChatConnection::class.java)
 
-                            val postListener = object : ValueEventListener {
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    try {
+                        val postListener = object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                try {
 
-                                        for(dataModel in dataSnapshot.children) {
-                                            val item2 = dataModel.getValue(DealMessageModel::class.java)
-                                            var chatConnectionId = item!!.chatConnectionId
-                                            var messageId = item2!!.messageId
-                                            Log.d("deleteImage", "$chatConnectionId $messageId")
+                                    for(dataModel in dataSnapshot.children) {
+                                        val item2 = dataModel.getValue(DealMessageModel::class.java)
+                                        var chatConnectionId = item!!.chatConnectionId
+                                        var messageId = item2!!.messageId
+                                        Log.d("deleteImage", "$chatConnectionId $messageId")
 
-                                            if (item2!!.picNum.toInt() >= 1) {
-                                                for (index in 0 until item2!!.picNum.toInt()) {
-                                                    Firebase.storage.reference.child("dealMessageImage/$chatConnectionId/$messageId/$messageId$index.png")
-                                                        .delete().addOnSuccessListener { // 사진 삭제
-                                                        }.addOnFailureListener {
-                                                            Log.d("deleteImage", it.toString())
-                                                        }
-                                                }
+                                        if (item2!!.picNum.toInt() >= 1) {
+                                            for (index in 0 until item2!!.picNum.toInt()) {
+                                                Firebase.storage.reference.child("dealMessageImage/$chatConnectionId/$messageId/$messageId$index.png")
+                                                    .delete().addOnSuccessListener { // 사진 삭제
+                                                    }.addOnFailureListener {
+                                                        Log.d("deleteImage", it.toString())
+                                                    }
                                             }
                                         }
-                                    } catch(e : Exception) { }
-                                }
-
-                                override fun onCancelled(databaseError: DatabaseError) {
-                                    // Geting Post failed, log a message
-                                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-                                }
+                                    }
+                                } catch(e : Exception) { }
                             }
-                            FBRef.dealMessageRef.child(item!!.dealId).child(item!!.chatConnectionId).addValueEventListener(postListener)
+
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                // Geting Post failed, log a message
+                                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                            }
+                        }
+                        FBRef.dealMessageRef.child(item!!.dealId).child(item!!.chatConnectionId).addValueEventListener(postListener)
                     }
 
                 } catch(e : Exception) { }

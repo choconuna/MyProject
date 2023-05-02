@@ -70,8 +70,8 @@ class MainActivity : AppCompatActivity() {
 
         Log.d(TAG, "MainActivity - onCreate() called")
 
-        mAuth = FirebaseAuth.getInstance()
-        uid = mAuth.currentUser?.uid.toString()
+        uid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
+        Log.d("tokenRef", uid)
 
         mDatabaseReference = FBRef.userRef.child(uid)
 
@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                Log.d("tokenRef", task.exception.toString())
                 return@OnCompleteListener
             }
 
@@ -92,15 +93,26 @@ class MainActivity : AppCompatActivity() {
             // Log and toast
             val msg = getString(R.string.msg_token_fmt, token)
 
+            Log.d("tokenRef", "실행")
+
             FBRef.tokenRef.child(uid).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot1) {
                     try {
-                        // 경로에 대한 데이터 변경 발생 시 실행되는 코드
-                        val data = dataSnapshot.getValue(FCMToken::class.java)
-                        Log.d("tokenRef", data!!.toString())
-                        if (data != null) {
-                            Log.d("tokenRef", "data 존재")
-                        } else if(data == null) {
+
+                        if (dataSnapshot.exists()) {
+
+                            val data = dataSnapshot.children
+
+                            val item = dataSnapshot.children.firstOrNull()?.getValue(FCMToken::class.java)
+
+                            if (item!!.fcmTokenId != null) {
+                                Log.d("tokenRef", "data 존재")
+
+                                Log.d("tokenRef", item!!.fcmTokenId)
+
+                                FBRef.tokenRef.child(uid).child(item!!.fcmTokenId).setValue(FCMToken(uid, token, item!!.fcmTokenId)) // 토큰 정보 데이터베이스에 저장
+                            }
+                        } else {
 
                             Log.d("tokenRef", "data 존재 X")
 
@@ -108,11 +120,11 @@ class MainActivity : AppCompatActivity() {
 
                             FBRef.tokenRef.child(uid).child(key).setValue(FCMToken(uid, token, key)) // 토큰 정보 데이터베이스에 저장
                         }
-                    } catch(e : Exception) { }
+                    } catch(e : Exception) { Log.d("tokenRef", e.toString()) }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // 데이터 조회에 실패한 경우 실행되는 코드
+                    Log.d("tokenRef", error.toString())
                 }
             })
 

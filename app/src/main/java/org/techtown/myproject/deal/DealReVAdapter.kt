@@ -115,6 +115,8 @@ class DealReVAdapter(val dealList : ArrayList<DealModel>):
 
         holder!!.locationArea!!.text = dealList[position].location
 
+        holder!!.visitorsArea!!.text = dealList[position].visitors
+
         when(dealList[position].state) {
             "예약 중" -> holder!!.stateArea!!.visibility = VISIBLE
             else -> holder!!.stateArea!!.visibility = GONE
@@ -156,6 +158,7 @@ class DealReVAdapter(val dealList : ArrayList<DealModel>):
         val priceArea = view?.findViewById<TextView>(R.id.priceArea)
         val methodArea = view?.findViewById<TextView>(R.id.methodArea)
         val locationArea = view?.findViewById<TextView>(R.id.locationArea)
+        val visitorsArea = view?.findViewById<TextView>(R.id.visitorsArea)
         val dealImage = view?.findViewById<ImageView>(R.id.dealImage)
     }
 }

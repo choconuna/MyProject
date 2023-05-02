@@ -122,7 +122,7 @@ class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
             val storageReference = Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴
 
             storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
-                if(task.isSuccessful) {
+                if(task.isSuccessful && holder.view != null) {
                     Glide.with(holder.view!!).load(task.result).into(holder.profileImageArea!!) // 작성자의 profile 사진을 게시자 이름의 왼편에 표시함
                 } else {
                     // holder.view?.findViewById<ImageView>(R.id.profileImageArea)?.isVisible = false

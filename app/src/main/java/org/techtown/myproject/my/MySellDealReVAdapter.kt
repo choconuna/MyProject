@@ -89,8 +89,12 @@ class MySellDealReVAdapter(val dealList : ArrayList<DealModel>):
         holder!!.categoryArea!!.text = dealList[position].category
         holder!!.titleArea!!.text = dealList[position].title
 
-        val decimalFormat = DecimalFormat("#,###")
-        holder.priceArea!!.text = decimalFormat.format(dealList[position].price.replace(",","").toDouble()) + "원"
+        if(dealList[position].price.toInt() == 0)
+            holder.priceArea!!.text = "나눔"
+        else {
+            val decimalFormat = DecimalFormat("#,###")
+            holder.priceArea!!.text = decimalFormat.format(dealList[position].price.replace(",", "").toDouble()) + "원"
+        }
 
         when(dealList[position].method) {
             "둘 다" -> holder!!.methodArea!!.text = "직거래 & 택배 거래"

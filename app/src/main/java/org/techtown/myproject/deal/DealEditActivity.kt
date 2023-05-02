@@ -168,8 +168,11 @@ class DealEditActivity : AppCompatActivity() {
 
                     val buyerUid = FBRef.dealRef.child(dealId).child("buyerId").get().addOnSuccessListener { buyerIdSnapshot ->
                         FBRef.dealRef.child(dealId).child("buyDate").get().addOnSuccessListener { buyDateSnapshot ->
-                            val buyDate = buyDateSnapshot.value.toString()
-                            FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, locationArea.text.toString(), category, price, title, content, count.toString(), method, state, dateFormat, buyerIdSnapshot.value.toString(), buyDate))
+                            FBRef.dealRef.child(dealId).child("visitors").get().addOnSuccessListener { visitorsSnapshot ->
+                                val visitors = visitorsSnapshot.value.toString().toInt() + 1
+                                val buyDate = buyDateSnapshot.value.toString()
+                                FBRef.dealRef.child(dealId).setValue(DealModel(dealId, myUid, locationArea.text.toString(), category, price, title, content, count.toString(), method, state, dateFormat, buyerIdSnapshot.value.toString(), buyDate, visitors.toString()))
+                            }
                         }
                     }
 
