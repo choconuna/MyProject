@@ -34,7 +34,7 @@ class ReceiptSearchReVAdapter(val receiptSearchList : ArrayList<ReceiptModel>):
     override fun onBindViewHolder(holder: ReceiptSearchDetailViewHolder, position: Int) {
         val myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
 
-        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR) // 현재 연도 가져오기
 
         val dateSp = receiptSearchList[position].date.split(".")
         if(currentYear == dateSp[0].toInt())

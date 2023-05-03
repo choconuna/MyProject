@@ -1061,10 +1061,10 @@ class SearchDealFragment : Fragment() {
         FBRef.dealRef.addValueEventListener(postListener)
     }
 
-    fun isBetweenDates(dateString: String, startDate: Date, endDate: Date): Boolean { // dateString이 기간 사이에 있는지 확인하기 위한 함수
+    fun isBetweenDates(dateString: String, startDate: Date, endDate: Date): Boolean {
         val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
         val date = dateFormat.parse(dateString)
-        return date?.after(startDate) == true && date.before(endDate)
+        return (date?.after(startDate) == true || date?.equals(startDate) == true) && (date?.before(endDate) == true || date?.equals(endDate) == true)
     }
 
     private fun sortMapByKey(map: MutableMap<DealModel, Long>): LinkedHashMap<DealModel, Long> { // 시간순으로 정렬

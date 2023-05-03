@@ -1,6 +1,7 @@
 package org.techtown.myproject.note
 
 import android.app.Activity
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -26,6 +27,7 @@ import com.google.firebase.storage.ktx.storage
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import org.techtown.myproject.R
 import org.techtown.myproject.community.PagerFragmentStateAdapter
+import org.techtown.myproject.note_search.SearchNoteActivity
 import org.techtown.myproject.statistics.StatisticsFragment
 import org.techtown.myproject.utils.DogModel
 import org.techtown.myproject.utils.FBRef
@@ -71,6 +73,12 @@ class RecordFragment : Fragment() {
         dogNameArea = v!!.findViewById(R.id.dogNameArea)
         dogProfileImageArea = v!!.findViewById(R.id.dogProfileImage)
         setHeader(v)
+
+        val searchBtn = v!!.findViewById<ImageView>(R.id.searchBtn)
+        searchBtn.setOnClickListener {
+            val intent = Intent(v!!.context, SearchNoteActivity::class.java)
+            v!!.context.startActivity(intent)
+        }
 
         return v
     }

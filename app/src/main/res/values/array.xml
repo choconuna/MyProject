@@ -299,6 +299,14 @@
         <item>기타</item>
     </string-array>
 
+    <string-array name="searchCheckUpCategorySpinner">
+        <item>전체</item>
+        <item>초음파</item>
+        <item>X-ray</item>
+        <item>혈액 검사</item>
+        <item>기타</item>
+    </string-array>
+
     <string-array name="receiptCategorySpinner">
         <item>식비</item>
         <item>병원</item>
@@ -362,5 +370,19 @@
         <item>판매 중</item>
         <item>예약 중</item>
         <item>거래 완료</item>
+    </string-array>
+
+    <string-array name="searchNoteCategorySpinner">
+        <item>사료</item>
+        <item>간식</item>
+        <item>영양제</item>
+        <item>물</item>
+        <item>소변</item>
+        <item>대변</item>
+        <item>구토</item>
+        <item>투약</item>
+        <item>수치 검사</item>
+        <item>검사 사진</item>
+        <item>메모</item>
     </string-array>
 </resources>

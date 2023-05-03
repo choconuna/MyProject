@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
@@ -14,11 +14,34 @@
         android:layout_marginTop="15dp"
         android:orientation="horizontal">
 
+        <ImageView
+            android:id="@+id/categoryImage"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/pet_food"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/bold"
+            android:text="카테고리"
+            android:textColor="@color/mainColor"
+            android:textSize="15sp"
+            android:layout_toRightOf="@+id/categoryImage"
+            android:layout_centerVertical="true"/>
+
         <LinearLayout
             android:id="@+id/linearLayout6"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:layout_marginEnd="15dp"
+            android:layout_toLeftOf="@+id/priceArea"
+            android:layout_toRightOf="@+id/category"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/category"
@@ -30,57 +53,59 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/regular"
+                android:maxLines="1"
                 android:text="내용"
                 android:textColor="@color/black"
                 android:textSize="12sp"
                 tools:ignore="MissingConstraints" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
-
-            <TextView
-                android:id="@+id/payMethodArea"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:fontFamily="@font/regular"
-                android:text="현금"
-                android:textColor="#999999"
-                android:textSize="12sp"
-                tools:ignore="MissingConstraints" />
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:orientation="horizontal"
+                tools:ignore="MissingConstraints">
 
-            <TextView
-                android:id="@+id/monthPlanArea"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_marginLeft="5dp"
-                android:fontFamily="@font/regular"
-                android:text="일시불"
-                android:textColor="#999999"
-                android:textSize="12sp"
-                tools:ignore="MissingConstraints" />
+                <TextView
+                    android:id="@+id/payMethodArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/regular"
+                    android:text="현금"
+                    android:textColor="#999999"
+                    android:textSize="12sp"
+                    tools:ignore="MissingConstraints" />
 
-            <TextView
-                android:id="@+id/divideMonth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_marginLeft="5dp"
-                android:fontFamily="@font/regular"
-                android:text=""
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/linearLayout6"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/monthPlanArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/regular"
+                    android:text="일시불"
+                    android:textColor="#999999"
+                    android:textSize="12sp"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/divideMonth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/regular"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/linearLayout6"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/placeArea"
@@ -88,7 +113,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="2dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/regular"
+                android:maxLines="1"
                 android:text="장소"
                 android:textColor="@color/black"
                 android:textSize="12sp"
@@ -99,32 +126,6 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/categoryImage"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/pet_food"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/category"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
-
-        <TextView
-            android:id="@+id/category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:fontFamily="@font/bold"
-            android:text="카테고리"
-            android:textColor="@color/mainColor"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/categoryImage"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
-
         <TextView
             android:id="@+id/priceArea"
             android:layout_width="wrap_content"
@@ -133,12 +134,10 @@
             android:text="가격"
             android:textColor="#DC143C"
             android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
     <TextView
         android:text=""

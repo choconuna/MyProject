@@ -22,6 +22,9 @@
         android:theme="@style/Theme.MyProject"
         tools:replace="android:label">
         <activity
+            android:name=".note_search.SearchNoteActivity"
+            android:exported="false" />
+        <activity
             android:name=".my.MyDealReceiptActivity"
             android:exported="false" />
         <activity
