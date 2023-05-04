@@ -13,6 +13,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -78,6 +79,23 @@ class SearchNoteActivity : AppCompatActivity() {
     private lateinit var showPeeCountArea : TextView
     private lateinit var showDungCountArea : TextView
     private lateinit var showVomitCountArea : TextView
+
+    private lateinit var frame : RelativeLayout
+    private lateinit var openCloseBtn : ImageView // 설명을 여는 버튼
+
+    private lateinit var frame7 : FrameLayout
+
+    private lateinit var allPeeContent : LinearLayout
+    private lateinit var normalPeeContent : LinearLayout
+    private lateinit var badPeeContent : LinearLayout
+
+    private lateinit var allDungContent : LinearLayout
+    private lateinit var normalDungContent : LinearLayout
+    private lateinit var badDungContent : LinearLayout
+
+    private lateinit var allVomitContent : LinearLayout
+    private lateinit var normalVomitContent : LinearLayout
+    private lateinit var badVomitContent : LinearLayout
 
     private lateinit var mealSearchRecyclerView : RecyclerView
     private val mealDataList = ArrayList<DogMealModel>()
@@ -460,10 +478,317 @@ class SearchNoteActivity : AppCompatActivity() {
             }
         }
 
+        openCloseBtn.setOnClickListener {
+            when(category) {
+                "소변" -> {
+                    if(peeCategory == "전체") {
+                        if(allPeeContent.isVisible) {
+
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_down_blue)
+                        } else {
+                            allPeeContent.visibility = VISIBLE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_up_blue)
+                        }
+                    } else if(peeCategory == "정상") {
+                        if(normalPeeContent.isVisible) {
+
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_down_blue)
+                        } else {
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = VISIBLE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_up_blue)
+                        }
+                    } else if(peeCategory == "위험") {
+                        if(badPeeContent.isVisible) {
+
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_down_blue)
+                        } else {
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = VISIBLE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_up_blue)
+                        }
+                    }
+                }
+                "대변" -> {
+                    if(dungCategory == "전체") {
+                        if(allDungContent.isVisible) {
+
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_down_blue)
+                        } else {
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = VISIBLE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_up_blue)
+                        }
+                    } else if(dungCategory == "정상") {
+                        if(normalDungContent.isVisible) {
+
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_down_blue)
+                        } else {
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = VISIBLE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_up_blue)
+                        }
+                    } else if(dungCategory == "위험") {
+                        if(badDungContent.isVisible) {
+
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_down_blue)
+                        } else {
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = VISIBLE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_up_blue)
+                        }
+                    }
+                }
+                "구토" -> {
+                    if(vomitCategory == "전체") {
+                        if(allVomitContent.isVisible) {
+
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_down_blue)
+                        } else {
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = VISIBLE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_up_blue)
+                        }
+                    } else if(vomitCategory == "경고") {
+                        if(normalVomitContent.isVisible) {
+
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_down_blue)
+                        } else {
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = VISIBLE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_up_blue)
+                        }
+                    } else if(vomitCategory == "위험") {
+                        if(badVomitContent.isVisible) {
+
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = GONE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_down_blue)
+                        } else {
+                            allPeeContent.visibility = GONE
+                            normalPeeContent.visibility = GONE
+                            badPeeContent.visibility = GONE
+
+                            allDungContent.visibility = GONE
+                            normalDungContent.visibility = GONE
+                            badDungContent.visibility = GONE
+
+                            allVomitContent.visibility = GONE
+                            normalVomitContent.visibility = GONE
+                            badVomitContent.visibility = VISIBLE
+
+                            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_up_blue)
+                        }
+                    }
+                }
+            }
+        }
+
         searchBtn.setOnClickListener {
 
             val searchText = searchArea.text.toString().trim()
             getNoteData(date, category, checkUpCategory, checkUpPart, snackCategory, tonicPart, peeCategory, dungCategory, vomitCategory, range, searchText)
+
+            openCloseBtn.setImageResource(R.drawable.ic_round_keyboard_arrow_down_blue)
+
+            allPeeContent.visibility = GONE
+            normalPeeContent.visibility = GONE
+            badPeeContent.visibility = GONE
+
+            allDungContent.visibility = GONE
+            normalDungContent.visibility = GONE
+            badDungContent.visibility = GONE
+
+            allVomitContent.visibility = GONE
+            normalVomitContent.visibility = GONE
+            badVomitContent.visibility = GONE
 
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(searchArea.windowToken, 0)
@@ -543,6 +868,23 @@ class SearchNoteActivity : AppCompatActivity() {
 
         rangeSpinner = findViewById(R.id.rangeSpinner)
         range = rangeSpinner.getItemAtPosition(0).toString()
+
+        frame = findViewById(R.id.frame6)
+        openCloseBtn = findViewById(R.id.openCloseBtn)
+
+        frame7 = findViewById(R.id.frame7)
+
+        allPeeContent = findViewById(R.id.allPeeContent)
+        normalPeeContent = findViewById(R.id.normalPeeContent)
+        badPeeContent = findViewById(R.id.badPeeContent)
+
+        allDungContent = findViewById(R.id.allDungContent)
+        normalDungContent = findViewById(R.id.normalDungContent)
+        badDungContent = findViewById(R.id.badDungContent)
+
+        allVomitContent = findViewById(R.id.allVomitContent)
+        normalVomitContent = findViewById(R.id.normalVomitContent)
+        badVomitContent = findViewById(R.id.badVomitContent)
 
         mealSearchRecyclerView = findViewById(R.id.mealSearchRecyclerView)
         mealRVAdapter = MealSearchReVAdapter(mealDataList)
@@ -658,6 +1000,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = GONE
+                frame7.visibility = GONE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = GONE
@@ -677,6 +1021,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = GONE
+                frame7.visibility = GONE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = GONE
@@ -696,6 +1042,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = GONE
+                frame7.visibility = GONE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = GONE
@@ -715,6 +1063,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = GONE
+                frame7.visibility = GONE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = GONE
@@ -734,6 +1084,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = VISIBLE
+                frame7.visibility = VISIBLE
                 showPeeCountArea.visibility = VISIBLE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = GONE
@@ -753,6 +1105,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = VISIBLE
+                frame7.visibility = VISIBLE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = VISIBLE
                 showVomitCountArea.visibility = GONE
@@ -772,6 +1126,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = VISIBLE
+                frame7.visibility = VISIBLE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = VISIBLE
@@ -791,6 +1147,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = GONE
+                frame7.visibility = GONE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = GONE
@@ -810,6 +1168,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = GONE
+                frame7.visibility = GONE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = GONE
@@ -829,6 +1189,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = GONE
+                frame7.visibility = GONE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = GONE
@@ -848,6 +1210,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = VISIBLE
                 memoSearchRecyclerView.visibility = GONE
 
+                frame.visibility = GONE
+                frame7.visibility = GONE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = GONE
@@ -867,6 +1231,8 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = VISIBLE
 
+                frame.visibility = GONE
+                frame7.visibility = GONE
                 showPeeCountArea.visibility = GONE
                 showDungCountArea.visibility = GONE
                 showVomitCountArea.visibility = GONE
