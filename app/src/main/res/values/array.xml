@@ -355,22 +355,20 @@
 
     <string-array name="searchPeeSpinner">
         <item>전체</item>
-        <item>투명한 무색 소변</item>
-        <item>투명한 노란색 소변</item>
-        <item>주황색과 어두운 노란색 소변</item>
-        <item>붉은색 소변</item>
-        <item>갈색 소변</item>
+        <item>정상</item>
+        <item>위험</item>
     </string-array>
 
     <string-array name="searchDungSpinner">
         <item>전체</item>
-        <item>보통 변</item>
-        <item>묽은 변</item>
-        <item>설사</item>
-        <item>짙고 딱딱한 변</item>
-        <item>붉은색 변</item>
-        <item>검은색 변</item>
-        <item>하얀색 점이 있는 변</item>
+        <item>정상</item>
+        <item>위험</item>
+    </string-array>
+
+    <string-array name="searchVomitSpinner">
+        <item>전체</item>
+        <item>경고</item>
+        <item>위험</item>
     </string-array>
 
     <string-array name="receiptCategorySpinner">

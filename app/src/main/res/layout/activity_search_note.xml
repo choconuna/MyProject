@@ -200,6 +200,45 @@
                     android:visibility="gone">
                 </Spinner>
 
+                <Spinner
+                    android:id="@+id/peeCategorySpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainColor"
+                    android:layout_gravity="center"
+                    android:entries="@array/searchPeeSpinner"
+                    android:spinnerMode="dialog"
+                    android:textAlignment="center"
+                    android:theme="@style/receiptSpinner"
+                    android:visibility="gone">
+                </Spinner>
+
+                <Spinner
+                    android:id="@+id/dungCategorySpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainColor"
+                    android:layout_gravity="center"
+                    android:entries="@array/searchDungSpinner"
+                    android:spinnerMode="dialog"
+                    android:textAlignment="center"
+                    android:theme="@style/receiptSpinner"
+                    android:visibility="gone">
+                </Spinner>
+
+                <Spinner
+                    android:id="@+id/vomitCategorySpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainColor"
+                    android:layout_gravity="center"
+                    android:entries="@array/searchVomitSpinner"
+                    android:spinnerMode="dialog"
+                    android:textAlignment="center"
+                    android:theme="@style/receiptSpinner"
+                    android:visibility="gone">
+                </Spinner>
+
             </FrameLayout>
         </LinearLayout>
 
@@ -263,9 +302,53 @@
         android:orientation="horizontal" />
 
     <FrameLayout
+        android:id="@+id/frame5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame4"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <TextView
+            android:id="@+id/showPeeCountArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:fontFamily="@font/bold"
+            android:textColor="#778899"
+            android:textSize="15sp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/showDungCountArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:fontFamily="@font/bold"
+            android:textColor="#778899"
+            android:textSize="15sp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/showVomitCountArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:fontFamily="@font/bold"
+            android:textColor="#778899"
+            android:textSize="15sp"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/frame3">
+        android:layout_below="@+id/frame5">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mealSearchRecyclerView"

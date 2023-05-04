@@ -63,8 +63,21 @@ class SearchNoteActivity : AppCompatActivity() {
     private lateinit var tonicPartSpinner : Spinner
     private lateinit var tonicPart : String
 
+    private lateinit var peeCategorySpinner : Spinner
+    private lateinit var peeCategory : String
+
+    private lateinit var dungCategorySpinner : Spinner
+    private lateinit var dungCategory : String
+
+    private lateinit var vomitCategorySpinner : Spinner
+    private lateinit var vomitCategory : String
+
     private lateinit var rangeSpinner : Spinner
     private lateinit var range : String
+
+    private lateinit var showPeeCountArea : TextView
+    private lateinit var showDungCountArea : TextView
+    private lateinit var showVomitCountArea : TextView
 
     private lateinit var mealSearchRecyclerView : RecyclerView
     private val mealDataList = ArrayList<DogMealModel>()
@@ -100,6 +113,8 @@ class SearchNoteActivity : AppCompatActivity() {
     lateinit var pLayoutManager : RecyclerView.LayoutManager
     private var peeMap : MutableMap<DogPeeModel, Long> = mutableMapOf()
     private var peeSortedMap : MutableMap<DogPeeModel, Long> = mutableMapOf()
+    private var normalPee : MutableMap<String, Int> = mutableMapOf()
+    private var badPee : MutableMap<String, Int> = mutableMapOf()
 
     private lateinit var dungSearchRecyclerView : RecyclerView
     private val dungDataList = ArrayList<DogDungModel>()
@@ -107,6 +122,8 @@ class SearchNoteActivity : AppCompatActivity() {
     lateinit var dLayoutManager : RecyclerView.LayoutManager
     private var dungMap : MutableMap<DogDungModel, Long> = mutableMapOf()
     private var dungSortedMap : MutableMap<DogDungModel, Long> = mutableMapOf()
+    private var normalDung : MutableMap<String, Int> = mutableMapOf()
+    private var badDung : MutableMap<String, Int> = mutableMapOf()
 
     private lateinit var vomitSearchRecyclerView : RecyclerView
     private val vomitDataList = ArrayList<DogVomitModel>()
@@ -114,6 +131,8 @@ class SearchNoteActivity : AppCompatActivity() {
     lateinit var vLayoutManager : RecyclerView.LayoutManager
     private var vomitMap : MutableMap<DogVomitModel, Long> = mutableMapOf()
     private var vomitSortedMap : MutableMap<DogVomitModel, Long> = mutableMapOf()
+    private var normalVomit : MutableMap<String, Int> = mutableMapOf()
+    private var badVomit : MutableMap<String, Int> = mutableMapOf()
 
     private lateinit var heartSearchRecyclerView : RecyclerView
     private val heartDataList = ArrayList<DogHeartModel>()
@@ -258,6 +277,9 @@ class SearchNoteActivity : AppCompatActivity() {
                         rangeSpinner.visibility = GONE
                         snackCategorySpinner.visibility = GONE
                         tonicPartSpinner.visibility = GONE
+                        peeCategorySpinner.visibility = GONE
+                        dungCategorySpinner.visibility = GONE
+                        vomitCategorySpinner.visibility = GONE
                         searchArea.visibility = VISIBLE
                     }
                     "수치 검사" -> {
@@ -266,6 +288,9 @@ class SearchNoteActivity : AppCompatActivity() {
                         rangeSpinner.visibility = VISIBLE
                         snackCategorySpinner.visibility = GONE
                         tonicPartSpinner.visibility = GONE
+                        peeCategorySpinner.visibility = GONE
+                        dungCategorySpinner.visibility = GONE
+                        vomitCategorySpinner.visibility = GONE
                         searchArea.visibility = VISIBLE
                     }
                     "호흡수" -> {
@@ -274,6 +299,9 @@ class SearchNoteActivity : AppCompatActivity() {
                         rangeSpinner.visibility = VISIBLE
                         snackCategorySpinner.visibility = GONE
                         tonicPartSpinner.visibility = GONE
+                        peeCategorySpinner.visibility = GONE
+                        dungCategorySpinner.visibility = GONE
+                        vomitCategorySpinner.visibility = GONE
                         searchArea.visibility = GONE
                     }
                     "영양제" -> {
@@ -282,6 +310,9 @@ class SearchNoteActivity : AppCompatActivity() {
                         rangeSpinner.visibility = GONE
                         snackCategorySpinner.visibility = GONE
                         tonicPartSpinner.visibility = VISIBLE
+                        peeCategorySpinner.visibility = GONE
+                        dungCategorySpinner.visibility = GONE
+                        vomitCategorySpinner.visibility = GONE
                         searchArea.visibility = VISIBLE
                     }
                     "간식" -> {
@@ -290,6 +321,53 @@ class SearchNoteActivity : AppCompatActivity() {
                         rangeSpinner.visibility = GONE
                         snackCategorySpinner.visibility = VISIBLE
                         tonicPartSpinner.visibility = GONE
+                        peeCategorySpinner.visibility = GONE
+                        dungCategorySpinner.visibility = GONE
+                        vomitCategorySpinner.visibility = GONE
+                        searchArea.visibility = VISIBLE
+                    }
+                    "물" -> {
+                        checkUpCategorySpinner.visibility = GONE
+                        checkUpPartSpinner.visibility = GONE
+                        rangeSpinner.visibility = GONE
+                        snackCategorySpinner.visibility =GONE
+                        tonicPartSpinner.visibility = GONE
+                        peeCategorySpinner.visibility = GONE
+                        dungCategorySpinner.visibility = GONE
+                        vomitCategorySpinner.visibility = GONE
+                        searchArea.visibility = GONE
+                    }
+                    "소변" -> {
+                        checkUpCategorySpinner.visibility = GONE
+                        checkUpPartSpinner.visibility = GONE
+                        rangeSpinner.visibility = GONE
+                        snackCategorySpinner.visibility = GONE
+                        tonicPartSpinner.visibility = GONE
+                        peeCategorySpinner.visibility = VISIBLE
+                        dungCategorySpinner.visibility = GONE
+                        vomitCategorySpinner.visibility = GONE
+                        searchArea.visibility = VISIBLE
+                    }
+                    "대변" -> {
+                        checkUpCategorySpinner.visibility = GONE
+                        checkUpPartSpinner.visibility = GONE
+                        rangeSpinner.visibility = GONE
+                        snackCategorySpinner.visibility = GONE
+                        tonicPartSpinner.visibility = GONE
+                        peeCategorySpinner.visibility = GONE
+                        dungCategorySpinner.visibility = VISIBLE
+                        vomitCategorySpinner.visibility = GONE
+                        searchArea.visibility = VISIBLE
+                    }
+                    "구토" -> {
+                        checkUpCategorySpinner.visibility = GONE
+                        checkUpPartSpinner.visibility = GONE
+                        rangeSpinner.visibility = GONE
+                        snackCategorySpinner.visibility = GONE
+                        tonicPartSpinner.visibility = GONE
+                        peeCategorySpinner.visibility = GONE
+                        dungCategorySpinner.visibility = GONE
+                        vomitCategorySpinner.visibility = VISIBLE
                         searchArea.visibility = VISIBLE
                     }
                     else -> {
@@ -298,6 +376,9 @@ class SearchNoteActivity : AppCompatActivity() {
                         rangeSpinner.visibility = GONE
                         snackCategorySpinner.visibility = GONE
                         tonicPartSpinner.visibility = GONE
+                        peeCategorySpinner.visibility = GONE
+                        dungCategorySpinner.visibility = GONE
+                        vomitCategorySpinner.visibility = GONE
                         searchArea.visibility = VISIBLE
                     }
                 }
@@ -343,6 +424,33 @@ class SearchNoteActivity : AppCompatActivity() {
             }
         }
 
+        peeCategorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, id: Long) {
+                peeCategory = adapterView.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>) {
+            }
+        }
+
+        dungCategorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, id: Long) {
+                dungCategory = adapterView.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>) {
+            }
+        }
+
+        vomitCategorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, id: Long) {
+                vomitCategory = adapterView.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>) {
+            }
+        }
+
         rangeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, id: Long) {
                 range = adapterView.getItemAtPosition(position).toString()
@@ -355,7 +463,7 @@ class SearchNoteActivity : AppCompatActivity() {
         searchBtn.setOnClickListener {
 
             val searchText = searchArea.text.toString().trim()
-            getNoteData(date, category, checkUpCategory, checkUpPart, snackCategory, tonicPart, range, searchText)
+            getNoteData(date, category, checkUpCategory, checkUpPart, snackCategory, tonicPart, peeCategory, dungCategory, vomitCategory, range, searchText)
 
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(searchArea.windowToken, 0)
@@ -408,6 +516,10 @@ class SearchNoteActivity : AppCompatActivity() {
         category = categorySpinner.getItemAtPosition(0).toString()
         searchArea = findViewById(R.id.searchArea)
 
+        showPeeCountArea = findViewById(R.id.showPeeCountArea)
+        showDungCountArea = findViewById(R.id.showDungCountArea)
+        showVomitCountArea = findViewById(R.id.showVomitCountArea)
+
         checkUpCategorySpinner = findViewById(R.id.checkUpCategorySpinner)
         checkUpCategory = checkUpCategorySpinner.getItemAtPosition(0).toString()
 
@@ -419,6 +531,15 @@ class SearchNoteActivity : AppCompatActivity() {
 
         tonicPartSpinner = findViewById(R.id.tonicPartSpinner)
         tonicPart = tonicPartSpinner.getItemAtPosition(0).toString()
+
+        peeCategorySpinner = findViewById(R.id.peeCategorySpinner)
+        peeCategory = peeCategorySpinner.getItemAtPosition(0).toString()
+
+        dungCategorySpinner = findViewById(R.id.dungCategorySpinner)
+        dungCategory = dungCategorySpinner.getItemAtPosition(0).toString()
+
+        vomitCategorySpinner = findViewById(R.id.vomitCategorySpinner)
+        vomitCategory = vomitCategorySpinner.getItemAtPosition(0).toString()
 
         rangeSpinner = findViewById(R.id.rangeSpinner)
         range = rangeSpinner.getItemAtPosition(0).toString()
@@ -520,7 +641,7 @@ class SearchNoteActivity : AppCompatActivity() {
         memoSearchRecyclerView.adapter = memoRVAdapter
     }
 
-    private fun getNoteData(date : String, category : String, checkUpCategory : String, checkUpPart : String, snackCategory : String, tonicPart : String, range : String, searchText : String) {
+    private fun getNoteData(date : String, category : String, checkUpCategory : String, checkUpPart : String, snackCategory : String, tonicPart : String, peeCategory : String, dungCategory : String, vomitCategory : String, range : String, searchText : String) {
         when (category) {
             "사료" ->  {
                 getMealData(date, searchText)
@@ -536,6 +657,10 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = GONE
             }
             "간식" -> {
                 getSnackData(date, snackCategory, searchText)
@@ -551,6 +676,10 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = GONE
             }
             "영양제" -> {
                 getTonicData(date, tonicPart, searchText)
@@ -566,9 +695,13 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = GONE
             }
             "물" -> {
-                getWaterData(date, searchText)
+                getWaterData(date)
                 mealSearchRecyclerView.visibility = GONE
                 snackSearchRecyclerView.visibility = GONE
                 tonicSearchRecyclerView.visibility = GONE
@@ -581,9 +714,13 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = GONE
             }
             "소변" -> {
-                getPeeData(date, searchText)
+                getPeeData(date, peeCategory, searchText)
                 mealSearchRecyclerView.visibility = GONE
                 snackSearchRecyclerView.visibility = GONE
                 tonicSearchRecyclerView.visibility = GONE
@@ -596,9 +733,13 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = VISIBLE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = GONE
             }
             "대변" -> {
-                getDungData(date, searchText)
+                getDungData(date, dungCategory, searchText)
                 mealSearchRecyclerView.visibility = GONE
                 snackSearchRecyclerView.visibility = GONE
                 tonicSearchRecyclerView.visibility = GONE
@@ -611,9 +752,13 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = VISIBLE
+                showVomitCountArea.visibility = GONE
             }
             "구토" -> {
-                getVomitData(date, searchText)
+                getVomitData(date, vomitCategory, searchText)
                 mealSearchRecyclerView.visibility = GONE
                 snackSearchRecyclerView.visibility = GONE
                 tonicSearchRecyclerView.visibility = GONE
@@ -626,6 +771,10 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = VISIBLE
             }
             "호흡수" -> {
                 getHeartData(date, range)
@@ -641,6 +790,10 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = GONE
             }
             "투약" -> {
                 getMedicineData(date, searchText)
@@ -656,6 +809,10 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = GONE
             }
             "수치 검사" -> {
                 getCheckUpInputData(date, checkUpPart, range, searchText)
@@ -671,6 +828,10 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = VISIBLE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = GONE
             }
             "검사 사진" -> {
                 getCheckUpPictureData(date, checkUpCategory, searchText)
@@ -686,6 +847,10 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = VISIBLE
                 memoSearchRecyclerView.visibility = GONE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = GONE
             }
             "메모" -> {
                 getMemoData(date, searchText)
@@ -701,6 +866,10 @@ class SearchNoteActivity : AppCompatActivity() {
                 checkUpInputSearchRecyclerView.visibility = GONE
                 checkUpPictureSearchRecyclerView.visibility = GONE
                 memoSearchRecyclerView.visibility = VISIBLE
+
+                showPeeCountArea.visibility = GONE
+                showDungCountArea.visibility = GONE
+                showVomitCountArea.visibility = GONE
             }
         }
     }
@@ -996,7 +1165,7 @@ class SearchNoteActivity : AppCompatActivity() {
         FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
     }
 
-    private fun getWaterData(date : String, searchText : String) {
+    private fun getWaterData(date : String) {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
@@ -1063,7 +1232,7 @@ class SearchNoteActivity : AppCompatActivity() {
         FBRef.waterRef.child(myUid).child(dogId).addValueEventListener(postListener)
     }
 
-    private fun getPeeData(date : String, searchText : String) {
+    private fun getPeeData(date : String, peeCategory: String, searchText : String) {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
@@ -1071,43 +1240,200 @@ class SearchNoteActivity : AppCompatActivity() {
                     peeMap.clear()
                     peeSortedMap.clear()
 
+                    normalPee["투명한 무색 소변"] = 0
+                    normalPee["투명한 노란색 소변"] = 0
+
+                    badPee["주황색과 어두운 노란색 소변"] = 0
+                    badPee["붉은색 소변"] = 0
+                    badPee["갈색 소변"] = 0
+
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogPeeModel::class.java)
-                        if(item!!.peeType.contains(searchText)) {
-                            if(date == "전체") {
-                                var nowDateSp = item!!.date.split(".")
-                                var month = nowDateSp[1]
-                                var day = nowDateSp[2]
+                        if(peeCategory == "전체") {
+                            if ("투명한 무색 소변".contains(searchText) || "투명한 노란색 소변".contains(searchText) || "주황색과 어두운 노란색 소변".contains(searchText) || "붉은색 소변".contains(searchText) || "갈색 소변".contains(searchText)) {
+                                if (date == "전체") {
+                                    when (item!!.peeType) {
+                                        "transparent" -> normalPee["투명한 무색 소변"] = normalPee["투명한 무색 소변"]!!.plus(item!!.peeCount.toInt())
+                                        "lightYellow" -> normalPee["투명한 노란색 소변"] = normalPee["투명한 노란색 소변"]!!.plus(item!!.peeCount.toInt())
+                                        "darkYellow" -> badPee["주황색과 어두운 노란색 소변"] = badPee["주황색과 어두운 노란색 소변"]!!.plus(item!!.peeCount.toInt())
+                                        "red" -> badPee["붉은색 소변"] = badPee["붉은색 소변"]!!.plus(item!!.peeCount.toInt())
+                                        "brown" -> badPee["갈색 소변"] = badPee["갈색 소변"]!!.plus(item!!.peeCount.toInt())
+                                    }
 
-                                if(month.length == 1)
-                                    month = "0$month"
-                                if(day.length == 1)
-                                    day = "0$day"
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
 
-                                var nowDate = nowDateSp[0] + month + day
-
-                                peeMap[item!!] = nowDate.toLong()
-                            } else {
-                                var nowDateSp = item!!.date.split(".")
-                                var month = nowDateSp[1]
-                                var day = nowDateSp[2]
-
-                                if(month.length == 1)
-                                    month = "0$month"
-                                if(day.length == 1)
-                                    day = "0$day"
-
-                                // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
-                                val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
-                                val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
-                                val nowDateFm = nowDateSp[0] + "." + month + "." + day
-
-                                if (isBetweenDates(nowDateFm, startDate, endDate)) {
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
 
                                     var nowDate = nowDateSp[0] + month + day
 
                                     peeMap[item!!] = nowDate.toLong()
+                                } else {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                    val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                    val endDate =
+                                        SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                    val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                    if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                        when (item!!.peeType) {
+                                            "transparent" -> normalPee["투명한 무색 소변"] = normalPee["투명한 무색 소변"]!!.plus(item!!.peeCount.toInt())
+                                            "lightYellow" -> normalPee["투명한 노란색 소변"] = normalPee["투명한 노란색 소변"]!!.plus(item!!.peeCount.toInt())
+                                            "darkYellow" -> badPee["주황색과 어두운 노란색 소변"] = badPee["주황색과 어두운 노란색 소변"]!!.plus(item!!.peeCount.toInt())
+                                            "red" -> badPee["붉은색 소변"] = badPee["붉은색 소변"]!!.plus(item!!.peeCount.toInt())
+                                            "brown" -> badPee["갈색 소변"] = badPee["갈색 소변"]!!.plus(item!!.peeCount.toInt())
+                                        }
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        peeMap[item!!] = nowDate.toLong()
+                                    }
                                 }
+                            }
+                        } else if(peeCategory == "정상") {
+                            if(item!!.peeType == "transparent" || item!!.peeType == "lightYellow") {
+                                if("투명한 무색 소변".contains(searchText) || "투명한 노란색 소변".contains(searchText)) {
+                                    if (date == "전체") {
+
+                                        when (item!!.peeType) {
+                                            "transparent" -> normalPee["투명한 무색 소변"] = normalPee["투명한 무색 소변"]!!.plus(item!!.peeCount.toInt())
+                                            "lightYellow" -> normalPee["투명한 노란색 소변"] = normalPee["투명한 노란색 소변"]!!.plus(item!!.peeCount.toInt())
+                                        }
+
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        peeMap[item!!] = nowDate.toLong()
+                                    } else {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate =
+                                            SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            when (item!!.peeType) {
+                                                "transparent" -> normalPee["투명한 무색 소변"] = normalPee["투명한 무색 소변"]!!.plus(item!!.peeCount.toInt())
+                                                "lightYellow" -> normalPee["투명한 노란색 소변"] = normalPee["투명한 노란색 소변"]!!.plus(item!!.peeCount.toInt())
+                                            }
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            peeMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                }
+                            }
+                        } else if(peeCategory == "위험") {
+                            if(item!!.peeType == "darkYellow" || item!!.peeType == "red" || item!!.peeType == "brown") {
+                                if("주황색과 어두운 노란색 소변".contains(searchText) || "붉은색 소변".contains(searchText) || "갈색 소변".contains(searchText)) {
+                                    if (date == "전체") {
+
+                                        when (item!!.peeType) {
+                                            "darkYellow" -> badPee["주황색과 어두운 노란색 소변"] = badPee["주황색과 어두운 노란색 소변"]!!.plus(item!!.peeCount.toInt())
+                                            "red" -> badPee["붉은색 소변"] = badPee["붉은색 소변"]!!.plus(item!!.peeCount.toInt())
+                                            "brown" -> badPee["갈색 소변"] = badPee["갈색 소변"]!!.plus(item!!.peeCount.toInt())
+                                        }
+
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        peeMap[item!!] = nowDate.toLong()
+                                    } else {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate =
+                                            SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            when (item!!.peeType) {
+                                                "darkYellow" -> badPee["주황색과 어두운 노란색 소변"] = badPee["주황색과 어두운 노란색 소변"]!!.plus(item!!.peeCount.toInt())
+                                                "red" -> badPee["붉은색 소변"] = badPee["붉은색 소변"]!!.plus(item!!.peeCount.toInt())
+                                                "brown" -> badPee["갈색 소변"] = badPee["갈색 소변"]!!.plus(item!!.peeCount.toInt())
+                                            }
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            peeMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    showPeeCountArea.text = ""
+                    when (peeCategory) {
+                        "전체" -> {
+                            for((key, value) in normalPee)
+                                showPeeCountArea.text = showPeeCountArea.text.toString() + key + ": " + value + "회   "
+                            showPeeCountArea.text = showPeeCountArea.text.toString() + "\n\n"
+                            for((key, value) in badPee) {
+                                showPeeCountArea.text = showPeeCountArea.text.toString() + key + ": " + value + "회   "
+                                if(key == "붉은색 소변")
+                                    showPeeCountArea.text = showPeeCountArea.text.toString() + "\n"
+                            }
+                        }
+                        "정상" -> {
+                            for((key, value) in normalPee)
+                                showPeeCountArea.text = showPeeCountArea.text.toString() + key + ": " + value + "회   "
+                        }
+                        "위험" -> {
+                            for((key, value) in badPee) {
+                                showPeeCountArea.text = showPeeCountArea.text.toString() + key + ": " + value + "회   "
+                                if(key == "붉은색 소변")
+                                    showPeeCountArea.text = showPeeCountArea.text.toString() + "\n"
                             }
                         }
                     }
@@ -1132,7 +1458,7 @@ class SearchNoteActivity : AppCompatActivity() {
         FBRef.peeRef.child(myUid).child(dogId).addValueEventListener(postListener)
     }
 
-    private fun getDungData(date : String, searchText : String) {
+    private fun getDungData(date : String, dungCategory: String, searchText : String) {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
@@ -1140,43 +1466,207 @@ class SearchNoteActivity : AppCompatActivity() {
                     dungMap.clear()
                     dungSortedMap.clear()
 
+                    normalDung["보통 변"] = 0
+                    normalDung["묽은 변"] = 0
+                    badDung["설사"] = 0
+                    badDung["짙고 딱딱한 변"] = 0
+                    badDung["붉은색 변"] = 0
+                    badDung["검은색 변"] = 0
+                    badDung["하얀색 점이 있는 변"] = 0
+
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogDungModel::class.java)
-                        if(item!!.dungType.contains(searchText)) {
-                            if(date == "전체") {
-                                var nowDateSp = item!!.date.split(".")
-                                var month = nowDateSp[1]
-                                var day = nowDateSp[2]
+                        if(dungCategory == "전체") {
+                            if ("보통 변".contains(searchText) || "묽은 변".contains(searchText) || "설사".contains(searchText) || "짙고 딱딱한 변".contains(searchText) || "붉은색 변".contains(searchText) || "검은색 변".contains(searchText) || "하얀색 점이 있는 변".contains(searchText)) {
+                                if (date == "전체") {
 
-                                if(month.length == 1)
-                                    month = "0$month"
-                                if(day.length == 1)
-                                    day = "0$day"
+                                    when(item!!.dungType) {
+                                        "regular" -> normalDung["보통 변"] = normalDung["보통 변"]!!.plus(item!!.dungCount.toInt())
+                                        "watery" -> normalDung["묽은 변"] = normalDung["묽은 변"]!!.plus(item!!.dungCount.toInt())
+                                        "diarrhea" -> badDung["설사"] = badDung["설사"]!!.plus(item!!.dungCount.toInt())
+                                        "hard" -> badDung["짙고 딱딱한 변"] = badDung["짙고 딱딱한 변"]!!.plus(item!!.dungCount.toInt())
+                                        "red" -> badDung["붉은색 변"] = badDung["붉은색 변"]!!.plus(item!!.dungCount.toInt())
+                                        "black" -> badDung["검은색 변"] = badDung["검은색 변"]!!.plus(item!!.dungCount.toInt())
+                                        "white" -> badDung["하얀색 점이 있는 변"] = badDung["하얀색 점이 있는 변"]!!.plus(item!!.dungCount.toInt())
+                                    }
 
-                                var nowDate = nowDateSp[0] + month + day
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
 
-                                dungMap[item!!] = nowDate.toLong()
-                            } else {
-                                var nowDateSp = item!!.date.split(".")
-                                var month = nowDateSp[1]
-                                var day = nowDateSp[2]
-
-                                if(month.length == 1)
-                                    month = "0$month"
-                                if(day.length == 1)
-                                    day = "0$day"
-
-                                // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
-                                val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
-                                val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
-                                val nowDateFm = nowDateSp[0] + "." + month + "." + day
-
-                                if (isBetweenDates(nowDateFm, startDate, endDate)) {
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
 
                                     var nowDate = nowDateSp[0] + month + day
 
                                     dungMap[item!!] = nowDate.toLong()
+                                } else {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                    val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                    val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                    val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                    if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                        when(item!!.dungType) {
+                                            "regular" -> normalDung["보통 변"] = normalDung["보통 변"]!!.plus(item!!.dungCount.toInt())
+                                            "watery" -> normalDung["묽은 변"] = normalDung["묽은 변"]!!.plus(item!!.dungCount.toInt())
+                                            "diarrhea" -> badDung["설사"] = badDung["설사"]!!.plus(item!!.dungCount.toInt())
+                                            "hard" -> badDung["짙고 딱딱한 변"] = badDung["짙고 딱딱한 변"]!!.plus(item!!.dungCount.toInt())
+                                            "red" -> badDung["붉은색 변"] = badDung["붉은색 변"]!!.plus(item!!.dungCount.toInt())
+                                            "black" -> badDung["검은색 변"] = badDung["검은색 변"]!!.plus(item!!.dungCount.toInt())
+                                            "white" -> badDung["하얀색 점이 있는 변"] = badDung["하얀색 점이 있는 변"]!!.plus(item!!.dungCount.toInt())
+                                        }
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        dungMap[item!!] = nowDate.toLong()
+                                    }
                                 }
+                            }
+                        } else if(dungCategory == "정상") {
+                            if(item!!.dungType == "regular" || item!!.dungType == "watery") {
+                                if("보통 변".contains(searchText) || "묽은 변".contains(searchText)) {
+                                    if (date == "전체") {
+
+                                        when(item!!.dungType) {
+                                            "regular" -> normalDung["보통 변"] = normalDung["보통 변"]!!.plus(item!!.dungCount.toInt())
+                                            "watery" -> normalDung["묽은 변"] = normalDung["묽은 변"]!!.plus(item!!.dungCount.toInt())
+                                        }
+
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        dungMap[item!!] = nowDate.toLong()
+                                    } else {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            when(item!!.dungType) {
+                                                "regular" -> normalDung["보통 변"] = normalDung["보통 변"]!!.plus(item!!.dungCount.toInt())
+                                                "watery" -> normalDung["묽은 변"] = normalDung["묽은 변"]!!.plus(item!!.dungCount.toInt())
+                                            }
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            dungMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                }
+                            }
+                        } else if(dungCategory == "위험") {
+                            if(item!!.dungType == "diarrhea" || item!!.dungType == "hard" || item!!.dungType == "red" || item!!.dungType == "black" || item!!.dungType == "White") {
+                                if("설사".contains(searchText) || "짙고 딱딱한 변".contains(searchText) || "붉은색 변".contains(searchText) || "검은색 변".contains(searchText) || "하얀색 점이 있는 변".contains(searchText)) {
+                                    if (date == "전체") {
+
+                                        when(item!!.dungType) {
+                                            "diarrhea" -> badDung["설사"] = badDung["설사"]!!.plus(item!!.dungCount.toInt())
+                                            "hard" -> badDung["짙고 딱딱한 변"] = badDung["짙고 딱딱한 변"]!!.plus(item!!.dungCount.toInt())
+                                            "red" -> badDung["붉은색 변"] = badDung["붉은색 변"]!!.plus(item!!.dungCount.toInt())
+                                            "black" -> badDung["검은색 변"] = badDung["검은색 변"]!!.plus(item!!.dungCount.toInt())
+                                            "white" -> badDung["하얀색 점이 있는 변"] = badDung["하얀색 점이 있는 변"]!!.plus(item!!.dungCount.toInt())
+                                        }
+
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        dungMap[item!!] = nowDate.toLong()
+                                    } else {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            when(item!!.dungType) {
+                                                "diarrhea" -> badDung["설사"] = badDung["설사"]!!.plus(item!!.dungCount.toInt())
+                                                "hard" -> badDung["짙고 딱딱한 변"] = badDung["짙고 딱딱한 변"]!!.plus(item!!.dungCount.toInt())
+                                                "red" -> badDung["붉은색 변"] = badDung["붉은색 변"]!!.plus(item!!.dungCount.toInt())
+                                                "black" -> badDung["검은색 변"] = badDung["검은색 변"]!!.plus(item!!.dungCount.toInt())
+                                                "white" -> badDung["하얀색 점이 있는 변"] = badDung["하얀색 점이 있는 변"]!!.plus(item!!.dungCount.toInt())
+                                            }
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            dungMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    showDungCountArea.text = ""
+                    when (dungCategory) {
+                        "전체" -> {
+                            for((key, value) in normalDung)
+                                showDungCountArea.text = showDungCountArea.text.toString() + key + ": " + value + "회   "
+                            showDungCountArea.text = showDungCountArea.text.toString() + "\n\n"
+                            for((key, value) in badDung) {
+                                showDungCountArea.text = showDungCountArea.text.toString() + key + ": " + value + "회   "
+                                if(key == "붉은색 변")
+                                    showDungCountArea.text = showDungCountArea.text.toString() + "\n"
+                            }
+                        }
+                        "정상" -> {
+                            for((key, value) in normalDung)
+                                showDungCountArea.text = showDungCountArea.text.toString() + key + ": " + value + "회   "
+                        }
+                        "위험" -> {
+                            for((key, value) in badDung) {
+                                showDungCountArea.text = showDungCountArea.text.toString() + key + ": " + value + "회   "
+                                if(key == "붉은색 변")
+                                    showDungCountArea.text = showDungCountArea.text.toString() + "\n"
                             }
                         }
                     }
@@ -1201,7 +1691,7 @@ class SearchNoteActivity : AppCompatActivity() {
         FBRef.dungRef.child(myUid).child(dogId).addValueEventListener(postListener)
     }
 
-    private fun getVomitData(date : String, searchText : String) {
+    private fun getVomitData(date : String, vomitCategory: String, searchText : String) {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
@@ -1209,43 +1699,245 @@ class SearchNoteActivity : AppCompatActivity() {
                     vomitMap.clear()
                     vomitSortedMap.clear()
 
+                    normalVomit["투명한 무색 구토"] = 0
+                    normalVomit["흰색 거품이 섞인 구토"] = 0
+                    normalVomit["음식이 섞인 구토"] = 0
+                    normalVomit["노란색 구토"] = 0
+                    normalVomit["잎사귀가 섞인 초록색 구토"] = 0
+                    normalVomit["분홍색 구토"] = 0
+
+                    badVomit["짙은 갈색 구토"] = 0
+                    badVomit["녹색 구토"] = 0
+                    badVomit["이물질이 섞인 구토"] = 0
+                    badVomit["붉은색 구토"] = 0
+
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogVomitModel::class.java)
-                        if(item!!.vomitType.contains(searchText)) {
-                            if(date == "전체") {
-                                var nowDateSp = item!!.date.split(".")
-                                var month = nowDateSp[1]
-                                var day = nowDateSp[2]
+                        if(vomitCategory == "전체") {
+                            if ("투명한 무색 구토".contains(searchText) || "흰색 거품이 섞인 구토".contains(searchText) || "음식이 섞인 구토".contains(searchText) || "노란색 구토".contains(searchText) || "잎사귀가 섞인 초록색 구토".contains(searchText) || "분홍색 구토".contains(searchText) || "짙은 갈색 구토".contains(searchText) ||  "녹색 구토".contains(searchText) || "이물질이 섞인 구토".contains(searchText) || "붉은색 구토".contains(searchText)) {
+                                if (date == "전체") {
 
-                                if(month.length == 1)
-                                    month = "0$month"
-                                if(day.length == 1)
-                                    day = "0$day"
+                                    when(item!!.vomitType) {
+                                        "transparent" -> normalVomit["투명한 무색 구토"] = normalVomit["투명한 무색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        "bubble" -> normalVomit["흰색 거품이 섞인 구토"] = normalVomit["흰색 거품이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        "food" -> normalVomit["음식이 섞인 구토"] = normalVomit["음식이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        "yellow" -> normalVomit["노란색 구토"] = normalVomit["노란색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        "leaf" -> normalVomit["잎사귀가 섞인 초록색 구토"] = normalVomit["잎사귀가 섞인 초록색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        "pink" -> normalVomit["분홍색 구토"] = normalVomit["분홍색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        "brown" -> badVomit["짙은 갈색 구토"] = badVomit["짙은 갈색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        "green" -> badVomit["녹색 구토"] = badVomit["녹색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        "substance" -> badVomit["이물질이 섞인 구토"] = badVomit["이물질이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        "red" -> badVomit["붉은색 구토"] = badVomit["붉은색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                    }
 
-                                var nowDate = nowDateSp[0] + month + day
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
 
-                                vomitMap[item!!] = nowDate.toLong()
-                            } else {
-                                var nowDateSp = item!!.date.split(".")
-                                var month = nowDateSp[1]
-                                var day = nowDateSp[2]
-
-                                if(month.length == 1)
-                                    month = "0$month"
-                                if(day.length == 1)
-                                    day = "0$day"
-
-                                // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
-                                val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
-                                val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
-                                val nowDateFm = nowDateSp[0] + "." + month + "." + day
-
-                                if (isBetweenDates(nowDateFm, startDate, endDate)) {
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
 
                                     var nowDate = nowDateSp[0] + month + day
 
                                     vomitMap[item!!] = nowDate.toLong()
+                                } else {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                    val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                    val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                    val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                    if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                        when(item!!.vomitType) {
+                                            "transparent" -> normalVomit["투명한 무색 구토"] = normalVomit["투명한 무색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "bubble" -> normalVomit["흰색 거품이 섞인 구토"] = normalVomit["흰색 거품이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "food" -> normalVomit["음식이 섞인 구토"] = normalVomit["음식이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "yellow" -> normalVomit["노란색 구토"] = normalVomit["노란색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "leaf" -> normalVomit["잎사귀가 섞인 초록색 구토"] = normalVomit["잎사귀가 섞인 초록색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "pink" -> normalVomit["분홍색 구토"] = normalVomit["분홍색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "brown" -> badVomit["짙은 갈색 구토"] = badVomit["짙은 갈색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "green" -> badVomit["녹색 구토"] = badVomit["녹색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "substance" -> badVomit["이물질이 섞인 구토"] = badVomit["이물질이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "red" -> badVomit["붉은색 구토"] = badVomit["붉은색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        }
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        vomitMap[item!!] = nowDate.toLong()
+                                    }
                                 }
+                            }
+                        } else if(vomitCategory == "경고") {
+                            if (item!!.vomitType == "transparent" || item!!.vomitType == "bubble" || item!!.vomitType == "food" || item!!.vomitType == "yellow" || item!!.vomitType == "leaf" || item!!.vomitType == "pink") {
+                                if ("투명한 무색 구토".contains(searchText) || "흰색 거품이 섞인 구토".contains(searchText) || "음식이 섞인 구토".contains(searchText) || "노란색 구토".contains(searchText) || "잎사귀가 섞인 초록색 구토".contains(searchText) || "분홍색 구토".contains(searchText)) {
+                                    if (date == "전체") {
+
+                                        when (item!!.vomitType) {
+                                            "transparent" -> normalVomit["투명한 무색 구토"] = normalVomit["투명한 무색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "bubble" -> normalVomit["흰색 거품이 섞인 구토"] = normalVomit["흰색 거품이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "food" -> normalVomit["음식이 섞인 구토"] = normalVomit["음식이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "yellow" -> normalVomit["노란색 구토"] = normalVomit["노란색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "leaf" -> normalVomit["잎사귀가 섞인 초록색 구토"] = normalVomit["잎사귀가 섞인 초록색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "pink" -> normalVomit["분홍색 구토"] = normalVomit["분홍색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        }
+
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        vomitMap[item!!] = nowDate.toLong()
+                                    } else {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat(
+                                            "yyyy.MM.dd",
+                                            Locale.getDefault()
+                                        ).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat(
+                                            "yyyy.MM.dd",
+                                            Locale.getDefault()
+                                        ).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            when (item!!.vomitType) {
+                                                "transparent" -> normalVomit["투명한 무색 구토"] = normalVomit["투명한 무색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                                "bubble" -> normalVomit["흰색 거품이 섞인 구토"] = normalVomit["흰색 거품이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                                "food" -> normalVomit["음식이 섞인 구토"] = normalVomit["음식이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                                "yellow" -> normalVomit["노란색 구토"] = normalVomit["노란색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                                "leaf" -> normalVomit["잎사귀가 섞인 초록색 구토"] = normalVomit["잎사귀가 섞인 초록색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                                "pink" -> normalVomit["분홍색 구토"] = normalVomit["분홍색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            }
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            vomitMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                }
+                            }
+                        } else if(vomitCategory == "위험") {
+                            if (item!!.vomitType == "brown" || item!!.vomitType == "green" || item!!.vomitType == "substance" || item!!.vomitType == "red") {
+                                if ("짙은 갈색 구토".contains(searchText) || "녹색 구토".contains(searchText) || "이물질이 섞인 구토".contains(
+                                        searchText
+                                    ) || "붉은색 구토".contains(searchText)
+                                ) {
+                                    if (date == "전체") {
+
+                                        when (item!!.vomitType) {
+                                            "brown" -> badVomit["짙은 갈색 구토"] = badVomit["짙은 갈색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "green" -> badVomit["녹색 구토"] = badVomit["녹색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "substance" -> badVomit["이물질이 섞인 구토"] = badVomit["이물질이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            "red" -> badVomit["붉은색 구토"] = badVomit["붉은색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                        }
+
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        vomitMap[item!!] = nowDate.toLong()
+                                    } else {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat(
+                                            "yyyy.MM.dd",
+                                            Locale.getDefault()
+                                        ).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat(
+                                            "yyyy.MM.dd",
+                                            Locale.getDefault()
+                                        ).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            when (item!!.vomitType) {
+                                                "brown" -> badVomit["짙은 갈색 구토"] = badVomit["짙은 갈색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                                "green" -> badVomit["녹색 구토"] = badVomit["녹색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                                "substance" -> badVomit["이물질이 섞인 구토"] = badVomit["이물질이 섞인 구토"]!!.plus(item!!.vomitCount.toInt())
+                                                "red" -> badVomit["붉은색 구토"] = badVomit["붉은색 구토"]!!.plus(item!!.vomitCount.toInt())
+                                            }
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            vomitMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    showVomitCountArea.text = ""
+                    when (vomitCategory) {
+                        "전체" -> {
+                            for((key, value) in normalVomit) {
+                                showVomitCountArea.text = showVomitCountArea.text.toString() + key + ": " + value + "회   "
+                                if(key == "흰색 거품이 섞인 구토" || key == "노란색 구토")
+                                    showVomitCountArea.text = showVomitCountArea.text.toString() + "\n"
+                                else if(key == "분홍색 구토")
+                                showVomitCountArea.text = showVomitCountArea.text.toString() + "\n\n"
+                            }
+                            for((key, value) in badVomit) {
+                                showVomitCountArea.text = showVomitCountArea.text.toString() + key + ": " + value + "회   "
+                                if(key == "녹색 구토")
+                                    showVomitCountArea.text = showVomitCountArea.text.toString() + "\n"
+                            }
+                        }
+                        "경고" -> {
+                            for((key, value) in normalVomit) {
+                                showVomitCountArea.text = showVomitCountArea.text.toString() + key + ": " + value + "회   "
+                                if(key == "흰색 거품이 섞인 구토" || key == "노란색 구토")
+                                    showVomitCountArea.text = showVomitCountArea.text.toString() + "\n"
+                            }
+                        }
+                        "위험" -> {
+                            for((key, value) in badVomit) {
+                                showVomitCountArea.text = showVomitCountArea.text.toString() + key + ": " + value + "회   "
+                                if(key == "녹색 구토")
+                                    showVomitCountArea.text = showVomitCountArea.text.toString() + "\n"
                             }
                         }
                     }
