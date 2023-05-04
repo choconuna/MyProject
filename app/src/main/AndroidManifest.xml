@@ -188,7 +188,8 @@
             android:exported="false" />
         <activity
             android:name=".community.SpecificCommunityInActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".community.WriteSpecificCommunityActivity"
             android:exported="false"

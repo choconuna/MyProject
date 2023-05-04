@@ -2,6 +2,7 @@ package org.techtown.myproject.community
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,12 +24,17 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import org.json.JSONObject
 import org.techtown.myproject.R
 import org.techtown.myproject.chat.ChatInActivity
 import org.techtown.myproject.comment.CommentModel
 import org.techtown.myproject.comment.CommentReVAdapter
 import org.techtown.myproject.utils.ChatConnection
 import org.techtown.myproject.utils.FBRef
+import org.techtown.myproject.utils.FCMToken
+import java.io.OutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,6 +42,9 @@ import java.util.*
 class SpecificCommunityInActivity : AppCompatActivity() {
 
     private val TAG = SpecificCommunityInActivity::class.java.simpleName
+
+    private val FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send"
+    private val SERVER_KEY = "AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk"
 
     lateinit var categoryArea : TextView
     lateinit var category : String
@@ -62,6 +73,8 @@ class SpecificCommunityInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_specific_community_in)
 
+        setData()
+
         categoryArea = findViewById(R.id.categoryArea)
         titleArea = findViewById(R.id.titleArea)
         contentArea = findViewById(R.id.contentArea)
@@ -77,8 +90,6 @@ class SpecificCommunityInActivity : AppCompatActivity() {
         imageListView = findViewById(R.id.imageListView)
         imageListView.setWillNotDraw(false)
         imageListView.setItemViewCacheSize(20)
-        imageListView.isDrawingCacheEnabled = true
-        imageListView.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
         imageListView.setHasFixedSize(true)
         layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         imageListView.layoutManager = layoutManager
@@ -201,6 +212,14 @@ class SpecificCommunityInActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.sendBtn).setOnClickListener { // 댓글 입력 버튼 클릭 시
             insertComment(key)
 
+            val writerUid = FBRef.communityRef.child(category).child(key).child("uid").get().addOnSuccessListener {
+                if(it.value.toString() != myUid) {
+                    val userName = FBRef.userRef.child(myUid).child("nickName").get().addOnSuccessListener {
+                        sendPostToFCM(key, it.value.toString())
+                    }
+                }
+            }
+
             val mInputMethodManager: InputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
@@ -211,8 +230,6 @@ class SpecificCommunityInActivity : AppCompatActivity() {
         commentListView = findViewById(R.id.commentListView)
         commentListView.setWillNotDraw(false)
         commentListView.setItemViewCacheSize(20)
-        commentListView.isDrawingCacheEnabled = true
-        commentListView.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
         commentListView.setHasFixedSize(true)
         cLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         commentListView.layoutManager = cLayoutManager
@@ -223,6 +240,21 @@ class SpecificCommunityInActivity : AppCompatActivity() {
         val backBtn = findViewById<ImageView>(R.id.back)
         backBtn.setOnClickListener {
             finish()
+        }
+    }
+
+    private fun setData() { // 키보드 위에 commentArea가 뜨도록 하는 함수
+        val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout)
+        val decorView = window.decorView
+        decorView.viewTreeObserver.addOnGlobalLayoutListener {
+            val rect = Rect()
+            decorView.getWindowVisibleDisplayFrame(rect)
+            val screenHeight = decorView.height
+            val keyboardHeight: Int = screenHeight - rect.bottom
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+            constraintSet.connect(R.id.nestedScrollView, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, keyboardHeight)
+            constraintSet.applyTo(constraintLayout)
         }
     }
 
@@ -302,6 +334,82 @@ class SpecificCommunityInActivity : AppCompatActivity() {
             }
         }
         FBRef.commentRef.addValueEventListener(postListener)
+    }
+
+    private fun sendPostToFCM(key: String, nickName : String) { // FCM을 이용해서 댓글 작성 알림을 보내는 함수
+
+        FBRef.communityRef
+            .child(category).child(key)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val item = dataSnapshot.getValue(CommunityModel::class.java)
+                    var writerUid = item!!.uid
+
+                    if(writerUid != myUid) {
+                        Log.d("yourToken", writerUid)
+
+                        FBRef.tokenRef.child(writerUid)
+                            .addValueEventListener(object : ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                                    for (dataModel in dataSnapshot.children) {
+
+                                        val item = dataModel.getValue(FCMToken::class.java)
+                                        Log.d("yourToken", item!!.toString())
+                                        Log.d("yourToken", item!!.fcmTokenId)
+                                        Log.d("yourToken", item!!.userId)
+                                        Log.d("yourToken", item!!.token)
+
+                                        val yourToken = item!!.token
+
+                                        Thread {
+                                            try {
+                                                val root = JSONObject()
+                                                val notification = JSONObject()
+                                                notification.put("body", "$nickName" + "님이 댓글을 달았습니다.")
+                                                notification.put("title", "멍노트")
+                                                root.put("notification", notification)
+                                                root.put("to", yourToken)
+                                                val url = URL(FCM_MESSAGE_URL)
+                                                val conn: HttpURLConnection =
+                                                    url.openConnection() as HttpURLConnection
+                                                conn.requestMethod = "POST"
+                                                conn.doOutput = true
+                                                conn.doInput = true
+                                                conn.addRequestProperty(
+                                                    "Authorization",
+                                                    "key=$SERVER_KEY"
+                                                )
+                                                conn.setRequestProperty(
+                                                    "Accept",
+                                                    "application/json"
+                                                )
+                                                conn.setRequestProperty(
+                                                    "Content-type",
+                                                    "application/json"
+                                                )
+                                                val os: OutputStream = conn.outputStream
+                                                os.write(
+                                                    root.toString().toByteArray(charset("utf-8"))
+                                                )
+                                                os.flush()
+                                                conn.responseCode
+                                            } catch (e: java.lang.Exception) {
+                                                e.printStackTrace()
+                                            }
+                                        }.start()
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Log.e("yourToken", "Failed to read value.", error.toException())
+                                }
+                            })
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {}
+            })
     }
 
     private fun getCommunityData(key : String) { // 게시물 내용을 화면에 적용
