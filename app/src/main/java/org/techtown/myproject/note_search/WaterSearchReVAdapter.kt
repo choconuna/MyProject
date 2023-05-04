@@ -16,16 +16,6 @@ import kotlin.collections.ArrayList
 class WaterSearchReVAdapter(val dogWaterList : ArrayList<DogWaterModel>):
     RecyclerView.Adapter<WaterSearchReVAdapter.WaterSearchViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
-    }
-
-    private lateinit var itemClickListener : OnItemClickListener
-
     override fun getItemCount(): Int {
         return dogWaterList.count()
     }
@@ -96,10 +86,6 @@ class WaterSearchReVAdapter(val dogWaterList : ArrayList<DogWaterModel>):
 
         holder.timeSlotArea!!.text = dogWaterList[position].timeSlot
         holder.waterWeightArea!!.text = dogWaterList[position].waterWeight
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WaterSearchViewHolder {

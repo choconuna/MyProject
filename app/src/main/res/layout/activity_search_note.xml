@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".note_search.SearchNoteActivity">
 
     <LinearLayout
@@ -106,85 +107,158 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/frame2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:layout_below="@+id/frame1"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/backBtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="5dp"
             android:layout_gravity="center"
+            android:layout_marginStart="5dp"
             android:src="@drawable/ic_round_keyboard_arrow_left_brown" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-        <Spinner
-            android:id="@+id/categorySpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/mainColor"
-            android:fontFamily="@font/regular"
-            android:entries="@array/searchNoteCategorySpinner"
-            android:spinnerMode="dialog"
-            android:theme="@style/receiptSpinner" />
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
 
             <Spinner
-                android:id="@+id/checkUpCategorySpinner"
+                android:id="@+id/categorySpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:textAlignment="center"
                 android:layout_gravity="center"
-                android:entries="@array/searchCheckUpCategorySpinner"
+                android:backgroundTint="@color/mainColor"
+                android:entries="@array/searchNoteCategorySpinner"
+                android:fontFamily="@font/regular"
+                android:gravity="center"
                 android:spinnerMode="dialog"
-                android:visibility="gone"
-                android:theme="@style/receiptSpinner">
-            </Spinner>
+                android:theme="@style/receiptSpinner" />
 
+            <FrameLayout
+                android:id="@+id/tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <Spinner
+                    android:id="@+id/checkUpCategorySpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainColor"
+                    android:layout_gravity="center"
+                    android:entries="@array/searchCheckUpCategorySpinner"
+                    android:spinnerMode="dialog"
+                    android:textAlignment="center"
+                    android:theme="@style/receiptSpinner"
+                    android:visibility="gone"></Spinner>
+
+                <Spinner
+                    android:id="@+id/checkUpPartSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainColor"
+                    android:layout_gravity="center"
+                    android:entries="@array/searchCheckUpPartSpinner"
+                    android:spinnerMode="dialog"
+                    android:textAlignment="center"
+                    android:theme="@style/receiptSpinner"
+                    android:visibility="gone"></Spinner>
+
+                <Spinner
+                    android:id="@+id/snackCategorySpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainColor"
+                    android:layout_gravity="center"
+                    android:entries="@array/searchSnackSpinner"
+                    android:spinnerMode="dialog"
+                    android:textAlignment="center"
+                    android:theme="@style/receiptSpinner"
+                    android:visibility="gone">
+                </Spinner>
+
+                <Spinner
+                    android:id="@+id/tonicPartSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainColor"
+                    android:layout_gravity="center"
+                    android:entries="@array/searchTonicPartSpinner"
+                    android:spinnerMode="dialog"
+                    android:textAlignment="center"
+                    android:theme="@style/receiptSpinner"
+                    android:visibility="gone">
+                </Spinner>
+
+            </FrameLayout>
         </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/frame3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame2"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp">
+
+        <Spinner
+            android:id="@+id/rangeSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:backgroundTint="@color/mainColor"
+            android:entries="@array/searchRangeSpinner"
+            android:spinnerMode="dialog"
+            android:textAlignment="center"
+            android:theme="@style/receiptSpinner"
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/searchArea"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_toStartOf="@+id/searchBtn"
+            android:layout_toEndOf="@+id/rangeSpinner"
             android:background="@color/fui_transparent"
             android:fontFamily="@font/regular"
-            android:textSize="15sp"
-            android:layout_gravity="center"
             android:hint="검색어를 입력해 주세요."
             android:padding="10dp"
+            android:singleLine="true"
             android:textColor="@color/black"
-            android:singleLine="true" />
+            android:textSize="15sp"
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/searchBtn"
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"
-            android:layout_weight="0"
             android:src="@drawable/ic_round_search_24"
-            android:layout_gravity="center"
             tools:ignore="MissingConstraints" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/frame3"
+        android:id="@+id/frame4"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@+id/frame2"
+        android:layout_below="@+id/frame3"
         android:background="#999999"
         android:orientation="horizontal" />
 

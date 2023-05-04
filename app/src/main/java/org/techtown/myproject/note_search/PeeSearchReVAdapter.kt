@@ -17,16 +17,6 @@ import kotlin.collections.ArrayList
 class PeeSearchReVAdapter(val dogPeeList : ArrayList<DogPeeModel>):
     RecyclerView.Adapter<PeeSearchReVAdapter.PeeSearchViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
-    }
-
-    private lateinit var itemClickListener : OnItemClickListener
-
     override fun getItemCount(): Int {
         return dogPeeList.count()
     }
@@ -119,14 +109,10 @@ class PeeSearchReVAdapter(val dogPeeList : ArrayList<DogPeeModel>):
         }
 
         holder.peeCntArea!!.text = dogPeeList[position].peeCount
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PeeSearchViewHolder {
-        val view = LayoutInflater.from(parent!!.context).inflate(R.layout.pee_list_item, parent, false)
+        val view = LayoutInflater.from(parent!!.context).inflate(R.layout.pee_search_list_item, parent, false)
         return PeeSearchViewHolder(view)
     }
 

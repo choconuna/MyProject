@@ -33,9 +33,9 @@ class HeartReVAdapter(val dogHeartList : ArrayList<DogHeartModel>):
 
         holder.heartCntArea!!.text = dogHeartList[position].heartCount
         if(dogHeartList[position].heartCount.toInt() > 30)
-            holder.state!!.setImageResource(R.drawable.arrow_up)
+            holder.state!!.setImageResource(R.drawable.ic_round_arrow_upward_24)
         else
-            holder.state!!.setImageResource(R.drawable.minus)
+            holder.state!!.setImageResource(R.drawable.ic_round_horizontal_rule_24)
 
         holder.itemView.setOnClickListener {
             itemClickListener.onClick(it, position)

@@ -35,6 +35,7 @@ class DogCheckUpInputEditActivity : AppCompatActivity() {
     private lateinit var monthArea : EditText
     private lateinit var dayArea : EditText
 
+    private lateinit var partArea : EditText
     private lateinit var minArea : EditText
     private lateinit var maxArea : EditText
     private lateinit var resultArea : EditText
@@ -55,6 +56,7 @@ class DogCheckUpInputEditActivity : AppCompatActivity() {
         monthArea = findViewById(R.id.monthArea)
         dayArea = findViewById(R.id.dayArea)
 
+        partArea = findViewById(R.id.partArea)
         minArea = findViewById(R.id.minArea)
         maxArea = findViewById(R.id.maxArea)
         resultArea = findViewById(R.id.resultArea)
@@ -93,7 +95,7 @@ class DogCheckUpInputEditActivity : AppCompatActivity() {
             } else {
                 val date = yearArea.text.toString() + "." + monthArea.text.toString() + "." + dayArea.text.toString()
 
-                editCheckUpInputNote(date, nameArea.text.toString().trim(), minArea.text.toString().trim(), maxArea.text.toString().trim(), resultArea.text.toString().trim())
+                editCheckUpInputNote(date, nameArea.text.toString().trim(), minArea.text.toString().trim(), maxArea.text.toString().trim(), resultArea.text.toString().trim(), partArea.text.toString())
                 Toast.makeText(this, "검사 항목 수정 완료!", Toast.LENGTH_SHORT).show()
                 finish()
             }
@@ -119,6 +121,7 @@ class DogCheckUpInputEditActivity : AppCompatActivity() {
                     monthArea.setText(dateSplit[1])
                     dayArea.setText(dateSplit[2])
 
+                    partArea.setText(post!!.part)
                     minArea.setText(post!!.min)
                     maxArea.setText(post!!.max)
                     resultArea.setText(post!!.result)
@@ -136,8 +139,8 @@ class DogCheckUpInputEditActivity : AppCompatActivity() {
         FBRef.checkUpInputRef.child(userId).child(dogId).child(dogCheckUpInputId).addValueEventListener(postListener)
     }
 
-    private fun editCheckUpInputNote(date : String, name : String, min : String, max : String, result : String) {
+    private fun editCheckUpInputNote(date : String, name : String, min : String, max : String, result : String, part : String) {
 
-        FBRef.checkUpInputRef.child(userId).child(dogId).child(dogCheckUpInputId).setValue(DogCheckUpInputModel(dogCheckUpInputId, dogId, date, name, min, max, result)) // 반려견 검사 기록 정보 데이터베이스에 저장
+        FBRef.checkUpInputRef.child(userId).child(dogId).child(dogCheckUpInputId).setValue(DogCheckUpInputModel(dogCheckUpInputId, dogId, date, name, min, max, result, part)) // 반려견 검사 기록 정보 데이터베이스에 저장
     }
 }

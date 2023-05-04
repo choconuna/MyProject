@@ -29,6 +29,17 @@
                 android:fontFamily="@font/bold" />
 
             <TextView
+                android:id="@+id/partArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="관련 부위"
+                android:layout_gravity="center"
+                android:textColor="@color/mainColor"
+                android:textSize="15sp"
+                android:fontFamily="@font/bold" />
+
+            <TextView
                 android:id="@+id/difference"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="15dp"
+            android:layout_marginRight="25dp"
             android:orientation="horizontal">
 
             <TextView
@@ -93,10 +105,11 @@
 
             <ImageView
                 android:id="@+id/stateImg"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/minus"
-                android:layout_marginLeft="15dp" />
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_round_horizontal_rule_24" />
         </LinearLayout>
 
         <TextView

@@ -307,6 +307,72 @@
         <item>기타</item>
     </string-array>
 
+    <string-array name="searchCheckUpPartSpinner">
+        <item>전체</item>
+        <item>항목명</item>
+        <item>부위</item>
+    </string-array>
+
+    <string-array name="searchRangeSpinner">
+        <item>전체</item>
+        <item>범위 내</item>
+        <item>범위 외</item>
+    </string-array>
+
+    <string-array name="searchSnackSpinner">
+        <item>전체</item>
+        <item>껌</item>
+        <item>동결/건조</item>
+        <item>비스킷/시리얼</item>
+        <item>소시지</item>
+        <item>수제 간식</item>
+        <item>음료</item>
+        <item>저키/트릿</item>
+        <item>캔/파우치</item>
+        <item>파우더</item>
+    </string-array>
+
+    <string-array name="searchTonicPartSpinner">
+        <item>전체</item>
+        <item>간</item>
+        <item>노화</item>
+        <item>눈</item>
+        <item>다이어트</item>
+        <item>면역력</item>
+        <item>방광/요로</item>
+        <item>분리 불안 진정</item>
+        <item>뼈/관절</item>
+        <item>소화기</item>
+        <item>신장</item>
+        <item>심장</item>
+        <item>알레르기</item>
+        <item>종합영양제</item>
+        <item>췌장</item>
+        <item>치아</item>
+        <item>피부/모질</item>
+        <item>기타</item>
+    </string-array>
+
+    <string-array name="searchPeeSpinner">
+        <item>전체</item>
+        <item>투명한 무색 소변</item>
+        <item>투명한 노란색 소변</item>
+        <item>주황색과 어두운 노란색 소변</item>
+        <item>붉은색 소변</item>
+        <item>갈색 소변</item>
+    </string-array>
+
+    <string-array name="searchDungSpinner">
+        <item>전체</item>
+        <item>보통 변</item>
+        <item>묽은 변</item>
+        <item>설사</item>
+        <item>짙고 딱딱한 변</item>
+        <item>붉은색 변</item>
+        <item>검은색 변</item>
+        <item>하얀색 점이 있는 변</item>
+    </string-array>
+
     <string-array name="receiptCategorySpinner">
         <item>식비</item>
         <item>병원</item>
@@ -380,6 +446,7 @@
         <item>소변</item>
         <item>대변</item>
         <item>구토</item>
+        <item>호흡수</item>
         <item>투약</item>
         <item>수치 검사</item>
         <item>검사 사진</item>

@@ -34,22 +34,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:fontFamily="@font/bold"
                 android:text="항목명"
                 android:textColor="@color/black"
-                android:textSize="15sp"
-                android:fontFamily="@font/bold" />
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/partArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="@font/bold"
+                android:text="관련 부위"
+                android:textColor="@color/mainColor"
+                android:textSize="15sp" />
 
             <ImageView
                 android:id="@+id/stateImg"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/minus"
-                android:layout_marginLeft="10dp" />
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_round_horizontal_rule_24" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="15dp"

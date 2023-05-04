@@ -54,6 +54,18 @@ class SearchNoteActivity : AppCompatActivity() {
     private lateinit var checkUpCategorySpinner : Spinner
     private lateinit var checkUpCategory : String
 
+    private lateinit var checkUpPartSpinner : Spinner
+    private lateinit var checkUpPart : String
+
+    private lateinit var snackCategorySpinner : Spinner
+    private lateinit var snackCategory : String
+
+    private lateinit var tonicPartSpinner : Spinner
+    private lateinit var tonicPart : String
+
+    private lateinit var rangeSpinner : Spinner
+    private lateinit var range : String
+
     private lateinit var mealSearchRecyclerView : RecyclerView
     private val mealDataList = ArrayList<DogMealModel>()
     lateinit var mealRVAdapter : MealSearchReVAdapter
@@ -153,9 +165,9 @@ class SearchNoteActivity : AppCompatActivity() {
                 date = adapterView.getItemAtPosition(position).toString()
 
                 if(date == "기간") {
-                    dateShowArea.visibility = View.VISIBLE
+                    dateShowArea.visibility = VISIBLE
                 } else {
-                    dateShowArea.visibility = View.GONE
+                    dateShowArea.visibility = GONE
                 }
             }
 
@@ -239,10 +251,56 @@ class SearchNoteActivity : AppCompatActivity() {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, id: Long) {
                 category = adapterView.getItemAtPosition(position).toString()
 
-                if(category == "검사 사진")
-                    checkUpCategorySpinner.visibility = VISIBLE
-                else
-                    checkUpCategorySpinner.visibility = GONE
+                when (category) {
+                    "검사 사진" -> {
+                        checkUpCategorySpinner.visibility = VISIBLE
+                        checkUpPartSpinner.visibility = GONE
+                        rangeSpinner.visibility = GONE
+                        snackCategorySpinner.visibility = GONE
+                        tonicPartSpinner.visibility = GONE
+                        searchArea.visibility = VISIBLE
+                    }
+                    "수치 검사" -> {
+                        checkUpCategorySpinner.visibility = GONE
+                        checkUpPartSpinner.visibility = VISIBLE
+                        rangeSpinner.visibility = VISIBLE
+                        snackCategorySpinner.visibility = GONE
+                        tonicPartSpinner.visibility = GONE
+                        searchArea.visibility = VISIBLE
+                    }
+                    "호흡수" -> {
+                        checkUpCategorySpinner.visibility = GONE
+                        checkUpPartSpinner.visibility = GONE
+                        rangeSpinner.visibility = VISIBLE
+                        snackCategorySpinner.visibility = GONE
+                        tonicPartSpinner.visibility = GONE
+                        searchArea.visibility = GONE
+                    }
+                    "영양제" -> {
+                        checkUpCategorySpinner.visibility = GONE
+                        checkUpPartSpinner.visibility = GONE
+                        rangeSpinner.visibility = GONE
+                        snackCategorySpinner.visibility = GONE
+                        tonicPartSpinner.visibility = VISIBLE
+                        searchArea.visibility = VISIBLE
+                    }
+                    "간식" -> {
+                        checkUpCategorySpinner.visibility = GONE
+                        checkUpPartSpinner.visibility = GONE
+                        rangeSpinner.visibility = GONE
+                        snackCategorySpinner.visibility = VISIBLE
+                        tonicPartSpinner.visibility = GONE
+                        searchArea.visibility = VISIBLE
+                    }
+                    else -> {
+                        checkUpCategorySpinner.visibility = GONE
+                        checkUpPartSpinner.visibility = GONE
+                        rangeSpinner.visibility = GONE
+                        snackCategorySpinner.visibility = GONE
+                        tonicPartSpinner.visibility = GONE
+                        searchArea.visibility = VISIBLE
+                    }
+                }
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>) {
@@ -258,10 +316,46 @@ class SearchNoteActivity : AppCompatActivity() {
             }
         }
 
+        checkUpPartSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, id: Long) {
+                checkUpPart = adapterView.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>) {
+            }
+        }
+
+        snackCategorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, id: Long) {
+                snackCategory = adapterView.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>) {
+            }
+        }
+
+        tonicPartSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, id: Long) {
+                tonicPart = adapterView.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>) {
+            }
+        }
+
+        rangeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, id: Long) {
+                range = adapterView.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>) {
+            }
+        }
+
         searchBtn.setOnClickListener {
 
             val searchText = searchArea.text.toString().trim()
-            getNoteData(date, category, checkUpCategory, searchText)
+            getNoteData(date, category, checkUpCategory, checkUpPart, snackCategory, tonicPart, range, searchText)
 
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(searchArea.windowToken, 0)
@@ -316,6 +410,18 @@ class SearchNoteActivity : AppCompatActivity() {
 
         checkUpCategorySpinner = findViewById(R.id.checkUpCategorySpinner)
         checkUpCategory = checkUpCategorySpinner.getItemAtPosition(0).toString()
+
+        checkUpPartSpinner = findViewById(R.id.checkUpPartSpinner)
+        checkUpPart = checkUpPartSpinner.getItemAtPosition(0).toString()
+
+        snackCategorySpinner = findViewById(R.id.snackCategorySpinner)
+        snackCategory = snackCategorySpinner.getItemAtPosition(0).toString()
+
+        tonicPartSpinner = findViewById(R.id.tonicPartSpinner)
+        tonicPart = tonicPartSpinner.getItemAtPosition(0).toString()
+
+        rangeSpinner = findViewById(R.id.rangeSpinner)
+        range = rangeSpinner.getItemAtPosition(0).toString()
 
         mealSearchRecyclerView = findViewById(R.id.mealSearchRecyclerView)
         mealRVAdapter = MealSearchReVAdapter(mealDataList)
@@ -414,7 +520,7 @@ class SearchNoteActivity : AppCompatActivity() {
         memoSearchRecyclerView.adapter = memoRVAdapter
     }
 
-    private fun getNoteData(date : String, category : String, checkUpCategory : String, searchText : String) {
+    private fun getNoteData(date : String, category : String, checkUpCategory : String, checkUpPart : String, snackCategory : String, tonicPart : String, range : String, searchText : String) {
         when (category) {
             "사료" ->  {
                 getMealData(date, searchText)
@@ -432,7 +538,7 @@ class SearchNoteActivity : AppCompatActivity() {
                 memoSearchRecyclerView.visibility = GONE
             }
             "간식" -> {
-                getSnackData(date, searchText)
+                getSnackData(date, snackCategory, searchText)
                 mealSearchRecyclerView.visibility = GONE
                 snackSearchRecyclerView.visibility = VISIBLE
                 tonicSearchRecyclerView.visibility = GONE
@@ -447,7 +553,7 @@ class SearchNoteActivity : AppCompatActivity() {
                 memoSearchRecyclerView.visibility = GONE
             }
             "영양제" -> {
-                getTonicData(date, searchText)
+                getTonicData(date, tonicPart, searchText)
                 mealSearchRecyclerView.visibility = GONE
                 snackSearchRecyclerView.visibility = GONE
                 tonicSearchRecyclerView.visibility = VISIBLE
@@ -522,7 +628,7 @@ class SearchNoteActivity : AppCompatActivity() {
                 memoSearchRecyclerView.visibility = GONE
             }
             "호흡수" -> {
-                getHeartData(date, searchText)
+                getHeartData(date, range)
                 mealSearchRecyclerView.visibility = GONE
                 snackSearchRecyclerView.visibility = GONE
                 tonicSearchRecyclerView.visibility = GONE
@@ -552,7 +658,7 @@ class SearchNoteActivity : AppCompatActivity() {
                 memoSearchRecyclerView.visibility = GONE
             }
             "수치 검사" -> {
-                getCheckUpInputData(date, searchText)
+                getCheckUpInputData(date, checkUpPart, range, searchText)
                 mealSearchRecyclerView.visibility = GONE
                 snackSearchRecyclerView.visibility = GONE
                 tonicSearchRecyclerView.visibility = GONE
@@ -668,7 +774,7 @@ class SearchNoteActivity : AppCompatActivity() {
         FBRef.mealRef.child(myUid).child(dogId).addValueEventListener(postListener)
     }
 
-    private fun getSnackData(date : String, searchText : String) {
+    private fun getSnackData(date : String, snackCategory: String, searchText : String) {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
@@ -678,40 +784,82 @@ class SearchNoteActivity : AppCompatActivity() {
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogSnackModel::class.java)
-                        if(item!!.snackName.contains(searchText) || item!!.snackType.contains(searchText)) {
-                            if(date == "전체") {
-                                var nowDateSp = item!!.date.split(".")
-                                var month = nowDateSp[1]
-                                var day = nowDateSp[2]
+                        if(snackCategory == "전체") {
+                            if(item!!.snackName.contains(searchText) || item!!.snackType.contains(searchText)) {
+                                if (date == "전체") {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
 
-                                if(month.length == 1)
-                                    month = "0$month"
-                                if(day.length == 1)
-                                    day = "0$day"
-
-                                var nowDate = nowDateSp[0] + month + day
-
-                                snackMap[item!!] = nowDate.toLong()
-                            } else {
-                                var nowDateSp = item!!.date.split(".")
-                                var month = nowDateSp[1]
-                                var day = nowDateSp[2]
-
-                                if(month.length == 1)
-                                    month = "0$month"
-                                if(day.length == 1)
-                                    day = "0$day"
-
-                                // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
-                                val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
-                                val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
-                                val nowDateFm = nowDateSp[0] + "." + month + "." + day
-
-                                if (isBetweenDates(nowDateFm, startDate, endDate)) {
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
 
                                     var nowDate = nowDateSp[0] + month + day
 
                                     snackMap[item!!] = nowDate.toLong()
+                                } else {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                    val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                    val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                    val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                    if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        snackMap[item!!] = nowDate.toLong()
+                                    }
+                                }
+                            }
+                        } else {
+                            if(item!!.snackType == snackCategory) {
+                                if(item!!.snackName.contains(searchText) || item!!.snackType.contains(searchText)) {
+                                    if (date == "전체") {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        snackMap[item!!] = nowDate.toLong()
+                                    } else {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            snackMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -737,7 +885,7 @@ class SearchNoteActivity : AppCompatActivity() {
         FBRef.snackRef.child(myUid).child(dogId).addValueEventListener(postListener)
     }
 
-    private fun getTonicData(date : String, searchText : String) {
+    private fun getTonicData(date : String, tonicPart : String, searchText : String) {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
@@ -747,40 +895,82 @@ class SearchNoteActivity : AppCompatActivity() {
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogTonicModel::class.java)
-                        if(item!!.tonicName.contains(searchText) || item!!.tonicPart.contains(searchText)) {
-                            if(date == "전체") {
-                                var nowDateSp = item!!.date.split(".")
-                                var month = nowDateSp[1]
-                                var day = nowDateSp[2]
+                        if(tonicPart == "전체") {
+                            if (item!!.tonicName.contains(searchText) || item!!.tonicPart.contains(searchText)) {
+                                if (date == "전체") {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
 
-                                if(month.length == 1)
-                                    month = "0$month"
-                                if(day.length == 1)
-                                    day = "0$day"
-
-                                var nowDate = nowDateSp[0] + month + day
-
-                                tonicMap[item!!] = nowDate.toLong()
-                            } else {
-                                var nowDateSp = item!!.date.split(".")
-                                var month = nowDateSp[1]
-                                var day = nowDateSp[2]
-
-                                if(month.length == 1)
-                                    month = "0$month"
-                                if(day.length == 1)
-                                    day = "0$day"
-
-                                // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
-                                val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
-                                val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
-                                val nowDateFm = nowDateSp[0] + "." + month + "." + day
-
-                                if (isBetweenDates(nowDateFm, startDate, endDate)) {
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
 
                                     var nowDate = nowDateSp[0] + month + day
 
                                     tonicMap[item!!] = nowDate.toLong()
+                                } else {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                    val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                    val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                    val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                    if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        tonicMap[item!!] = nowDate.toLong()
+                                    }
+                                }
+                            }
+                        } else {
+                            if(item!!.tonicPart == tonicPart) {
+                                if (item!!.tonicName.contains(searchText) || item!!.tonicPart.contains(searchText)) {
+                                    if (date == "전체") {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        tonicMap[item!!] = nowDate.toLong()
+                                    } else {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            tonicMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1080,7 +1270,7 @@ class SearchNoteActivity : AppCompatActivity() {
         FBRef.vomitRef.child(myUid).child(dogId).addValueEventListener(postListener)
     }
 
-    private fun getHeartData(date : String, searchText : String) {
+    private fun getHeartData(date : String, range : String) {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
@@ -1091,38 +1281,118 @@ class SearchNoteActivity : AppCompatActivity() {
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogHeartModel::class.java)
                         if(date == "전체") {
-                            var nowDateSp = item!!.date.split(".")
-                            var month = nowDateSp[1]
-                            var day = nowDateSp[2]
+                            if(range == "전체") {
+                                var nowDateSp = item!!.date.split(".")
+                                var month = nowDateSp[1]
+                                var day = nowDateSp[2]
 
-                            if(month.length == 1)
-                                month = "0$month"
-                            if(day.length == 1)
-                                day = "0$day"
-
-                            var nowDate = nowDateSp[0] + month + day
-
-                            heartMap[item!!] = nowDate.toLong()
-                        } else {
-                            var nowDateSp = item!!.date.split(".")
-                            var month = nowDateSp[1]
-                            var day = nowDateSp[2]
-
-                            if(month.length == 1)
-                                month = "0$month"
-                            if(day.length == 1)
-                                day = "0$day"
-
-                            // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
-                            val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
-                            val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
-                            val nowDateFm = nowDateSp[0] + "." + month + "." + day
-
-                            if (isBetweenDates(nowDateFm, startDate, endDate)) {
+                                if (month.length == 1)
+                                    month = "0$month"
+                                if (day.length == 1)
+                                    day = "0$day"
 
                                 var nowDate = nowDateSp[0] + month + day
 
                                 heartMap[item!!] = nowDate.toLong()
+                            } else if(range == "범위 내") {
+                                if(item!!.heartCount.toInt() <= 30) {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    var nowDate = nowDateSp[0] + month + day
+
+                                    heartMap[item!!] = nowDate.toLong()
+                                }
+                            } else if(range == "범위 외") {
+                                if(item!!.heartCount.toInt() > 30) {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    var nowDate = nowDateSp[0] + month + day
+
+                                    heartMap[item!!] = nowDate.toLong()
+                                }
+                            }
+                        } else {
+                            if (range == "전체") {
+                                var nowDateSp = item!!.date.split(".")
+                                var month = nowDateSp[1]
+                                var day = nowDateSp[2]
+
+                                if (month.length == 1)
+                                    month = "0$month"
+                                if (day.length == 1)
+                                    day = "0$day"
+
+                                // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                    var nowDate = nowDateSp[0] + month + day
+
+                                    heartMap[item!!] = nowDate.toLong()
+                                }
+                            } else if(range == "범위 내") {
+                                if(item!!.heartCount.toInt() <= 30) {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                    val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                    val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                    val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                    if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        heartMap[item!!] = nowDate.toLong()
+                                    }
+                                }
+                            } else if(range == "범위 외") {
+                                if(item!!.heartCount.toInt() > 30) {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                    val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                    val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                    val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                    if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        heartMap[item!!] = nowDate.toLong()
+                                    }
+                                }
                             }
                         }
                     }
@@ -1216,8 +1486,387 @@ class SearchNoteActivity : AppCompatActivity() {
         FBRef.medicineRef.child(myUid).child(dogId).addValueEventListener(postListener)
     }
 
-    private fun getCheckUpInputData(date : String, searchText : String) {
+    private fun getCheckUpInputData(date : String, checkUpPart : String, range : String, searchText : String) {
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    checkUpInputDataList.clear()
+                    checkUpInputMap.clear()
+                    checkUpInputSortedMap.clear()
 
+                    for (dataModel in dataSnapshot.children) {
+                        val item = dataModel.getValue(DogCheckUpInputModel::class.java)
+                        if (checkUpPart == "전체") {
+                            if (date == "전체") {
+                                if(range == "전체") {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    var nowDate = nowDateSp[0] + month + day
+
+                                    checkUpInputMap[item!!] = nowDate.toLong()
+                                } else if(range == "범위 내") {
+                                    if(item!!.result.toFloat() >= item!!.min.toFloat() && item!!.result.toFloat() <= item!!.max.toFloat()) {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        checkUpInputMap[item!!] = nowDate.toLong()
+                                    }
+                                } else if(range == "범위 외") {
+                                    if(item!!.result.toFloat() < item!!.min.toFloat() || item!!.result.toFloat() > item!!.max.toFloat()) {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        checkUpInputMap[item!!] = nowDate.toLong()
+                                    }
+                                }
+                            } else {
+                                if(range == "전체") {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                    val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                    val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                    val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                    if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        checkUpInputMap[item!!] = nowDate.toLong()
+                                    }
+                                } else if(range == "범위 내") {
+                                    if(item!!.result.toFloat() >= item!!.min.toFloat() && item!!.result.toFloat() <= item!!.max.toFloat()) {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            checkUpInputMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                } else if(range == "범위 외") {
+                                    if(item!!.result.toInt() < item!!.min.toFloat() || item!!.result.toFloat() > item!!.max.toFloat()) {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            checkUpInputMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                }
+                            }
+                        } else if(checkUpPart == "항목명"){
+                            if(item!!.name.contains(searchText)) {
+                                if (date == "전체") {
+                                    if(range == "전체") {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        checkUpInputMap[item!!] = nowDate.toLong()
+                                    } else if(range == "범위 내") {
+                                        if(item!!.result.toFloat() >= item!!.min.toFloat() && item!!.result.toFloat() <= item!!.max.toFloat()) {
+                                            var nowDateSp = item!!.date.split(".")
+                                            var month = nowDateSp[1]
+                                            var day = nowDateSp[2]
+
+                                            if (month.length == 1)
+                                                month = "0$month"
+                                            if (day.length == 1)
+                                                day = "0$day"
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            checkUpInputMap[item!!] = nowDate.toLong()
+                                        }
+                                    } else if(range == "범위 외") {
+                                        if(item!!.result.toFloat() < item!!.min.toFloat() || item!!.result.toFloat() > item!!.max.toFloat()) {
+                                            var nowDateSp = item!!.date.split(".")
+                                            var month = nowDateSp[1]
+                                            var day = nowDateSp[2]
+
+                                            if (month.length == 1)
+                                                month = "0$month"
+                                            if (day.length == 1)
+                                                day = "0$day"
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            checkUpInputMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                } else {
+                                    if(range == "전체") {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            checkUpInputMap[item!!] = nowDate.toLong()
+                                        }
+                                    } else if(range == "범위 내") {
+                                        if(item!!.result.toFloat() >= item!!.min.toFloat() && item!!.result.toFloat() <= item!!.max.toFloat()) {
+                                            var nowDateSp = item!!.date.split(".")
+                                            var month = nowDateSp[1]
+                                            var day = nowDateSp[2]
+
+                                            if (month.length == 1)
+                                                month = "0$month"
+                                            if (day.length == 1)
+                                                day = "0$day"
+
+                                            // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                            val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                            val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                            val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                            if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                                var nowDate = nowDateSp[0] + month + day
+
+                                                checkUpInputMap[item!!] = nowDate.toLong()
+                                            }
+                                        }
+                                    } else if(range == "범위 외") {
+                                        if(item!!.result.toFloat() < item!!.min.toFloat() || item!!.result.toFloat() > item!!.max.toFloat()) {
+                                            var nowDateSp = item!!.date.split(".")
+                                            var month = nowDateSp[1]
+                                            var day = nowDateSp[2]
+
+                                            if (month.length == 1)
+                                                month = "0$month"
+                                            if (day.length == 1)
+                                                day = "0$day"
+
+                                            // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                            val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                            val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                            val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                            if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                                var nowDate = nowDateSp[0] + month + day
+
+                                                checkUpInputMap[item!!] = nowDate.toLong()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } else if(item!!.part.contains(searchText)) {
+                            if (date == "전체") {
+                                if(range == "전체") {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    var nowDate = nowDateSp[0] + month + day
+
+                                    checkUpInputMap[item!!] = nowDate.toLong()
+                                } else if(range == "범위 내") {
+                                    if(item!!.result.toFloat() >= item!!.min.toFloat() && item!!.result.toFloat() <= item!!.max.toFloat()) {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        checkUpInputMap[item!!] = nowDate.toLong()
+                                    }
+                                } else if(range == "범위 외") {
+                                    if(item!!.result.toFloat() < item!!.min.toFloat() || item!!.result.toFloat() > item!!.max.toFloat()) {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        checkUpInputMap[item!!] = nowDate.toLong()
+                                    }
+                                }
+                            } else {
+                                if(range == "전체") {
+                                    var nowDateSp = item!!.date.split(".")
+                                    var month = nowDateSp[1]
+                                    var day = nowDateSp[2]
+
+                                    if (month.length == 1)
+                                        month = "0$month"
+                                    if (day.length == 1)
+                                        day = "0$day"
+
+                                    // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                    val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                    val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                    val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                    if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                        var nowDate = nowDateSp[0] + month + day
+
+                                        checkUpInputMap[item!!] = nowDate.toLong()
+                                    }
+                                } else if(range == "범위 내") {
+                                    if(item!!.result.toFloat() >= item!!.min.toFloat() && item!!.result.toFloat() <= item!!.max.toFloat()) {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            checkUpInputMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                } else if(range == "범위 외") {
+                                    if(item!!.result.toFloat() < item!!.min.toFloat() || item!!.result.toFloat() > item!!.max.toFloat()) {
+                                        var nowDateSp = item!!.date.split(".")
+                                        var month = nowDateSp[1]
+                                        var day = nowDateSp[2]
+
+                                        if (month.length == 1)
+                                            month = "0$month"
+                                        if (day.length == 1)
+                                            day = "0$day"
+
+                                        // 날짜 비교를 위해 시작 날짜와 종료 날짜를 date로 설정
+                                        val startDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDateArea.text.toString())
+                                        val endDate = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDateArea.text.toString())
+                                        val nowDateFm = nowDateSp[0] + "." + month + "." + day
+
+                                        if (isBetweenDates(nowDateFm, startDate, endDate)) {
+
+                                            var nowDate = nowDateSp[0] + month + day
+
+                                            checkUpInputMap[item!!] = nowDate.toLong()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    checkUpInputSortedMap = checkUpInputSortMapByKey(checkUpInputMap)
+                    for((key, value) in checkUpInputSortedMap.entries) {
+                        checkUpInputDataList.add(key)
+                    }
+
+                    checkUpInputRVAdapter.notifyDataSetChanged() // 데이터 동기화
+
+                } catch (e: Exception) {
+                    Log.d(TAG, "수치 검사 기록 삭제 완료")
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.checkUpInputRef.child(myUid).child(dogId).addValueEventListener(postListener)
     }
 
     private fun getCheckUpPictureData(date : String, checkUpCategory : String, searchText : String) {

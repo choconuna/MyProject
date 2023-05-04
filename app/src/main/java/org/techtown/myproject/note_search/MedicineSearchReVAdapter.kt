@@ -16,16 +16,6 @@ import kotlin.collections.ArrayList
 class MedicineSearchReVAdapter(val dogMeidicineList : ArrayList<DogMedicineModel>):
     RecyclerView.Adapter<MedicineSearchReVAdapter.MedicineSearchViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
-    }
-
-    private lateinit var itemClickListener : OnItemClickListener
-
     override fun getItemCount(): Int {
         return dogMeidicineList.count()
     }
@@ -96,10 +86,6 @@ class MedicineSearchReVAdapter(val dogMeidicineList : ArrayList<DogMedicineModel
 
         holder.timeArea!!.text = dogMeidicineList[position].time
         holder.medicineNameArea!!.text = dogMeidicineList[position].medicineName
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MedicineSearchViewHolder {

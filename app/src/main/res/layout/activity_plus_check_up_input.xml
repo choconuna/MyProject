@@ -191,6 +191,31 @@
                     android:textAlignment="center"
                     android:textSize="15sp" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/bold"
+                    android:layout_marginTop="20dp"
+                    android:text="관련 부위"
+                    android:textColor='@color/mainColor'
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/partArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/mainColor"
+                    android:fontFamily="@font/bold"
+                    android:hint="관련 부위 입력"
+                    android:lines="1"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textAlignment="center"
+                    android:textSize="15sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

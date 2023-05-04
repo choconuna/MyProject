@@ -21,16 +21,6 @@ import kotlin.collections.ArrayList
 class SnackSearchReVAdapter(val dogSnackList : ArrayList<DogSnackModel>):
     RecyclerView.Adapter<SnackSearchReVAdapter.SnackSearchViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
-    }
-
-    private lateinit var itemClickListener : OnItemClickListener
-
     override fun getItemCount(): Int {
         return dogSnackList.count()
     }
@@ -119,10 +109,6 @@ class SnackSearchReVAdapter(val dogSnackList : ArrayList<DogSnackModel>):
             })
         } else {
             holder.view!!.findViewById<ImageView>(R.id.snackImage).isVisible = false
-        }
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
         }
     }
 

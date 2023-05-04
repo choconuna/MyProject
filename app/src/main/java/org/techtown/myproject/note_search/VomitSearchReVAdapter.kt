@@ -17,16 +17,6 @@ import kotlin.collections.ArrayList
 class VomitSearchReVAdapter(val dogVomitList : ArrayList<DogVomitModel>):
     RecyclerView.Adapter<VomitSearchReVAdapter.VomitSearchViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
-    }
-
-    private lateinit var itemClickListener: OnItemClickListener
-
     override fun getItemCount(): Int {
         return dogVomitList.count()
     }
@@ -139,10 +129,6 @@ class VomitSearchReVAdapter(val dogVomitList : ArrayList<DogVomitModel>):
         }
 
         holder.vomitCntArea!!.text = dogVomitList[position].vomitCount
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VomitSearchViewHolder {

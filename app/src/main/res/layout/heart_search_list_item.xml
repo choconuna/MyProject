@@ -77,11 +77,11 @@
 
                         <ImageView
                             android:id="@+id/state"
-                            android:layout_width="12dp"
-                            android:layout_height="12dp"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
                             android:layout_marginLeft="10dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/arrow_up" />
+                            android:src="@drawable/ic_round_horizontal_rule_24" />
                     </LinearLayout>
 
                 </LinearLayout>

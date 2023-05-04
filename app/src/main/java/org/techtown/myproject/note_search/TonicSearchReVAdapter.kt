@@ -22,16 +22,6 @@ import kotlin.collections.ArrayList
 class TonicSearchReVAdapter (val dogTonicList : ArrayList<DogTonicModel>):
     RecyclerView.Adapter<TonicSearchReVAdapter.TonicSearchViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
-    }
-
-    private lateinit var itemClickListener : OnItemClickListener
-
     override fun getItemCount(): Int {
         return dogTonicList.count()
     }
@@ -119,10 +109,6 @@ class TonicSearchReVAdapter (val dogTonicList : ArrayList<DogTonicModel>):
             })
         } else {
             holder.view!!.findViewById<ImageView>(R.id.tonicImage).isVisible = false
-        }
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
         }
     }
 

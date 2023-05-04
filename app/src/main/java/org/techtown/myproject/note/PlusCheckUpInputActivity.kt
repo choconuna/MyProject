@@ -28,6 +28,7 @@ class PlusCheckUpInputActivity : AppCompatActivity() {
     private lateinit var monthArea : EditText
     private lateinit var dayArea : EditText
 
+    private lateinit var partArea : EditText
     private lateinit var minArea : EditText
     private lateinit var maxArea : EditText
     private lateinit var resultArea : EditText
@@ -47,6 +48,7 @@ class PlusCheckUpInputActivity : AppCompatActivity() {
         monthArea = findViewById(R.id.monthArea)
         dayArea = findViewById(R.id.dayArea)
 
+        partArea = findViewById(R.id.partArea)
         minArea = findViewById(R.id.minArea)
         maxArea = findViewById(R.id.maxArea)
         resultArea = findViewById(R.id.resultArea)
@@ -83,7 +85,7 @@ class PlusCheckUpInputActivity : AppCompatActivity() {
             } else {
                 val date = yearArea.text.toString() + "." + monthArea.text.toString() + "." + dayArea.text.toString()
 
-                plusCheckUpInputNote(date,nameArea.text.toString().trim(), minArea.text.toString().trim(), maxArea.text.toString().trim(), resultArea.text.toString().trim())
+                plusCheckUpInputNote(date,nameArea.text.toString().trim(), minArea.text.toString().trim(), maxArea.text.toString().trim(), resultArea.text.toString().trim(), partArea.text.toString().trim())
                 Toast.makeText(this, "검사 항목 추가 완료!", Toast.LENGTH_SHORT).show()
                 finish()
             }
@@ -103,9 +105,9 @@ class PlusCheckUpInputActivity : AppCompatActivity() {
         dayArea.setText(sb[2])
     }
 
-    private fun plusCheckUpInputNote(date : String, name : String, min : String, max : String, result : String) {
+    private fun plusCheckUpInputNote(date : String, name : String, min : String, max : String, result : String, part : String) {
         val key = FBRef.checkUpInputRef.child(userId).child(dogId).push().key.toString() // 키 값을 먼저 받아옴
 
-        FBRef.checkUpInputRef.child(userId).child(dogId).child(key).setValue(DogCheckUpInputModel(key, dogId, date, name, min, max, result)) // 반려견 검사 기록 정보 데이터베이스에 저장
+        FBRef.checkUpInputRef.child(userId).child(dogId).child(key).setValue(DogCheckUpInputModel(key, dogId, date, name, min, max, result, part)) // 반려견 검사 기록 정보 데이터베이스에 저장
     }
 }

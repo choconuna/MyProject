@@ -18,16 +18,6 @@ import kotlin.collections.ArrayList
 class CheckUpInputSearchReVAdapter(val dogCheckUpInputList : ArrayList<DogCheckUpInputModel>):
     RecyclerView.Adapter<CheckUpInputSearchReVAdapter.CheckUpSearchInputViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
-    }
-
-    private lateinit var itemClickListener : OnItemClickListener
-
     override fun getItemCount(): Int {
         return dogCheckUpInputList.count()
     }
@@ -100,29 +90,26 @@ class CheckUpInputSearchReVAdapter(val dogCheckUpInputList : ArrayList<DogCheckU
         holder.maxArea!!.text = dogCheckUpInputList[position].max
         holder.minArea!!.text = dogCheckUpInputList[position].min
         holder.resultArea!!.text = dogCheckUpInputList[position].result
+        holder.partArea!!.text = dogCheckUpInputList[position].part
 
         if(dogCheckUpInputList[position].result.toFloat() < dogCheckUpInputList[position].min.toFloat()) {
-            holder.stateImg!!.setImageResource(R.drawable.arrow_down)
+            holder.stateImg!!.setImageResource(R.drawable.ic_round_arrow_downward_24)
             holder.state!!.text = "Low"
             holder.state!!.setTextColor(Color.parseColor("#1E90FF"))
 
             holder.resultArea!!.setTextColor(Color.parseColor("#1E90FF"))
         } else if(dogCheckUpInputList[position].result.toFloat() > dogCheckUpInputList[position].max.toFloat()) {
-            holder.stateImg!!.setImageResource(R.drawable.arrow_up)
+            holder.stateImg!!.setImageResource(R.drawable.ic_round_arrow_upward_24)
             holder.state!!.text = "High"
             holder.state!!.setTextColor(Color.parseColor("#DC143C"))
 
             holder.resultArea!!.setTextColor(Color.parseColor("#DC143C"))
         } else if(dogCheckUpInputList[position].result.toFloat() >= dogCheckUpInputList[position].min.toFloat() && dogCheckUpInputList[position].result.toFloat() <= dogCheckUpInputList[position].max.toFloat()) {
-            holder.stateImg!!.setImageResource(R.drawable.minus)
+            holder.stateImg!!.setImageResource(R.drawable.ic_round_horizontal_rule_24)
             holder.state!!.text = "Normal"
             holder.state!!.setTextColor(Color.parseColor("#000000"))
 
             holder.resultArea!!.setTextColor(Color.parseColor("#000000"))
-        }
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
         }
     }
 
@@ -140,5 +127,6 @@ class CheckUpInputSearchReVAdapter(val dogCheckUpInputList : ArrayList<DogCheckU
         val minArea = view?.findViewById<TextView>(R.id.minArea)
         val maxArea = view?.findViewById<TextView>(R.id.maxArea)
         val state = view?.findViewById<TextView>(R.id.state)
+        val partArea = view?.findViewById<TextView>(R.id.partArea)
     }
 }

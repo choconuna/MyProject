@@ -52,24 +52,26 @@ class CheckUpInputStatisticsReVAdapter(val dogCheckUpInputStatisticsList : Array
         }
 
         if(dogCheckUpInputStatisticsList[position].result.toFloat() < dogCheckUpInputStatisticsList[position].min.toFloat()) {
-            holder.stateImg!!.setImageResource(R.drawable.arrow_down)
+            holder.stateImg!!.setImageResource(R.drawable.ic_round_arrow_downward_24)
             holder.state!!.text = "Low"
             holder.state!!.setTextColor(Color.parseColor("#1E90FF"))
 
             holder.resultArea!!.setTextColor(Color.parseColor("#1E90FF"))
         } else if(dogCheckUpInputStatisticsList[position].result.toFloat() > dogCheckUpInputStatisticsList[position].max.toFloat()) {
-            holder.stateImg!!.setImageResource(R.drawable.arrow_up)
+            holder.stateImg!!.setImageResource(R.drawable.ic_round_arrow_upward_24)
             holder.state!!.text = "High"
             holder.state!!.setTextColor(Color.parseColor("#DC143C"))
 
             holder.resultArea!!.setTextColor(Color.parseColor("#DC143C"))
         } else if(dogCheckUpInputStatisticsList[position].result.toFloat() >= dogCheckUpInputStatisticsList[position].min.toFloat() && dogCheckUpInputStatisticsList[position].result.toFloat() <= dogCheckUpInputStatisticsList[position].max.toFloat()) {
-            holder.stateImg!!.setImageResource(R.drawable.minus)
+            holder.stateImg!!.setImageResource(R.drawable.ic_round_horizontal_rule_24)
             holder.state!!.text = "Normal"
             holder.state!!.setTextColor(Color.parseColor("#000000"))
 
             holder.resultArea!!.setTextColor(Color.parseColor("#000000"))
         }
+
+        holder.partArea!!.text = dogCheckUpInputStatisticsList[position].part
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckUpInputStaticsViewHolder {
@@ -86,5 +88,6 @@ class CheckUpInputStatisticsReVAdapter(val dogCheckUpInputStatisticsList : Array
         val minArea = view?.findViewById<TextView>(R.id.minArea)
         val maxArea = view?.findViewById<TextView>(R.id.maxArea)
         val state = view?.findViewById<TextView>(R.id.state)
+        val partArea = view?.findViewById<TextView>(R.id.partArea)
     }
 }

@@ -7,5 +7,6 @@ class DogCheckUpInputModel (
     val name : String = "", // 항목명
     val min : String = "", // 최소 수치
     val max : String = "", // 최대 수치
-    val result : String = "" // 수치값
+    val result : String = "", // 수치값
+    val part : String = "" // 관련 수치
 )

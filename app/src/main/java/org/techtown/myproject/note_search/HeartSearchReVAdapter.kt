@@ -16,16 +16,6 @@ import kotlin.collections.ArrayList
 class HeartSearchReVAdapter(val dogHeartList : ArrayList<DogHeartModel>):
     RecyclerView.Adapter<HeartSearchReVAdapter.HeartSearchViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
-    }
-
-    private lateinit var itemClickListener : OnItemClickListener
-
     override fun getItemCount(): Int {
         return dogHeartList.count()
     }
@@ -96,13 +86,9 @@ class HeartSearchReVAdapter(val dogHeartList : ArrayList<DogHeartModel>):
 
         holder.heartCntArea!!.text = dogHeartList[position].heartCount
         if(dogHeartList[position].heartCount.toInt() > 30)
-            holder.state!!.setImageResource(R.drawable.arrow_up)
+            holder.state!!.setImageResource(R.drawable.ic_round_arrow_upward_24)
         else
-            holder.state!!.setImageResource(R.drawable.minus)
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
-        }
+            holder.state!!.setImageResource(R.drawable.ic_round_horizontal_rule_24)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeartSearchViewHolder {

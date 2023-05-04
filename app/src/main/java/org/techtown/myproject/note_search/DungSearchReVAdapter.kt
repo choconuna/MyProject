@@ -18,16 +18,6 @@ import kotlin.collections.ArrayList
 class DungSearchReVAdapter(val dogDungList : ArrayList<DogDungModel>):
     RecyclerView.Adapter<DungSearchReVAdapter.DungSearchViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
-    }
-
-    private lateinit var itemClickListener : OnItemClickListener
-
     override fun getItemCount(): Int {
         return dogDungList.count()
     }
@@ -128,10 +118,6 @@ class DungSearchReVAdapter(val dogDungList : ArrayList<DogDungModel>):
         }
 
         holder.dungCntArea!!.text = dogDungList[position].dungCount
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DungSearchViewHolder {
