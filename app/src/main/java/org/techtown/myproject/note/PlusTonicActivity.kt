@@ -8,17 +8,24 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
+import org.techtown.myproject.utils.DogMealModel
 import org.techtown.myproject.utils.DogTonicModel
 import org.techtown.myproject.utils.FBRef
 import java.io.ByteArrayOutputStream
 
 class PlusTonicActivity : AppCompatActivity() {
+
+    private val TAG = PlusTonicActivity::class.java.simpleName
 
     lateinit var sharedPreferences: SharedPreferences
     lateinit var userId : String
@@ -31,6 +38,8 @@ class PlusTonicActivity : AppCompatActivity() {
     var isImageUpload : Boolean = false
 
     lateinit var timeSlot : String
+
+    lateinit var tonicNameSpinner : Spinner
 
     lateinit var tonicPartSpinner : Spinner
     lateinit var tonicPart : String
@@ -49,6 +58,27 @@ class PlusTonicActivity : AppCompatActivity() {
         nowDate = intent.getStringExtra("date").toString() // 선택된 날짜
 
         findViewById<TextView>(R.id.today).text = nowDate
+
+        tonicNameSpinner = findViewById(R.id.tonicNameSpinner)
+        showTonicNameSpinner()
+
+        tonicNameSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                if (selectedItem == "직접 입력") {
+                    tonicNameArea.setText("")
+                    tonicNameArea.setSelection(0)
+                    tonicNameArea.isEnabled = true
+                } else {
+                    tonicNameArea.setText(selectedItem)
+                    tonicNameArea.isEnabled = false
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Do nothing
+            }
+        }
 
         tonicImage = findViewById(R.id.tonicImage)
 
@@ -112,6 +142,40 @@ class PlusTonicActivity : AppCompatActivity() {
             val imageView : ImageView = tonicImage
             defaultImage = (imageView.drawable as BitmapDrawable).bitmap
         }
+    }
+
+    private fun showTonicNameSpinner() {
+        val tonicSet = mutableSetOf<String>()
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    tonicSet.clear()
+                    tonicSet.add("직접 입력")
+
+                    for (dataModel in dataSnapshot.children) {
+                        val item = dataModel.getValue(DogTonicModel::class.java)
+                        item?.let { tonicSet.add(it.tonicName) }
+                    }
+                    Log.d("tonicSet", tonicSet.toString())
+
+                    if(tonicSet.size == 1)
+                        tonicNameSpinner.visibility = View.GONE
+                    else
+                        tonicNameSpinner.visibility = View.VISIBLE
+
+                    val adapter = ArrayAdapter<String>(applicationContext, R.layout.custom_spinner, tonicSet.toList())
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    tonicNameSpinner.adapter = adapter
+
+                } catch (e: Exception) {
+                    Log.d(TAG, "영양제 기록 삭제 완료")
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.tonicRef.child(userId).child(dogId).addValueEventListener(postListener)
     }
 
     private fun imageUpload(key : String) { // 이미지를 storage에 업로드하는 함수

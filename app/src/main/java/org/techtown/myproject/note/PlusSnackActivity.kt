@@ -9,9 +9,13 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
@@ -22,6 +26,8 @@ import java.io.ByteArrayOutputStream
 import java.util.*
 
 class PlusSnackActivity : AppCompatActivity() {
+
+    private val TAG = PlusSnackActivity::class.java.simpleName
 
     lateinit var sharedPreferences: SharedPreferences
     lateinit var userId : String
@@ -34,6 +40,8 @@ class PlusSnackActivity : AppCompatActivity() {
     var isImageUpload : Boolean = false
 
     lateinit var timeSlot : String
+
+    lateinit var snackNameSpinner : Spinner
 
     lateinit var snackSpinner : Spinner
     lateinit var snackType : String
@@ -52,6 +60,27 @@ class PlusSnackActivity : AppCompatActivity() {
         nowDate = intent.getStringExtra("date").toString() // 선택된 날짜
 
         findViewById<TextView>(R.id.today).text = nowDate
+
+        snackNameSpinner = findViewById(R.id.snackNameSpinner)
+        showSnackNameSpinner()
+
+        snackNameSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                if (selectedItem == "직접 입력") {
+                    snackNameArea.setText("")
+                    snackNameArea.setSelection(0)
+                    snackNameArea.isEnabled = true
+                } else {
+                    snackNameArea.setText(selectedItem)
+                    snackNameArea.isEnabled = false
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Do nothing
+            }
+        }
 
         snackImage = findViewById(R.id.snackImage)
 
@@ -115,6 +144,40 @@ class PlusSnackActivity : AppCompatActivity() {
             val imageView : ImageView = snackImage
             defaultImage = (imageView.drawable as BitmapDrawable).bitmap
         }
+    }
+
+    private fun showSnackNameSpinner() {
+        val snackSet = mutableSetOf<String>()
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    snackSet.clear()
+                    snackSet.add("직접 입력")
+
+                    for (dataModel in dataSnapshot.children) {
+                        val item = dataModel.getValue(DogSnackModel::class.java)
+                        item?.let { snackSet.add(it.snackName) }
+                    }
+                    Log.d("snackSet", snackSet.toString())
+
+                    if(snackSet.size == 1)
+                        snackNameSpinner.visibility = View.GONE
+                    else
+                        snackNameSpinner.visibility = View.VISIBLE
+
+                    val adapter = ArrayAdapter<String>(applicationContext, R.layout.custom_spinner, snackSet.toList())
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    snackNameSpinner.adapter = adapter
+
+                } catch (e: Exception) {
+                    Log.d(TAG, "사료 기록 삭제 완료")
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.snackRef.child(userId).child(dogId).addValueEventListener(postListener)
     }
 
     private fun imageUpload(key : String) { // 이미지를 storage에 업로드하는 함수

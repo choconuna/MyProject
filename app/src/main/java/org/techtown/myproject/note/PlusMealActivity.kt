@@ -10,9 +10,15 @@ import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
@@ -23,6 +29,8 @@ import java.io.ByteArrayOutputStream
 import java.util.*
 
 class PlusMealActivity : AppCompatActivity() {
+
+    private val TAG = PlusMealActivity::class.java.simpleName
 
     lateinit var sharedPreferences: SharedPreferences
     lateinit var userId : String
@@ -44,6 +52,7 @@ class PlusMealActivity : AppCompatActivity() {
     lateinit var spinner : Spinner
     lateinit var mealType : String
 
+    lateinit var mealNameSpinner : Spinner
     lateinit var mealNameArea : EditText
     lateinit var mealWeightArea : EditText
 
@@ -57,6 +66,27 @@ class PlusMealActivity : AppCompatActivity() {
         nowDate = intent.getStringExtra("date").toString() // 선택된 날짜
 
         findViewById<TextView>(R.id.today).text = nowDate
+
+        mealNameSpinner = findViewById(R.id.mealNameSpinner)
+        showMealNameSpinner()
+
+        mealNameSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                if (selectedItem == "직접 입력") {
+                    mealNameArea.setText("")
+                    mealNameArea.setSelection(0)
+                    mealNameArea.isEnabled = true
+                } else {
+                    mealNameArea.setText(selectedItem)
+                    mealNameArea.isEnabled = false
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Do nothing
+            }
+        }
 
         mealImage = findViewById(R.id.mealImage)
 
@@ -136,6 +166,40 @@ class PlusMealActivity : AppCompatActivity() {
             minuteArea.text = "0$mMin"
         else
             minuteArea.text = mMin.toString()
+    }
+
+    private fun showMealNameSpinner() {
+        val mealSet = mutableSetOf<String>()
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    mealSet.clear()
+                    mealSet.add("직접 입력")
+
+                    for (dataModel in dataSnapshot.children) {
+                        val item = dataModel.getValue(DogMealModel::class.java)
+                        item?.let { mealSet.add(it.mealName) }
+                    }
+                    Log.d("mealSet", mealSet.toString())
+
+                    if(mealSet.size == 1)
+                        mealNameSpinner.visibility = GONE
+                    else
+                        mealNameSpinner.visibility = VISIBLE
+
+                    val adapter = ArrayAdapter<String>(applicationContext, R.layout.custom_spinner, mealSet.toList())
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    mealNameSpinner.adapter = adapter
+
+                } catch (e: Exception) {
+                    Log.d(TAG, "사료 기록 삭제 완료")
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.mealRef.child(userId).child(dogId).addValueEventListener(postListener)
     }
 
     private fun showTime() {

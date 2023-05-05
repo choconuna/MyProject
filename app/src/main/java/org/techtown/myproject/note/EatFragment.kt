@@ -28,7 +28,7 @@ import org.techtown.myproject.community.SpecificCommunityEditActivity
 import org.techtown.myproject.my.DogProfileInActivity
 import org.techtown.myproject.my.DogReVAdapter
 import org.techtown.myproject.utils.*
-import java.util.ArrayList
+import java.util.*
 
 class EatFragment() : Fragment() {
 
@@ -41,6 +41,10 @@ class EatFragment() : Fragment() {
 
     private lateinit var totalMealArea : TextView
     var totalMeal = 0
+
+    private lateinit var totalSnackArea : TextView
+
+    private lateinit var totalTonicArea : TextView
 
     private lateinit var mealListView : RecyclerView
     private val mealDataList = ArrayList<DogMealModel>() // 사료 목록 리스트
@@ -83,6 +87,8 @@ class EatFragment() : Fragment() {
         Log.d("mainDogId", dogId)
 
         totalMealArea = v!!.findViewById(R.id.totalMealArea)
+        totalSnackArea = v!!.findViewById(R.id.totalSnackArea)
+        totalTonicArea = v!!.findViewById(R.id.totalTonicArea)
 
         // 사료 목록 recycler 어댑터
         mealRVAdapter = MealReVAdapter(mealDataList)
@@ -274,17 +280,26 @@ class EatFragment() : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try { // 사료 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
                     mealDataList.clear()
+
+                    totalMealArea.text = ""
                     totalMeal = 0
+
+                    var mealMap : MutableMap<DogMealModel, Long> = mutableMapOf()
+                    var mealSortedMap : MutableMap<DogMealModel, Long> = mutableMapOf()
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogMealModel::class.java)
                         if(item!!.date == nowDate) { // 선택된 날짜에 맞는 사료 데이터만 추가
-                            mealDataList.add(item!!)
+                            mealMap[item!!] = (item!!.time.split(":")[0] + item!!.time.split(":")[1]).toLong()
                             totalMeal += item!!.mealWeight.toInt()
                         }
                     }
 
-                    Log.d("mealDataList", mealDataList.toString())
+                    mealSortedMap = sortMapByKey(mealMap)
+                    for((key, value) in mealSortedMap.entries) {
+                        mealDataList.add(key)
+                    }
+
                     totalMealArea.text = totalMeal.toString() + "g"
                     mealRVAdapter.notifyDataSetChanged() // 데이터 동기화
 
@@ -307,14 +322,47 @@ class EatFragment() : Fragment() {
                 try { // 간식 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
                     snackDataList.clear()
 
+                    val breakfastList = mutableListOf<DogSnackModel>()
+                    val lunchList = mutableListOf<DogSnackModel>()
+                    val dinnerList = mutableListOf<DogSnackModel>()
+
+                    totalSnackArea.text = ""
+
+                    var snackMl = 0
+                    var snackUn = 0
+                    var snackG = 0
+
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogSnackModel::class.java)
                         if(item!!.date == nowDate) { // 선택된 날짜에 맞는 간식 데이터만 추가
-                            snackDataList.add(item!!)
+                            when (item!!.timeSlot) {
+                                "아침" -> breakfastList.add(item!!)
+                                "점심" -> lunchList.add(item!!)
+                                "저녁" -> dinnerList.add(item!!)
+                            }
+
+                            when (item!!.snackUnit) {
+                                "ml" -> snackMl += item!!.snackWeight.toInt()
+                                "개" -> snackUn += item!!.snackWeight.toInt()
+                                "g" -> snackG += item!!.snackWeight.toInt()
+                            }
                         }
                     }
 
-                    Log.d("snackDataList", snackDataList.toString())
+                    if(snackMl != 0)
+                        totalSnackArea.text = totalSnackArea.text.toString() + snackMl + "ml  "
+                    if(snackUn != 0)
+                        totalSnackArea.text = totalSnackArea.text.toString() + snackUn + "개  "
+                    if(snackG != 0)
+                        totalSnackArea.text = totalSnackArea.text.toString() + snackG + "g"
+
+                    for(i in breakfastList)
+                        snackDataList.add(i)
+                    for(i in lunchList)
+                        snackDataList.add(i)
+                    for(i in dinnerList)
+                        snackDataList.add(i)
+
                     snackRVAdapter.notifyDataSetChanged() // 데이터 동기화
 
                 } catch (e: Exception) {
@@ -336,14 +384,47 @@ class EatFragment() : Fragment() {
                 try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
                     tonicDataList.clear()
 
+                    val breakfastList = mutableListOf<DogTonicModel>()
+                    val lunchList = mutableListOf<DogTonicModel>()
+                    val dinnerList = mutableListOf<DogTonicModel>()
+
+                    totalTonicArea.text = ""
+
+                    var tonicMl = 0
+                    var tonicUn = 0
+                    var tonicG = 0
+
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogTonicModel::class.java)
                         if(item!!.date == nowDate) { // 선택된 날짜에 맞는 영양제 데이터만 추가
-                            tonicDataList.add(item!!)
+                            when (item.timeSlot) {
+                                "아침" -> breakfastList.add(item!!)
+                                "점심" -> lunchList.add(item!!)
+                                "저녁" -> dinnerList.add(item!!)
+                            }
+
+                            when (item!!.tonicUnit) {
+                                "ml" -> tonicMl += item!!.tonicWeight.toInt()
+                                "개" -> tonicUn += item!!.tonicWeight.toInt()
+                                "g" -> tonicG += item!!.tonicWeight.toInt()
+                            }
                         }
                     }
 
-                    Log.d("tonicDataList", tonicDataList.toString())
+                    if(tonicMl != 0)
+                        totalTonicArea.text = totalTonicArea.text.toString() + tonicMl + "ml  "
+                    if(tonicUn != 0)
+                        totalTonicArea.text = totalTonicArea.text.toString() + tonicUn + "개  "
+                    if(tonicG != 0)
+                        totalTonicArea.text = totalTonicArea.text.toString() + tonicG + "g"
+
+                    for(i in breakfastList)
+                        tonicDataList.add(i)
+                    for(i in lunchList)
+                        tonicDataList.add(i)
+                    for(i in dinnerList)
+                        tonicDataList.add(i)
+
                     tonicRVAdapter.notifyDataSetChanged() // 데이터 동기화
 
                 } catch (e: Exception) {
@@ -367,18 +448,33 @@ class EatFragment() : Fragment() {
                     totalWeightProgress.progress = 0
                     nowWeight = 0
 
+                    val breakfastList = mutableListOf<DogWaterModel>()
+                    val lunchList = mutableListOf<DogWaterModel>()
+                    val dinnerList = mutableListOf<DogWaterModel>()
+
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogWaterModel::class.java)
                         if(item!!.date == nowDate) { // 선택된 날짜에 맞는 물 데이터만 추가
-                            waterDataList.add(item!!)
                             totalWeightProgress.incrementProgressBy(item!!.waterWeight.toInt())
                             nowWeight += item!!.waterWeight.toInt()
-                            // totalWaterWeight += item.waterWeight.toInt() // 총 물의 양 구함
+
+                            when (item.timeSlot) {
+                                "아침" -> breakfastList.add(item!!)
+                                "점심" -> lunchList.add(item!!)
+                                "저녁" -> dinnerList.add(item!!)
+                            }
                         }
                     }
 
                     v.findViewById<TextView>(R.id.nowWeight).text = nowWeight.toString()
-                    Log.d("waterDataList", waterDataList.toString())
+
+                    for(i in breakfastList)
+                        waterDataList.add(i)
+                    for(i in lunchList)
+                        waterDataList.add(i)
+                    for(i in dinnerList)
+                        waterDataList.add(i)
+
                     waterRVAdapter.notifyDataSetChanged() // 데이터 동기화
 
                 } catch (e: Exception) {
@@ -392,5 +488,19 @@ class EatFragment() : Fragment() {
             }
         }
         FBRef.waterRef.child(userId).child(dogId).addValueEventListener(postListener)
+    }
+
+    private fun sortMapByKey(map: MutableMap<DogMealModel, Long>): LinkedHashMap<DogMealModel, Long> { // 시간순으로 정렬
+        val entries = map.entries.toList()
+
+        val sortedEntries = entries.sortedBy { it.value }
+
+        val result = LinkedHashMap<DogMealModel, Long>()
+
+        for (entry in sortedEntries) {
+            result[entry.key] = entry.value
+        }
+
+        return result
     }
 }

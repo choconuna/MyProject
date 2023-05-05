@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.*
 import java.util.ArrayList
+import java.util.LinkedHashMap
 
 class MedicineFragment : Fragment() {
 
@@ -228,6 +229,9 @@ class MedicineFragment : Fragment() {
                 try { // 투약 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
                     medicineDataList.clear()
 
+                    var medicineMap : MutableMap<DogMedicineModel, Long> = mutableMapOf()
+                    var medicineSortedMap : MutableMap<DogMedicineModel, Long> = mutableMapOf()
+
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogMedicineModel::class.java)
 
@@ -236,10 +240,14 @@ class MedicineFragment : Fragment() {
                         val nowDateSplit = nowDate.split(".")
 
                         if(nowDateSplit[0].toInt() == dateSplit[0].toInt() && nowDateSplit[1].toInt() == dateSplit[1].toInt() && nowDateSplit[2].toInt() == dateSplit[2].toInt())
-                            medicineDataList.add(item!!) // 현재 날짜에 해당하는 투약 기록 데이터만 추가
+                            medicineMap[item!!] = (item!!.time.split(":")[0] + item!!.time.split(":")[1]).toLong() // 현재 날짜에 해당하는 투약 기록 데이터만 추가
                     }
 
-                    Log.d("medicineDataList", medicineDataList.toString())
+                    medicineSortedMap = medicineSortMapByKey(medicineMap)
+                    for((key, value) in medicineSortedMap.entries) {
+                        medicineDataList.add(key)
+                    }
+
                     medicineRVAdapter.notifyDataSetChanged() // 데이터 동기화
 
                 } catch (e: Exception) {
@@ -253,5 +261,33 @@ class MedicineFragment : Fragment() {
             }
         }
         FBRef.medicineRef.child(userId).child(dogId).addValueEventListener(postListener)
+    }
+
+    private fun medicinePlanSortMapByKey(map: MutableMap<DogMedicinePlanModel, Long>): LinkedHashMap<DogMedicinePlanModel, Long> { // 시간순으로 정렬
+        val entries = map.entries.toList()
+
+        val sortedEntries = entries.sortedBy { it.value }
+
+        val result = LinkedHashMap<DogMedicinePlanModel, Long>()
+
+        for (entry in sortedEntries) {
+            result[entry.key] = entry.value
+        }
+
+        return result
+    }
+
+    private fun medicineSortMapByKey(map: MutableMap<DogMedicineModel, Long>): LinkedHashMap<DogMedicineModel, Long> { // 시간순으로 정렬
+        val entries = map.entries.toList()
+
+        val sortedEntries = entries.sortedBy { it.value }
+
+        val result = LinkedHashMap<DogMedicineModel, Long>()
+
+        for (entry in sortedEntries) {
+            result[entry.key] = entry.value
+        }
+
+        return result
     }
 }

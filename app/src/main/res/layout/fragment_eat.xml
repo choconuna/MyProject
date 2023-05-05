@@ -57,7 +57,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:fontFamily="@font/bold"
-                        android:textColor="@color/mainColor"
+                        android:textColor="#4682B4"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -110,6 +110,16 @@
                         android:layout_marginLeft="10dp"
                         android:textSize="15sp"
                         app:layout_constraintStart_toStartOf="@+id/snackPlusBtn" />
+
+                    <TextView
+                        android:id="@+id/totalSnackArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/bold"
+                        android:textColor="#4682B4"
+                        android:textSize="15sp" />
+
                 </LinearLayout>
 
                 <Button
@@ -159,6 +169,15 @@
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         app:layout_constraintStart_toStartOf="@+id/tonicPlusBtn" />
+
+                    <TextView
+                        android:id="@+id/totalTonicArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/bold"
+                        android:textColor="#4682B4"
+                        android:textSize="15sp" />
 
                 </LinearLayout>
 

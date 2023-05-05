@@ -5,47 +5,32 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import java.util.*
+import kotlin.random.Random.Default.nextInt
 
 class AlarmReceiver : BroadcastReceiver() {
-
     override fun onReceive(context: Context, intent: Intent) {
-        // Notification 생성 및 등록
-        val notificationManager = ContextCompat.getSystemService(context, NotificationManager::class.java) as NotificationManager
-        createNotificationChannel(notificationManager)
+        // 알림의 내용을 설정합니다.
+        val medicineName = intent.getStringExtra("medicineName")
 
-        val contentTitle = "제목"
-        val contentText = "내용"
-
-        val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher_appicon_round)
-            .setContentTitle(contentTitle)
-            .setContentText(contentText)
+        // Notification 객체를 생성합니다.
+        val notificationBuilder = NotificationCompat.Builder(context, "MedicinePlan")
+            .setSmallIcon(R.drawable.ic_notification_small_icon_medicine)
+            .setColor(Color.parseColor("#c08457"))
+            .setContentTitle("약 복용 알림")
+            .setContentText(medicineName + "을(를) 복용해주세요.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
 
-        notificationManager.notify(notificationId, notificationBuilder.build())
-    }
-
-    private fun createNotificationChannel(notificationManager: NotificationManager) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Channel Name",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = "Channel Description"
-                enableVibration(true)
-                vibrationPattern = longArrayOf(0, 500, 500, 500)
-            }
-            notificationManager.createNotificationChannel(channel)
+        // NotificationManagerCompat을 이용하여 Notification을 보냅니다.
+        val notificationId = System.currentTimeMillis().toInt()
+        with(NotificationManagerCompat.from(context)) {
+            notify(notificationId, notificationBuilder.build())
         }
-    }
-
-    companion object {
-        const val CHANNEL_ID = "channel_id"
-        const val notificationId = 0
     }
 }

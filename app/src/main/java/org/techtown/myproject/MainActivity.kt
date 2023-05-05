@@ -2,15 +2,20 @@ package org.techtown.myproject
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -64,6 +69,7 @@ class MainActivity : AppCompatActivity() {
     private val communityFragment by lazy { CommunityFragment() }
     private val myFragment by lazy { MyFragment() }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -140,6 +146,22 @@ class MainActivity : AppCompatActivity() {
 
             Log.d("getToken", msg)
         })
+
+        // 알림 채널 생성
+        val channelId = "MedicinePlan"
+        val channelName = "Medicine Plan Notification"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel(channelId, channelName, importance).apply {
+                description = "약 복용 일정 알림"
+            }
+        } else {
+            TODO("VERSION.SDK_INT < O")
+        }
+
+        // 알림 채널 등록
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
 
         bnv_main = findViewById(R.id.bottom_menu)
         initNavigationBar()
