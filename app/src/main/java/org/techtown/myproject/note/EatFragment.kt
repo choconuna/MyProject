@@ -39,6 +39,9 @@ class EatFragment() : Fragment() {
     lateinit var tonicPlusBtn : Button
     lateinit var waterPlusBtn : Button
 
+    private lateinit var totalMealArea : TextView
+    var totalMeal = 0
+
     private lateinit var mealListView : RecyclerView
     private val mealDataList = ArrayList<DogMealModel>() // 사료 목록 리스트
     lateinit var mealRVAdapter : MealReVAdapter
@@ -78,6 +81,8 @@ class EatFragment() : Fragment() {
         sharedPreferences = v!!.context.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
         dogId = sharedPreferences.getString(myUid, "").toString() // 현재 대표 반려견의 id
         Log.d("mainDogId", dogId)
+
+        totalMealArea = v!!.findViewById(R.id.totalMealArea)
 
         // 사료 목록 recycler 어댑터
         mealRVAdapter = MealReVAdapter(mealDataList)
@@ -269,15 +274,18 @@ class EatFragment() : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try { // 사료 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
                     mealDataList.clear()
+                    totalMeal = 0
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogMealModel::class.java)
                         if(item!!.date == nowDate) { // 선택된 날짜에 맞는 사료 데이터만 추가
                             mealDataList.add(item!!)
+                            totalMeal += item!!.mealWeight.toInt()
                         }
                     }
 
                     Log.d("mealDataList", mealDataList.toString())
+                    totalMealArea.text = totalMeal.toString() + "g"
                     mealRVAdapter.notifyDataSetChanged() // 데이터 동기화
 
                 } catch (e: Exception) {

@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +33,7 @@ import org.techtown.myproject.community.GalleryAdapter
 import org.techtown.myproject.utils.DogMealModel
 import org.techtown.myproject.utils.DogMemoModel
 import org.techtown.myproject.utils.FBRef
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -50,6 +52,7 @@ class DogMemoEditActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     lateinit var layoutManager : RecyclerView.LayoutManager
 
+    private var originCount = 0
     private lateinit var imageButton : ImageView
     private lateinit var imageCnt : TextView
     private var count = 0 // 첨부한 사진 수
@@ -118,9 +121,9 @@ class DogMemoEditActivity : AppCompatActivity() {
 
             Toast.makeText(this, "메모 수정 완료!", Toast.LENGTH_LONG).show()
 
-            /* if(count >= 1) { // 이미지 첨부되었을 시 이미지를 storage로 업로드
-                imageUpload(key)
-            } */
+            if(count >= 1) { // 이미지 첨부되었을 시 이미지를 storage로 업로드
+                imageUpload(dogMemoId)
+            }
 
             finish()
         }
@@ -146,21 +149,30 @@ class DogMemoEditActivity : AppCompatActivity() {
                     time = post!!.time
 
                     imageCnt.text = post!!.count
+
+                    originCount = post!!.count.toInt()
                     count = post!!.count.toInt()
 
-                    /* if(post.count.toInt() >= 1) {
-                        for(index in 0 until post.count.toInt()) {
-                            val storageReference =
-                                Firebase.storage.reference.child("memoImage/$userId/$dogId/$dogMemoId/$dogMemoId$index.png") // 메모 사진을 DB의 storage로부터 가져옴
+                    if(post!!.count.toInt() >= 1) { // 기존의 이미지들을 불러옴
+                        var fetchedImageCount = 0
+                        for(index in 0 until post!!.count.toInt()) {
+                            val storageRef = Firebase.storage.reference.child("memoImage/$userId/$dogId/$dogMemoId/$dogMemoId$index.png")
+                            val localFile = File.createTempFile("image", "png")
+                            storageRef.getFile(localFile)
+                                .addOnSuccessListener {
+                                    val uri = FileProvider.getUriForFile(applicationContext, "org.techtown.myproject.fileprovider", localFile)
+                                    imageList.add(uri)
+                                    fetchedImageCount++
 
-                            storageReference.downloadUrl.addOnSuccessListener {
-                                Log.d("imageList", it.toString())
-                                imageList.add(it.toString().toUri())
-                            }
+                                    if (fetchedImageCount == post!!.count.toInt()) {
+                                        galleryAdapter.notifyDataSetChanged()
+                                    }
+                                }
+                                .addOnFailureListener {
+                                    Log.d("imageEditList", "이미지 가져오기 실패")
+                                }
                         }
-                        Log.d("imageList", imageList.toString())
                     }
-                    galleryAdapter.notifyDataSetChanged() */
 
                 } catch (e: Exception) {
                     Log.d(TAG, "메모 기록 삭제 완료")
@@ -176,10 +188,20 @@ class DogMemoEditActivity : AppCompatActivity() {
     }
 
     private fun imageUpload(key : String) { // 이미지를 storage에 업로드하는 함수
+
         val storage = Firebase.storage
         val storageRef = storage.reference
 
-        for(cnt in 0 until count) {
+        if (originCount >= 1) { // 기존의 이미지가 존재했다면 전부 삭제함
+            for (index in 0 until originCount) {
+                Firebase.storage.reference.child("memoImage/$userId/$dogId/$key/$key$index.png")
+                    .delete().addOnSuccessListener { // 사진 삭제
+                    }.addOnFailureListener {
+                    }
+            }
+        }
+
+        for(cnt in 0 until count) { // 수정된 이미지들을 storage에 업로드함
             val mountainsRef = storageRef.child("memoImage/$userId/$dogId/$key/$key$cnt.png")
 
             var uploadTask = mountainsRef.putFile(imageList[cnt])
