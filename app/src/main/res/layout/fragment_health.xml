@@ -52,6 +52,15 @@
                         android:textSize="15sp"
                         app:layout_constraintStart_toStartOf="@+id/peePlusBtn" />
 
+                    <TextView
+                        android:id="@+id/totalPeeArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/bold"
+                        android:textColor="#4682B4"
+                        android:textSize="15sp" />
+
                 </LinearLayout>
 
                 <Button
@@ -103,6 +112,15 @@
                         android:textSize="15sp"
                         app:layout_constraintStart_toStartOf="@+id/dungPlusBtn" />
 
+                    <TextView
+                        android:id="@+id/totalDungArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/bold"
+                        android:textColor="#4682B4"
+                        android:textSize="15sp" />
+
                 </LinearLayout>
 
                 <Button
@@ -153,6 +171,16 @@
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         app:layout_constraintStart_toStartOf="@+id/vomitPlusBtn" />
+
+                    <TextView
+                        android:id="@+id/totalVomitArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/bold"
+                        android:textColor="#4682B4"
+                        android:textSize="15sp" />
+
                 </LinearLayout>
 
                 <Button
