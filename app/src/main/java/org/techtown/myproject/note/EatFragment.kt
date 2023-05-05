@@ -40,10 +40,7 @@ class EatFragment() : Fragment() {
     lateinit var waterPlusBtn : Button
 
     private lateinit var totalMealArea : TextView
-    var totalMeal = 0
-
     private lateinit var totalSnackArea : TextView
-
     private lateinit var totalTonicArea : TextView
 
     private lateinit var mealListView : RecyclerView
@@ -282,7 +279,7 @@ class EatFragment() : Fragment() {
                     mealDataList.clear()
 
                     totalMealArea.text = ""
-                    totalMeal = 0
+                    var totalMeal = 0
 
                     var mealMap : MutableMap<DogMealModel, Long> = mutableMapOf()
                     var mealSortedMap : MutableMap<DogMealModel, Long> = mutableMapOf()
@@ -300,7 +297,9 @@ class EatFragment() : Fragment() {
                         mealDataList.add(key)
                     }
 
-                    totalMealArea.text = totalMeal.toString() + "g"
+                    if(totalMeal > 0)
+                        totalMealArea.text = totalMeal.toString() + "g"
+
                     mealRVAdapter.notifyDataSetChanged() // 데이터 동기화
 
                 } catch (e: Exception) {
