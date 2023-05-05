@@ -29,6 +29,8 @@ class NoteFragment: Fragment() {
 
     lateinit var sharedPreferences: SharedPreferences
 
+    lateinit var scrollView : ScrollView
+
     lateinit var layoutDetail : MaterialCardView
     lateinit var layoutBtn : ImageView
 
@@ -67,6 +69,8 @@ class NoteFragment: Fragment() {
         mDatabaseReference = FBRef.userRef.child(uid)
         sharedPreferences = v!!.context.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
         mainDogId = sharedPreferences.getString(uid, "").toString()
+
+        scrollView = v!!.findViewById(R.id.scrollView)
 
         layoutDetail = v!!.findViewById(R.id.layoutDetail)
         layoutBtn = v!!.findViewById(R.id.layoutBtn)
@@ -108,6 +112,8 @@ class NoteFragment: Fragment() {
             bundle = Bundle(1)
             bundle.putString("nowDate", nowDate.year.toString() + "." + (nowDate.month + 1).toString() + "." +nowDate.day.toString())
             setDate(v, bundle)
+
+            scrollView.smoothScrollTo(0,0)
         }
 
         val todayBtn = v.findViewById<Button>(R.id.todayBtn)
