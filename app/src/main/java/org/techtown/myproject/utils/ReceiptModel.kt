@@ -12,5 +12,6 @@ class ReceiptModel(
     val payMonth : String = "", // 할부 개월수
     val nowPayMonth : String = "", // 할부 몇 개월째인지, 3개월 할부인데 1개월째라면 1, 3개월째라면 3
     val place : String = "", // 장소
-    val content : String = "" // 내용
+    val content : String = "", // 내용
+    val imgCnt : String = "" // 사진 개수
 )

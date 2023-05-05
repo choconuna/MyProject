@@ -179,13 +179,13 @@ class ReceiptRecordFragment : Fragment() {
 
                     Log.d("receiptDataList", receiptDataList.toString())
                 } catch (e: Exception) {
-                    Log.d(TAG, "가계부 기록 삭제 완료")
+                    Log.d("receiptError", e.toString())
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                Log.d("receiptError", databaseError.toString())
             }
         }
         FBRef.receiptRef.child(userId).addValueEventListener(postListener)

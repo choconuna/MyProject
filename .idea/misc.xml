@@ -40,6 +40,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_round_arrow_drop_down_24.xml" value="0.1925" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_round_arrow_drop_up_24.xml" value="0.1925" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_round_arrow_upward_24.xml" value="0.1925" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_round_edit_write.xml" value="0.1945" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_round_horizontal_rule_24.xml" value="0.1925" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_round_pause.xml" value="0.2095" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/drawable/ic_round_receipt_long_24.xml" value="0.132" />
@@ -125,6 +126,7 @@
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_profile_edit.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_re_comment_edit.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_receipt_record_edit.xml" value="0.264" />
+        <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_receipt_record_in.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_search_community.xml" value="0.264" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_search_deal_local.xml" value="0.25104166666666666" />
         <entry key="..\:/Users/dlthw/AndroidStudioProjects/GProject/app/src/main/res/layout/activity_search_local.xml" value="0.264" />

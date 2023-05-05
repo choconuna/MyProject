@@ -70,10 +70,12 @@ class ReceiptReVAdapter(val receiptList : ArrayList<Receipt>):
                     val decimalFormat = DecimalFormat("#,###")
                     holder.dayPriceArea!!.text = decimalFormat.format(dayPrice.toString().replace(",","").toDouble()) + "원"
                 } catch (e: Exception) {
+                    Log.d("receiptError", e.toString())
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
+                Log.d("receiptError", databaseError.toString())
             }
         }
         FBRef.receiptRef.child(myUid).addValueEventListener(postListener)

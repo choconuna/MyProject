@@ -67,7 +67,7 @@ class ReceiptDetailReVAdapter(val receiptDetailList : ArrayList<ReceiptModel>):
         holder.priceArea!!.text = decimalFormat.format(receiptDetailList[position].price.replace(",","").toDouble()) + "원"
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(holder!!.view!!.context, ReceiptRecordEditActivity::class.java)
+            val intent = Intent(holder!!.view!!.context, ReceiptRecordInActivity::class.java)
             intent.putExtra("key", receiptDetailList[position].receiptId)
             holder!!.view!!.context.startActivity(intent)
         }

@@ -1,6 +1,8 @@
 package org.techtown.myproject.receipt
 
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -10,9 +12,16 @@ import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
+import org.techtown.myproject.community.GalleryAdapter
 import org.techtown.myproject.utils.DogMealModel
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.ReceiptModel
@@ -46,6 +55,15 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
 
     private val decimalFormat = DecimalFormat("#,###")
     private var result: String = ""
+
+    lateinit var galleryAdapter: GalleryAdapter
+    var imageList : ArrayList<Uri> = ArrayList()
+    lateinit var recyclerView: RecyclerView
+    lateinit var layoutManager : RecyclerView.LayoutManager
+
+    private lateinit var imageButton : ImageView
+    private lateinit var imageCnt : TextView
+    private var count = 0 // 첨부한 사진 수
 
     private lateinit var plusBtn : Button
 
@@ -157,6 +175,25 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
 
         priceArea.addTextChangedListener(watcher)
 
+        // 사진 클릭 시 사진 삭제하기
+        galleryAdapter.setItemClickListener(object: GalleryAdapter.OnItemClickListener {
+            override fun onClick(v: View, position: Int) {
+                Log.d("removeImage", "이미지 삭제")
+                imageList.remove(imageList[position]) // imageList에서 해당 사진 삭제
+                count -= 1 // 첨부한 사진의 수를 1 줄임
+                imageCnt.text = count.toString() // 첨부한 사진의 수를 반영
+                Log.d("imageList", imageList.toString())
+                galleryAdapter.notifyDataSetChanged()
+            }
+        })
+
+        imageButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            activityResult.launch(intent)
+        }
+
         plusBtn.setOnClickListener {
             val price = priceArea.text.toString().replace(",", "")
             val place = placeArea.text.toString().trim()
@@ -187,21 +224,36 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
 
                     if(payMethod == "현금") {
                         key = FBRef.receiptRef.child(userId).push().key.toString() // 키 값을 먼저 받아옴
-                        FBRef.receiptRef.child(userId).child(key).setValue(ReceiptModel(userId, key, "", selectedDate, category, price, payMethod, divide, "", "", place, content))
+                        FBRef.receiptRef.child(userId).child(key).setValue(ReceiptModel(userId, key, "", selectedDate, category, price, payMethod, divide, "", "", place, content, count.toString()))
+
+                        if(count >= 1) { // 이미지 첨부되었을 시 이미지를 storage로 업로드
+                            imageUpload(key)
+                        }
                     } else if(payMethod == "카드" && divide == "일시불") {
                         key = FBRef.receiptRef.child(userId).push().key.toString() // 키 값을 먼저 받아옴
-                        FBRef.receiptRef.child(userId).child(key).setValue(ReceiptModel(userId, key, "", selectedDate, category, price, payMethod, divide, "", "", place, content))
+                        FBRef.receiptRef.child(userId).child(key).setValue(ReceiptModel(userId, key, "", selectedDate, category, price, payMethod, divide, "", "", place, content, count.toString()))
+
+                        if(count >= 1) { // 이미지 첨부되었을 시 이미지를 storage로 업로드
+                            imageUpload(key)
+                        }
                     } else if(payMethod == "카드" && divide == "할부") {
                         key = FBRef.receiptRef.child(userId).push().key.toString() // 키 값을 먼저 받아옴
-                        FBRef.receiptRef.child(userId).child(key).setValue(ReceiptModel(userId, key, key, selectedDate, category, (price.toInt() / divideMonth.text.toString().toInt()).toString(), payMethod, divide, divideMonth.text.toString(), "1", place, content))
+                        FBRef.receiptRef.child(userId).child(key).setValue(ReceiptModel(userId, key, key, selectedDate, category, (price.toInt() / divideMonth.text.toString().toInt()).toString(), payMethod, divide, divideMonth.text.toString(), "1", place, content, count.toString()))
 
+                        if(count >= 1) { // 이미지 첨부되었을 시 이미지를 storage로 업로드
+                            imageUpload(key)
+                        }
                         for(i in 2 until divideMonth.text.toString().toInt() + 1) {
                             var childKey = FBRef.receiptRef.child(userId).push().key.toString() // 키 값을 먼저 받아옴
                             var date = LocalDate.of(selectedDateSp[0].toInt(), selectedDateSp[1].toInt(), selectedDateSp[2].toInt())
                             date = date.plusMonths((i-1).toLong())
                             val sfd = DateTimeFormatter.ofPattern(formatt)
 
-                            FBRef.receiptRef.child(userId).child(childKey).setValue(ReceiptModel(userId, childKey, key, date.format(sfd), category, (price.toInt() / divideMonth.text.toString().toInt()).toString(), payMethod, divide, divideMonth.text.toString(), i.toString(), place, content))
+                            FBRef.receiptRef.child(userId).child(childKey).setValue(ReceiptModel(userId, childKey, key, date.format(sfd), category, (price.toInt() / divideMonth.text.toString().toInt()).toString(), payMethod, divide, divideMonth.text.toString(), i.toString(), place, content, count.toString()))
+
+                            if(count >= 1) { // 이미지 첨부되었을 시 이미지를 storage로 업로드
+                                imageUpload(childKey)
+                            }
                         }
                     }
 
@@ -238,5 +290,53 @@ class PlusReceiptRecordActivity : AppCompatActivity() {
         val sfd = DateTimeFormatter.ofPattern(formatt)
         selectedDate = date.format(sfd)
         Log.d("selectedDate", selectedDate)
+
+        imageButton = findViewById(R.id.imageBtn)
+        imageCnt = findViewById(R.id.imageCnt)
+
+        galleryAdapter = GalleryAdapter(imageList, this) // 어댑터 초기화
+        recyclerView = findViewById(R.id.imageRecyclerView)
+        recyclerView.setHasFixedSize(true)
+        layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = galleryAdapter
+    }
+
+    private fun imageUpload(key : String) { // 이미지를 storage에 업로드하는 함수
+        val storage = Firebase.storage
+        val storageRef = storage.reference
+
+        for(cnt in 0 until count) {
+            val mountainsRef = storageRef.child("receiptImage/$userId/$key/$key$cnt.png")
+
+            var uploadTask = mountainsRef.putFile(imageList[cnt])
+            uploadTask.addOnFailureListener {
+                // Handle unsuccessful uploads
+            }.addOnSuccessListener { taskSnapshot ->
+                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+            }
+        }
+    }
+
+    private val activityResult : ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) {
+
+        if(it.resultCode == RESULT_OK) { // 결과 코드 OK, 아니면 null
+            if(it.data!!.clipData != null) { // 멀티 이미지일 경우
+                count += it.data!!.clipData!!.itemCount // 선택한 이미지 개수
+
+                for(index in 0 until it.data!!.clipData!!.itemCount) {
+                    val imageUri = it.data!!.clipData!!.getItemAt(index).uri // 이미지 담기
+                    imageList.add(imageUri) // 이미지 추가
+                }
+            } else { // 싱글 이미지일 경우
+                count += it.data!!.clipData!!.itemCount
+                val imageUri = it.data!!.data
+                imageList.add(imageUri!!)
+            }
+            galleryAdapter.notifyDataSetChanged() // 동기화
+            imageCnt.text = count.toString()
+            Log.d("imageList", imageList.toString())
+        }
     }
 }

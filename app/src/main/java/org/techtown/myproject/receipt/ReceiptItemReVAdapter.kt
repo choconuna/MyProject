@@ -61,10 +61,12 @@ class ReceiptItemReVAdapter(val receiptList : ArrayList<Receipt>):
                     receiptDetailRVAdapter.notifyDataSetChanged() // 동기화
                     Log.d("receiptDetailDataList", receiptDetailDataList.toString())
                 } catch (e: Exception) {
+                    Log.d("receiptError", e.toString())
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
+                Log.d("receiptError", databaseError.toString())
             }
         }
         FBRef.receiptRef.child(myUid).addValueEventListener(postListener)
