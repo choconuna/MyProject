@@ -526,7 +526,7 @@ class WeeklyReportFragment : Fragment() {
                     }
 
                     val dogWeight = FBRef.dogRef.child(myUid).child(dogId).child("dogWeight").get().addOnSuccessListener {
-                        val w = it.value.toString().toInt()
+                        val w = it.value.toString().toFloat().toInt()
                         var minWeight = w*50
                         var maxWeight = w*60
 
