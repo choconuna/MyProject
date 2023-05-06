@@ -54,6 +54,7 @@ class RecordFragment : Fragment() {
 
     private val noteFragment by lazy { NoteFragment() }
     private val statisticsFragment by lazy { StatisticsFragment() }
+    private val weeklyReportFragment by lazy { WeeklyReportFragment() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,8 +92,7 @@ class RecordFragment : Fragment() {
 
                 dogProfileImage = post!!.dogProfileFile
 
-                val profileFile =
-                    Firebase.storage.reference.child(dogProfileImage).downloadUrl.addOnCompleteListener(
+                val profileFile = Firebase.storage.reference.child(dogProfileImage).downloadUrl.addOnCompleteListener(
                         OnCompleteListener { task ->
                             if(task.isSuccessful) {
                                 Glide.with(v.context).load(task.result).into(dogProfileImageArea!!)
@@ -114,9 +114,10 @@ class RecordFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val pagerAdapter = PagerFragmentStateAdapter(requireActivity())
-        // 5개의 fragment add
+        // 3개의 fragment add
         pagerAdapter.addFragment(noteFragment)
         pagerAdapter.addFragment(statisticsFragment)
+        pagerAdapter.addFragment(weeklyReportFragment)
 
         // adapter
         viewPager.adapter = pagerAdapter
@@ -127,7 +128,7 @@ class RecordFragment : Fragment() {
             }
         })
         // tablayout attach
-        val tabTitles = listOf<String>("기록", "통계")
+        val tabTitles = listOf<String>("기록", "통계", "주간 리포트")
         TabLayoutMediator(tab_main, viewPager){ tab, position ->
             tab.text = tabTitles[position]
         }.attach()

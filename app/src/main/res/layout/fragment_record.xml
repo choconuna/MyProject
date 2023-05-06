@@ -61,34 +61,40 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabIndicatorColor="@color/mainColor"
-                app:tabIndicatorGravity="bottom"
-                app:tabTextColor="#000000"
-                app:tabSelectedTextColor="@color/mainColor"
-                app:tabBackground="@color/white"
-                tools:ignore="MissingConstraints"
-                app:tabTextAppearance="@style/TabText">
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="@color/mainColor"
+        app:tabIndicatorGravity="bottom"
+        app:tabTextColor="#000000"
+        app:tabSelectedTextColor="@color/mainColor"
+        app:tabBackground="@color/white"
+        tools:ignore="MissingConstraints"
+        app:tabTextAppearance="@style/TabText">
 
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/note"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="기록"/>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="기록"/>
 
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/statistics"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="통계" />
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/statistics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="통계" />
 
-            </com.google.android.material.tabs.TabLayout>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/weeklyReport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="주간 리포트" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
