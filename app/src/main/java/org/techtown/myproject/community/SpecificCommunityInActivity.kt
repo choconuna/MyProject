@@ -29,6 +29,7 @@ import org.techtown.myproject.R
 import org.techtown.myproject.chat.ChatInActivity
 import org.techtown.myproject.comment.CommentModel
 import org.techtown.myproject.comment.CommentReVAdapter
+import org.techtown.myproject.utils.BlockModel
 import org.techtown.myproject.utils.ChatConnection
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.FCMToken
@@ -56,6 +57,8 @@ class SpecificCommunityInActivity : AppCompatActivity() {
     private lateinit var key : String
 
     private lateinit var writerArea : LinearLayout
+
+    private val blockList = mutableListOf<String>() // 차단된 uid 값을 넣는 리스트
 
     lateinit var imageListView : RecyclerView
     private val imageDataList = ArrayList<String>() // 게시글의 사진을 넣는 리스트
@@ -122,8 +125,7 @@ class SpecificCommunityInActivity : AppCompatActivity() {
                         val writerUid = dataModel!!.uid // 작성자 key id
                         var userName = ""
 
-                        FBRef.userRef.child(writerUid).child("nickName").get()
-                            .addOnSuccessListener {
+                        FBRef.userRef.child(writerUid).child("nickName").get().addOnSuccessListener {
                                 userName = it.value.toString() // 게시글에 작성자의 닉네임을 가져옴
 
                                 if (myUid != writerUid) { // 작성자의 uid가 현재 사용자의 uid와 같지 않을 경우
@@ -137,9 +139,9 @@ class SpecificCommunityInActivity : AppCompatActivity() {
                                     val userNameArea = alertDialog.findViewById<TextView>(R.id.userNameArea)
                                     userNameArea!!.text = userName
 
-                                    val yesBtn = alertDialog.findViewById<Button>(R.id.yesBtn)
-                                    yesBtn?.setOnClickListener { // 예 버튼 클릭 시
-                                        Log.d(TAG, "yes Button Clicked")
+                                    val chatBtn = alertDialog.findViewById<Button>(R.id.chatBtn)
+                                    chatBtn?.setOnClickListener { // 채팅하기 버튼 클릭 시
+                                        Log.d(TAG, "chat Button Clicked")
 
                                         val postListener = object : ValueEventListener {
                                             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -186,11 +188,19 @@ class SpecificCommunityInActivity : AppCompatActivity() {
                                         alertDialog.dismiss()
                                     }
 
-                                    val noBtn = alertDialog.findViewById<Button>(R.id.noBtn)
-                                    noBtn?.setOnClickListener {  // 아니오 버튼 클릭 시
-                                        Log.d(TAG, "no Button Clicked")
+                                    val blockBtn = alertDialog.findViewById<Button>(R.id.blockBtn)
+                                    blockBtn?.setOnClickListener {  // 차단하기 버튼 클릭 시
+                                        Log.d(TAG, "block Button Clicked")
 
-                                        alertDialog.dismiss() // 다이얼로그 창 닫기
+                                        val key = FBRef.blockRef.child(myUid).push().key.toString() // 키 값을 먼저 받아옴
+                                        FBRef.blockRef.child(myUid).child(key).setValue(BlockModel(key, myUid, writerUid)) // 차단 데이터 생성
+
+                                        FBRef.userRef.child(writerUid).child("nickName").get().addOnSuccessListener {
+                                            Toast.makeText(applicationContext, it.value.toString() + "님이 차단되었습니다.", Toast.LENGTH_SHORT).show()
+
+                                            alertDialog.dismiss() // 다이얼로그 창 닫기
+                                            finish() // 창 닫기
+                                        }
                                     }
                                 }
                             }
@@ -206,8 +216,6 @@ class SpecificCommunityInActivity : AppCompatActivity() {
             }
             FBRef.communityRef.child(category).child(key).addValueEventListener(postListener)
         }
-
-        // getImageData(key)
 
         findViewById<ImageView>(R.id.sendBtn).setOnClickListener { // 댓글 입력 버튼 클릭 시
             insertComment(key)
@@ -225,6 +233,8 @@ class SpecificCommunityInActivity : AppCompatActivity() {
 
             mInputMethodManager.hideSoftInputFromWindow(commentArea.windowToken, 0)
         }
+
+        getBlockData()
 
         commentRVAdapter = CommentReVAdapter(commentDataList)
         commentListView = findViewById(R.id.commentListView)
@@ -286,6 +296,32 @@ class SpecificCommunityInActivity : AppCompatActivity() {
         }
     }
 
+    private fun getBlockData() { // 파이어베이스로부터 차단된 uid 데이터 불러오기
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+
+                    blockList.clear()
+
+                    for(dataModel in dataSnapshot.children) {
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(BlockModel::class.java)
+                        blockList.add(item!!.blockUid)
+                    }
+
+                    Log.d("blockList", blockList.toString())
+                } catch(e : Exception) { }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.blockRef.child(myUid).addValueEventListener(postListener)
+    }
+
     private fun deleteCommunityImage(key : String) {
         val postListener = object : ValueEventListener { // 파이어베이스 안의 값이 변화할 시 작동됨
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -315,17 +351,20 @@ class SpecificCommunityInActivity : AppCompatActivity() {
     private fun deleteCommentData(key : String) { // 게시글 내의 댓글을 삭제하는 함수
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for(dataModel in dataSnapshot.children) {
-                    Log.d(TAG, dataModel.toString())
-                    // dataModel.key
-                    val item = dataModel.getValue(CommentModel::class.java)
-                    Log.d("communityId", dataModel.key+key+item!!.communityId)
-                    if (key == item!!.communityId) {
-                        FBRef.commentRef.child(key).child(dataModel.key!!).removeValue()
-                    }
-                }
+                try {
 
-                Log.d(TAG, "deleteCommentData")
+                    for(dataModel in dataSnapshot.children) {
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(CommentModel::class.java)
+                        Log.d("communityId", dataModel.key+key+item!!.communityId)
+                        if (key == item!!.communityId) {
+                            FBRef.commentRef.child(key).child(dataModel.key!!).removeValue()
+                        }
+                    }
+
+                    Log.d(TAG, "deleteCommentData")
+                } catch(e : Exception) { }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -478,16 +517,42 @@ class SpecificCommunityInActivity : AppCompatActivity() {
     private fun getCommentData(key : String) { // 파이어베이스로부터 댓글 데이터 불러오기
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    blockList.clear()
 
-                commentDataList.clear()
+                    for(dataModel in dataSnapshot.children) {
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(BlockModel::class.java)
+                        blockList.add(item!!.blockUid)
+                    }
 
-                for(dataModel in dataSnapshot.children) {
-                    val item = dataModel.getValue(CommentModel::class.java)
-                    commentDataList.add(item!!)
-                }
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try {
+                                commentDataList.clear()
 
-                Log.d("commentDataList", commentDataList.toString())
-                commentRVAdapter.notifyDataSetChanged() // 데이터 동기화
+                                for(dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(CommentModel::class.java)
+
+                                    if (!blockList.contains(item!!.uid)) {
+                                        commentDataList.add(item!!)
+                                    }
+                                }
+
+                                Log.d("commentDataList", commentDataList.toString())
+                                commentRVAdapter.notifyDataSetChanged() // 데이터 동기화
+                            } catch(e : Exception) { }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                        }
+                    }
+                    FBRef.commentRef.child(key).addValueEventListener(postListener)
+
+                } catch(e : Exception) { }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -495,7 +560,7 @@ class SpecificCommunityInActivity : AppCompatActivity() {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        FBRef.commentRef.child(key).addValueEventListener(postListener)
+        FBRef.blockRef.child(myUid).addValueEventListener(postListener)
     }
 
     private fun insertComment(key : String) { // 댓글을 파이어베이스 DB에 삽입하는 함수

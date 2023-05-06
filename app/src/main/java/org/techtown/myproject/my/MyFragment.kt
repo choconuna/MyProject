@@ -13,6 +13,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -172,6 +173,12 @@ class MyFragment : Fragment() {
         val mainDogChoice = v?.findViewById<ConstraintLayout>(R.id.choiceMainDog)
         mainDogChoice!!.setOnClickListener {
             val intent = Intent(context, ChoiceMainDogActivity::class.java)
+            startActivity(intent)
+        }
+
+        val blockManagement = v?.findViewById<ConstraintLayout>(R.id.blockManagement)
+        blockManagement!!.setOnClickListener {
+            val intent = Intent(context, ManageBlockActivity::class.java)
             startActivity(intent)
         }
 

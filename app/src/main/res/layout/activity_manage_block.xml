@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/white"
-    tools:context=".my.ChoiceMainDogActivity"
-    android:orientation="vertical">
+    tools:context=".my.ManageBlockActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/bold"
             android:gravity="center"
-            android:text="대표 반려견 관리"
+            android:text="차단 목록 관리"
             android:textColor="@color/mainColor"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -44,8 +44,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ListView
-        android:id="@+id/dogListView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/blockRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

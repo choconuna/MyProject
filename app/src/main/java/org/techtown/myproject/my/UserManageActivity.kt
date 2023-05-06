@@ -62,7 +62,7 @@ class UserManageActivity : AppCompatActivity() {
     private fun getUsers() {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try { // 사료 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
+                try {
                     usersReDataList.clear()
 
                     for (dataModel in dataSnapshot.children) {

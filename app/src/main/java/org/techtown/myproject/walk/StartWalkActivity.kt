@@ -111,6 +111,9 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
             isPlaying = true
 
             handler.post(runnable)
+
+            // 위치 업데이트 리스너 등록
+            setUpdateLocationListner()
         }
 
         pauseBtn.setOnClickListener { // 중지 버튼 클릭 시
@@ -118,6 +121,11 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
             playBtn.visibility = VISIBLE
 
             isPlaying = false
+
+            // 위치 갱신 중지
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+            // 경로 표시 중지
+            path.map = null
 
             handler.removeCallbacks(runnable)
         }
@@ -192,9 +200,32 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(naverMap: NaverMap) {
+//    override fun onMapReady(naverMap: NaverMap) {
+//
+//        mNaverMap = naverMap // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
+//        mNaverMap.locationSource = mLocationSource
+//        mNaverMap.locationTrackingMode = LocationTrackingMode.Follow
+//
+//        // UI 컨드롤 재배치
+//        var uiSettings = mNaverMap.uiSettings
+//        uiSettings.isCompassEnabled = true
+//        uiSettings.isZoomControlEnabled = true
+//        uiSettings.isLocationButtonEnabled = true
+//
+//        // 권한 확인. 결과는 onRequestPermissionsResult 콜백 메소드 호출
+//        ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE)
+//
+//        fusedLocationProviderClient =
+//            LocationServices.getFusedLocationProviderClient(this) // gps 자동으로 받아오기
+//        setUpdateLocationListner()
+//    }
 
+    override fun onMapReady(naverMap: NaverMap) {
         mNaverMap = naverMap // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this) // gps 자동으로 받아오기
+        setUpdateLocationListner()
+
         mNaverMap.locationSource = mLocationSource
         mNaverMap.locationTrackingMode = LocationTrackingMode.Follow
 
@@ -206,10 +237,6 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 권한 확인. 결과는 onRequestPermissionsResult 콜백 메소드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE)
-
-        fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(this) // gps 자동으로 받아오기
-        setUpdateLocationListner()
     }
 
     override fun onRequestPermissionsResult(
@@ -236,7 +263,7 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
         val locationRequest = LocationRequest.create()
         locationRequest.run {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY //높은 정확도
-            interval = 1000 //1초에 한번씩 GPS 요청
+            interval = 1000 //1초에 한 번씩 GPS 요청
         }
 
         val g = Geocoder(this)
@@ -264,9 +291,10 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     coords.add(LatLng(location.latitude, location.longitude))
                     if (coords.size > 1) {
-                        path.coords = coords
+                        path.coords = coords // 이전 좌표에서 새로운 좌표로 가는 경로
                         path.map = mNaverMap
 
+                        // 이전 좌표와 새로운 좌표의 거리를 계산
                         var myLoc = Location(LocationManager.NETWORK_PROVIDER)
                         var targetLoc = Location(LocationManager.NETWORK_PROVIDER)
 
@@ -276,14 +304,7 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
                         targetLoc.latitude = location.latitude
                         targetLoc.longitude = location.longitude
 
-//                        distance += abs(distance(myLoc.latitude, myLoc.longitude, targetLoc.latitude, targetLoc.longitude))
-                        distance += distance(
-                            myLoc.latitude,
-                            myLoc.longitude,
-                            targetLoc.latitude,
-                            targetLoc.longitude,
-                            'K'
-                        )
+                        distance += haversine(myLoc.latitude, myLoc.longitude, targetLoc.latitude, targetLoc.longitude)
 
                         val df = DecimalFormat("#.##")
                         df.roundingMode = RoundingMode.DOWN
@@ -291,6 +312,7 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
 
                         distanceArea.text = roundoff
                     }
+
                     setLastLocation(location)
                 }
             }
@@ -304,10 +326,26 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     } //좌표를 주기적으로 갱신
 
+//    fun setLastLocation(location: Location) {
+//        val myLocation = LatLng(location.latitude, location.longitude)
+//        // coords.add(LatLng(location.latitude, location.longitude))
+//        if(coords.size > 2) {
+//            path.coords = coords
+//            path.map = mNaverMap
+//            path.width = 15
+//            path.color = Color.parseColor("#c08457")
+//        }
+//
+//        val cameraUpdate = CameraUpdate.scrollTo(myLocation)
+//        mNaverMap.moveCamera(cameraUpdate)
+//        mNaverMap.maxZoom = 18.0
+//        mNaverMap.minZoom = 5.0
+//    }
+
     fun setLastLocation(location: Location) {
         val myLocation = LatLng(location.latitude, location.longitude)
-        // coords.add(LatLng(location.latitude, location.longitude))
-        if(coords.size > 2) {
+
+        if (coords.size >= 2) {
             path.coords = coords
             path.map = mNaverMap
             path.width = 15
@@ -320,34 +358,12 @@ class StartWalkActivity : AppCompatActivity(), OnMapReadyCallback {
         mNaverMap.minZoom = 5.0
     }
 
-    fun distance(lat1: Double, lon1: Double, lat2: Double, lon2: Double, unit: Char): Double { // GPS의 위도와 경도로 거리 구하기
-        val theta: Double
-        var dist: Double
-        return if (lat1 == lat2 && lon1 == lon2) {
-            0.toDouble()
-        } else {
-            theta = lon1 - lon2
-            dist =
-                sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(
-                    deg2rad(theta)
-                )
-            dist = acos(dist)
-            dist = rad2deg(dist)
-            dist *= 60 * 1.1515
-            when (unit) {
-                'M' -> {}
-                'K' -> dist *= 1.609344
-                'N' -> dist *= 0.8684
-            }
-            dist
-        }
-    }
-
-    fun deg2rad(deg: Double): Double {
-        return deg * Math.PI / 180
-    }
-
-    fun rad2deg(rad: Double): Double {
-        return rad * 180 / Math.PI
+    fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double { // 경도와 위도를 가지고 이동 거리를 구하는 함수
+        val r = 6371 // 지구 반경(km)
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val a = sin(dLat / 2) * sin(dLat / 2) + cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return r * c
     }
 }

@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import org.techtown.myproject.R
 import org.techtown.myproject.note.CheckUpInputReVAdapter
+import org.techtown.myproject.utils.BlockModel
 import org.techtown.myproject.utils.DealModel
 import org.techtown.myproject.utils.FBRef
 import java.io.IOException
@@ -51,6 +52,8 @@ class DealFragment : Fragment() {
     private lateinit var thoroughfare : String
 
     private lateinit var myUid : String
+
+    private val blockList = mutableListOf<String>() // 차단된 uid 값을 넣는 리스트
 
     private lateinit var locationArea : TextView
     private var locationList : MutableMap<String, Int> = mutableMapOf()
@@ -174,66 +177,41 @@ class DealFragment : Fragment() {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
-                    dealList.clear()
-                    dealMap.clear()
+                    blockList.clear()
 
                     for(dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DealModel::class.java)
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(BlockModel::class.java)
+                        blockList.add(item!!.blockUid)
+                    }
 
-                        if (item!!.state != "거래 완료") { // 거래가 완료된 데이터 제외
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try {
+                                dealList.clear()
+                                dealMap.clear()
 
-                            if(checkedLocation == "" && checkedCategory.isEmpty()) { // 선택된 지역과 선택된 카테고리가 없을 경우 -> 처음으로 화면에 진입했을 경우
+                                for(dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DealModel::class.java)
 
-                                val date = item!!.date
-                                val sp = date.split(" ")
-                                val dateSp = sp[0].split(".")
-                                val timeSp = sp[1].split(":")
+                                    if (!blockList.contains(item!!.sellerId)) {
+                                        if (item!!.state != "거래 완료") { // 거래가 완료된 데이터 제외
 
-                                var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
+                                            if (checkedLocation == "" && checkedCategory.isEmpty()) { // 선택된 지역과 선택된 카테고리가 없을 경우 -> 처음으로 화면에 진입했을 경우
 
-                                dealMap[item!!] = dayNum.toLong()
-                            } else { // 선택된 지역과 선택된 카테고리가 존재할 경우
-                                if(checkedLocation == "전체 지역") { // 전체 지역이 선택됐을 경우
-                                    if(checkedCategory.contains("전체")) {
-                                        val date = item!!.date
-                                        val sp = date.split(" ")
-                                        val dateSp = sp[0].split(".")
-                                        val timeSp = sp[1].split(":")
-
-                                        var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
-
-                                        dealMap[item!!] = dayNum.toLong()
-                                    } else {
-                                        for(i in 0 until checkedCategory.size) {
-                                            if (item!!.category == checkedCategory[i]) {
                                                 val date = item!!.date
                                                 val sp = date.split(" ")
                                                 val dateSp = sp[0].split(".")
                                                 val timeSp = sp[1].split(":")
 
-                                                var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
+                                                var dayNum =
+                                                    dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
 
                                                 dealMap[item!!] = dayNum.toLong()
-                                            }
-                                        }
-                                    }
-                                } else if(checkedLocation != "전체 지역") {
-                                    if(checkedLocation.last() == '동') {
-                                        if(checkedCategory.contains("전체")) {
-                                            if(item!!.location.contains(checkedLocation.substring(0, 2))) {
-                                                val date = item!!.date
-                                                val sp = date.split(" ")
-                                                val dateSp = sp[0].split(".")
-                                                val timeSp = sp[1].split(":")
-
-                                                var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
-
-                                                dealMap[item!!] = dayNum.toLong()
-                                            }
-                                        } else {
-                                            if(item!!.location.contains(checkedLocation.substring(0, 2))) {
-                                                for(i in 0 until checkedCategory.size) {
-                                                    if (item!!.category == checkedCategory[i]) {
+                                            } else { // 선택된 지역과 선택된 카테고리가 존재할 경우
+                                                if (checkedLocation == "전체 지역") { // 전체 지역이 선택됐을 경우
+                                                    if (checkedCategory.contains("전체")) {
                                                         val date = item!!.date
                                                         val sp = date.split(" ")
                                                         val dateSp = sp[0].split(".")
@@ -242,56 +220,106 @@ class DealFragment : Fragment() {
                                                         var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
 
                                                         dealMap[item!!] = dayNum.toLong()
+                                                    } else {
+                                                        for (i in 0 until checkedCategory.size) {
+                                                            if (item!!.category == checkedCategory[i]) {
+                                                                val date = item!!.date
+                                                                val sp = date.split(" ")
+                                                                val dateSp = sp[0].split(".")
+                                                                val timeSp = sp[1].split(":")
+
+                                                                var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
+
+                                                                dealMap[item!!] = dayNum.toLong()
+                                                            }
+                                                        }
                                                     }
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if(checkedCategory.contains("전체")) {
-                                            if(item!!.location.contains(checkedLocation)) {
-                                                val date = item!!.date
-                                                val sp = date.split(" ")
-                                                val dateSp = sp[0].split(".")
-                                                val timeSp = sp[1].split(":")
+                                                } else if (checkedLocation != "전체 지역") {
+                                                    if (checkedLocation.last() == '동') {
+                                                        if (checkedCategory.contains("전체")) {
+                                                            if (item!!.location.contains(checkedLocation.substring(0, 2))) {
+                                                                val date = item!!.date
+                                                                val sp = date.split(" ")
+                                                                val dateSp = sp[0].split(".")
+                                                                val timeSp = sp[1].split(":")
 
-                                                var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
+                                                                var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
 
-                                                dealMap[item!!] = dayNum.toLong()
-                                            }
-                                        } else {
-                                            if(item!!.location.contains(checkedLocation)) {
-                                                for(i in 0 until checkedCategory.size) {
-                                                    if (item!!.category == checkedCategory[i]) {
-                                                        val date = item!!.date
-                                                        val sp = date.split(" ")
-                                                        val dateSp = sp[0].split(".")
-                                                        val timeSp = sp[1].split(":")
+                                                                dealMap[item!!] = dayNum.toLong()
+                                                            }
+                                                        } else {
+                                                            if (item!!.location.contains(checkedLocation.substring(0, 2))) {
+                                                                for (i in 0 until checkedCategory.size) {
+                                                                    if (item!!.category == checkedCategory[i]) {
+                                                                        val date = item!!.date
+                                                                        val sp = date.split(" ")
+                                                                        val dateSp = sp[0].split(".")
+                                                                        val timeSp = sp[1].split(":")
 
-                                                        var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
+                                                                        var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
 
-                                                        dealMap[item!!] = dayNum.toLong()
+                                                                        dealMap[item!!] = dayNum.toLong()
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        if (checkedCategory.contains("전체")) {
+                                                            if (item!!.location.contains(checkedLocation)) {
+                                                                val date = item!!.date
+                                                                val sp = date.split(" ")
+                                                                val dateSp = sp[0].split(".")
+                                                                val timeSp = sp[1].split(":")
+
+                                                                var dayNum = dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
+
+                                                                dealMap[item!!] = dayNum.toLong()
+                                                            }
+                                                        } else {
+                                                            if (item!!.location.contains(checkedLocation)) {
+                                                                for (i in 0 until checkedCategory.size) {
+                                                                    if (item!!.category == checkedCategory[i]) {
+                                                                        val date = item!!.date
+                                                                        val sp = date.split(" ")
+                                                                        val dateSp = sp[0].split(".")
+                                                                        val timeSp = sp[1].split(":")
+
+                                                                        var dayNum =
+                                                                            dateSp[0] + dateSp[1] + dateSp[2] + timeSp[0] + timeSp[1] + timeSp[2]
+
+                                                                        dealMap[item!!] = dayNum.toLong()
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
                                     }
                                 }
+
+                                Log.d("sortedDealMap", dealMap.toString())
+                                val sortedDealMap = sortMapByKey(dealMap)
+                                Log.d("sortedDealMap", sortedDealMap.toString())
+                                for((key, value) in sortedDealMap.entries) {
+                                    dealList.add(key)
+                                }
+
+                                dealRVAdapter.notifyDataSetChanged()
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, "거래 기록 삭제 완료")
                             }
                         }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                        }
                     }
-
-                    Log.d("sortedDealMap", dealMap.toString())
-                    val sortedDealMap = sortMapByKey(dealMap)
-                    Log.d("sortedDealMap", sortedDealMap.toString())
-                    for((key, value) in sortedDealMap.entries) {
-                        dealList.add(key)
-                    }
-
-                    dealRVAdapter.notifyDataSetChanged()
-
-                } catch (e: Exception) {
-                    Log.d(TAG, "거래 기록 삭제 완료")
-                }
+                    FBRef.dealRef.addValueEventListener(postListener)
+                } catch(e : Exception) { }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -299,7 +327,7 @@ class DealFragment : Fragment() {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        FBRef.dealRef.addValueEventListener(postListener)
+        FBRef.blockRef.child(myUid).addValueEventListener(postListener)
     }
 
     private fun sortMapByKey(map: MutableMap<DealModel, Long>): LinkedHashMap<DealModel, Long> { // 시간순으로 정렬
@@ -523,7 +551,7 @@ class DealFragment : Fragment() {
 
         val backBtn = dialogView?.findViewById<ImageView>(R.id.backBtn)
         backBtn!!.setOnClickListener {
-           dialog.dismiss()
+            dialog.dismiss()
         }
     }
 }

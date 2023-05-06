@@ -22,13 +22,21 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
 import org.techtown.myproject.community.SpecificCommunityEditActivity
+import org.techtown.myproject.deal.DealImageReVAdapter
 import org.techtown.myproject.receipt.ReceiptDetailReVAdapter
+import org.techtown.myproject.utils.BlockModel
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.ReCommentModel
 import org.techtown.myproject.utils.ReceiptModel
 
 class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
     RecyclerView.Adapter<CommentReVAdapter.CommentViewHolder>() {
+
+    private val TAG = CommentReVAdapter::class.java.simpleName
+
+    private lateinit var myUid : String
+
+    private val blockList = mutableListOf<String>() // 차단된 uid 값을 넣는 리스트
 
     private lateinit var reCommentRecyclerView : RecyclerView
     private val reCommentDataList = ArrayList<ReCommentModel>() // 대댓글 목록 리스트
@@ -64,10 +72,12 @@ class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
         reCommentRecyclerView.adapter = reCommentRVAdapter
 
         val writerUid = commentList[position].uid // 댓글 작성자 uid
-        val myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
+        myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
         val communityId = commentList[position].communityId // 댓글이 게시된 게시글의 id
         val commentId = commentList[position].commentId
         val ref = FBRef.userRef
+
+        getBlockData()
 
         val itemLayoutView = holder.view?.findViewById<LinearLayout>(R.id.itemView)
         if(writerUid == myUid) { // 댓글 작성자가 나일 경우
@@ -138,27 +148,53 @@ class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
 
         holder!!.timeArea!!.text = commentList[position].commentTime
 
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
 
-                    reCommentDataList.clear()
+                    blockList.clear()
 
                     for(dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(ReCommentModel::class.java)
-                        reCommentDataList.add(item!!)
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(BlockModel::class.java)
+                        blockList.add(item!!.blockUid)
                     }
 
-                    Log.d("reCommentDataList", reCommentDataList.toString())
-                    reCommentRVAdapter.notifyDataSetChanged() // 데이터 동기화
-                } catch(e : Exception) {
-                }
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try {
+                                reCommentDataList.clear()
+
+                                for(dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(ReCommentModel::class.java)
+
+                                    if (!blockList.contains(item!!.uid)) {
+                                        reCommentDataList.add(item!!)
+                                    }
+                                }
+
+                                Log.d("reCommentDataList", reCommentDataList.toString())
+                                reCommentRVAdapter.notifyDataSetChanged() // 데이터 동기화
+                            } catch(e : Exception) {
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+                    }
+                    FBRef.reCommentRef.child(communityId).child(commentId).addValueEventListener(postListener)
+
+                } catch(e : Exception) { }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        FBRef.reCommentRef.child(communityId).child(commentId).addValueEventListener(postListener)
+        FBRef.blockRef.child(myUid).addValueEventListener(postListener)
 
         holder!!.reCommentBtn!!.setOnClickListener {
             val intent = Intent(holder!!.view!!.context, WriteReCommentActivity::class.java)
@@ -172,6 +208,11 @@ class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
         return commentList.count()
     }
 
+    override fun onViewRecycled(holder: CommentReVAdapter.CommentViewHolder) { // glide가 해당 activity가 종료되어도 실행되어 오류가 발생. 그 오류를 해결하기 위한 코드
+        Glide.with(holder.view!!).clear(holder.profileImageArea!!)
+        super.onViewRecycled(holder)
+    }
+
     inner class CommentViewHolder(view : View?) : RecyclerView.ViewHolder(view!!) {
         val view = view
         val profileImageArea = view?.findViewById<ImageView>(R.id.profileImageArea)
@@ -181,5 +222,31 @@ class CommentReVAdapter(val commentList : MutableList<CommentModel>) :
         val commentSet = view?.findViewById<ImageView>(R.id.commentSet)
         val reCommentBtn = view?.findViewById<TextView>(R.id.reCommentBtn)
         val reCommentRecyclerView = view?.findViewById<RecyclerView>(R.id.reCommentRecyclerView)
+    }
+
+    private fun getBlockData() { // 파이어베이스로부터 차단된 uid 데이터 불러오기
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+
+                    blockList.clear()
+
+                    for(dataModel in dataSnapshot.children) {
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(BlockModel::class.java)
+                        blockList.add(item!!.blockUid)
+                    }
+
+                    Log.d("blockList", blockList.toString())
+                } catch(e : Exception) { }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.blockRef.child(myUid).addValueEventListener(postListener)
     }
 }

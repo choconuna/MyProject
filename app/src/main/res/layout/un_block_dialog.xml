@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -42,36 +43,46 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/bold"
                 android:gravity="center"
-                android:text="님"
+                android:text="님을 차단 해제하시겠습니까?"
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 tools:ignore="MissingConstraints" />
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/chatBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+        <LinearLayout
             android:layout_marginTop="15dp"
-            android:fontFamily="@font/bold"
-            android:text="채팅 보내기"
-            android:textColor="@color/white"
-            android:background="@drawable/rectangle_box_brown"
-            android:textSize="15sp" />
-
-        <Button
-            android:id="@+id/blockBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginTop="0.5dp"
-            android:fontFamily="@font/bold"
-            android:text="차단하기"
-            android:textColor="@color/white"
-            android:background="@drawable/rectangle_box_brown"
-            android:textSize="15sp" />
+            tools:ignore="MissingConstraints">
+
+            <Button
+                android:id="@+id/noBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:fontFamily="@font/bold"
+                android:text="아니오"
+                android:textColor="@color/mainColor"
+                android:background="@drawable/rectangle_box"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/yesBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:fontFamily="@font/bold"
+                android:text="예"
+                android:textColor="@color/mainColor"
+                android:background="@drawable/rectangle_box"
+                android:textSize="15sp" />
+
+        </LinearLayout>
     </LinearLayout>
 
 

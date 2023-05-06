@@ -290,10 +290,18 @@ class PlusMedicinePlanActivity : AppCompatActivity() {
 
                 val pendingIntent = PendingIntent.getBroadcast(
                     context,
-                    System.currentTimeMillis().toInt(), // PendingIntent ID
+                    Random().nextInt(), // PendingIntent ID
                     alarmIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
+
+                // plan.time 에 저장된 시간 문자열을 가져와서 Calendar 에 반영합니다.
+                val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val time = timeFormat.parse(plan.time)
+                val timeCalendar = Calendar.getInstance()
+                timeCalendar.time = time!!
+                calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY))
+                calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE))
 
                 // AlarmManager를 이용하여 알림을 등록합니다.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

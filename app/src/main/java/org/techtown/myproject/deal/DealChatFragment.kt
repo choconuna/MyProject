@@ -18,10 +18,7 @@ import com.google.firebase.database.ValueEventListener
 import org.techtown.myproject.R
 import org.techtown.myproject.chat.ChatInActivity
 import org.techtown.myproject.chat.ChatReVAdapter
-import org.techtown.myproject.utils.ChatConnection
-import org.techtown.myproject.utils.DealChatConnection
-import org.techtown.myproject.utils.DealModel
-import org.techtown.myproject.utils.FBRef
+import org.techtown.myproject.utils.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.reflect.typeOf
@@ -31,6 +28,8 @@ class DealChatFragment : Fragment() {
     private val TAG = DealChatFragment::class.java.simpleName
 
     private lateinit var myUid: String
+
+    private val blockList = mutableListOf<String>() // 차단된 uid 값을 넣는 리스트
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -95,67 +94,99 @@ class DealChatFragment : Fragment() {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
-                    dealChatDataList.clear()
+                    blockList.clear()
 
                     for(dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DealModel::class.java)
-
-                        val postListener2 = object : ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                try {
-                                    val unsortedDealChatDataList = mutableListOf<DealChatConnection>()
-
-                                    for(dataModel in dataSnapshot.children) {
-                                        val item = dataModel.getValue(DealChatConnection::class.java)
-
-                                        if(item!!.userId1 == myUid || item!!.userId2 == myUid) {
-                                            // 기존 리스트에 이미 존재하는 채팅인지 확인
-                                            val index = dealChatDataList.indexOfFirst { it.dealId == item.dealId }
-                                            if(index == -1) {
-                                                Log.d("showChatList", item!!.toString())
-                                                unsortedDealChatDataList.add(item!!)
-                                            }
-                                        }
-                                    }
-
-                                    val sortedDealChatDataList = unsortedDealChatDataList.sortedByDescending { it.lastTime.toLong() }
-
-                                    // 마지막으로 추가된 채팅 시간 저장
-                                    val lastAddedChatTime = if (dealChatDataList.isEmpty()) 0L else dealChatDataList[0].lastTime.toLong()
-
-                                    for (chat in sortedDealChatDataList) { // 중복되지 않는 새로운 채팅만 추가
-                                        if (chat.lastTime.toLong() > lastAddedChatTime) {
-                                            dealChatDataList.add(0, chat)
-                                        } else {
-                                            break
-                                        }
-                                    }
-
-                                    dealChatRVAdapter.notifyDataSetChanged()
-
-                                } catch(e : Exception) {
-                                    Log.d("showChatList", e.toString())
-                                }
-                            }
-
-                            override fun onCancelled(databaseError: DatabaseError) {
-                                // Geting Post failed, log a message
-                                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-                            }
-                        }
-                        FBRef.dealChatConnectionRef.child(item!!.dealId).addValueEventListener(postListener2)
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(BlockModel::class.java)
+                        blockList.add(item!!.blockUid)
                     }
 
-                } catch(e : Exception) {
-                    Log.d("showChatList", e.toString())
-                }
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try {
+                                dealChatDataList.clear()
+
+                                for(dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DealModel::class.java)
+
+                                    val postListener2 = object : ValueEventListener {
+                                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                            try {
+                                                val unsortedDealChatDataList = mutableListOf<DealChatConnection>()
+
+                                                for(dataModel in dataSnapshot.children) {
+                                                    val item = dataModel.getValue(DealChatConnection::class.java)
+                                                    var isBlocked = false
+
+                                                    if (item!!.userId1 != myUid) {
+                                                        if (!blockList.contains(item!!.userId1)) {
+                                                            val index = dealChatDataList.indexOfFirst { it.dealId == item.dealId }
+                                                            if (index == -1) {
+                                                                Log.d("showChatList", item!!.toString())
+                                                                unsortedDealChatDataList.add(item!!)
+                                                            }
+                                                        }
+                                                    } else if (item!!.userId2 != myUid) {
+                                                        if (!blockList.contains(item!!.userId2)) {
+                                                            val index = dealChatDataList.indexOfFirst { it.dealId == item.dealId }
+                                                            if (index == -1) {
+                                                                Log.d("showChatList", item!!.toString())
+                                                                unsortedDealChatDataList.add(item!!)
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                val sortedDealChatDataList = unsortedDealChatDataList.sortedByDescending { it.lastTime.toLong() }
+
+                                                // 마지막으로 추가된 채팅 시간 저장
+                                                val lastAddedChatTime = if (dealChatDataList.isEmpty()) 0L else dealChatDataList[0].lastTime.toLong()
+
+                                                for (chat in sortedDealChatDataList) { // 중복되지 않는 새로운 채팅만 추가
+                                                    if (chat.lastTime.toLong() > lastAddedChatTime) {
+                                                        dealChatDataList.add(0, chat)
+                                                    } else {
+                                                        break
+                                                    }
+                                                }
+
+                                                dealChatRVAdapter.notifyDataSetChanged()
+
+                                            } catch(e : Exception) {
+                                                Log.d("showChatList", e.toString())
+                                            }
+                                        }
+
+                                        override fun onCancelled(databaseError: DatabaseError) {
+                                            // Geting Post failed, log a message
+                                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                                        }
+                                    }
+                                    FBRef.dealChatConnectionRef.child(item!!.dealId).addValueEventListener(postListener2)
+                                }
+
+                            } catch(e : Exception) {
+                                Log.d("showChatList", e.toString())
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Geting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                        }
+                    }
+                    FBRef.dealRef.addValueEventListener(postListener)
+
+                } catch(e : Exception) { }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Geting Post failed, log a message
+                // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        FBRef.dealRef.addValueEventListener(postListener)
+        FBRef.blockRef.child(myUid).addValueEventListener(postListener)
     }
 }

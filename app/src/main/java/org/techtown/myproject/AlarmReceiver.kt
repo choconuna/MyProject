@@ -28,7 +28,7 @@ class AlarmReceiver : BroadcastReceiver() {
             .setAutoCancel(true)
 
         // NotificationManagerCompat을 이용하여 Notification을 보냅니다.
-        val notificationId = System.currentTimeMillis().toInt()
+        val notificationId = Random().nextInt()
         with(NotificationManagerCompat.from(context)) {
             notify(notificationId, notificationBuilder.build())
         }

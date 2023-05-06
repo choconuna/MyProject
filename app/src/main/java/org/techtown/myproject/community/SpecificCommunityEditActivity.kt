@@ -147,6 +147,7 @@ class SpecificCommunityEditActivity : AppCompatActivity() {
     private fun getCommunityData(key : String) {
         val postListener = object : ValueEventListener { // 파이어베이스 안의 값이 변화할 시 작동됨
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
                 val dataModel = dataSnapshot.getValue(CommunityModel::class.java)
 
                 titleArea.setText(dataModel!!.title)
@@ -180,6 +181,7 @@ class SpecificCommunityEditActivity : AppCompatActivity() {
                             }
                     }
                 }
+            } catch(e : Exception) { }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

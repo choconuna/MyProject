@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -21,6 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyProject"
         tools:replace="android:label">
+        <activity
+            android:name=".my.ManageBlockActivity"
+            android:exported="false" />
         <activity
             android:name=".receipt.ReceiptRecordInActivity"
             android:exported="false" />
@@ -276,7 +280,7 @@
         </service>
 
         <receiver
-            android:name=".AlarmRecevier"
+            android:name=".AlarmReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

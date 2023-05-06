@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -13,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -56,6 +58,8 @@ class DealChatInActivity : AppCompatActivity(), LifecycleObserver {
     lateinit var yourProfile : CircleImageView
     private lateinit var yourNickNameArea : TextView
 
+    private lateinit var profileArea : LinearLayout
+
     lateinit var messageContentListView : ListView
     private val messageDataList = mutableListOf<DealMessageModel>()
     private lateinit var messageRVAdapter : DealMessageReVAdapter
@@ -89,6 +93,41 @@ class DealChatInActivity : AppCompatActivity(), LifecycleObserver {
         Log.d("chatInf", "$yourUid $dealId $chatConnectionId")
 
         setData()
+
+        profileArea.setOnClickListener {
+
+            FBRef.userRef.child(yourUid).child("nickName").get().addOnSuccessListener {
+                var userName = it.value.toString() // 게시글에 작성자의 닉네임을 가져옴
+
+                val mDialogView = LayoutInflater.from(this@DealChatInActivity).inflate(R.layout.block_dialog, null)
+                val mBuilder = AlertDialog.Builder(this@DealChatInActivity).setView(mDialogView)
+
+                val alertDialog = mBuilder.show()
+
+                Log.d("getDealChatProfile", "$yourUid $userName")
+
+                val userNameArea = alertDialog.findViewById<TextView>(R.id.userNameArea)
+                userNameArea!!.text = userName
+
+                val yesBtn = alertDialog.findViewById<Button>(R.id.yesBtn)
+                yesBtn?.setOnClickListener { // 예 버튼 클릭 시
+                    Log.d(TAG, "yes Button Clicked")
+
+                    val key = FBRef.blockRef.child(myUid).push().key.toString() // 키 값을 먼저 받아옴
+                    FBRef.blockRef.child(myUid).child(key).setValue(BlockModel(key, myUid, yourUid)) // 차단 데이터 생성
+
+                    alertDialog.dismiss() // 다이얼로그 창 닫기
+                    finish() // 창 닫기
+                }
+
+                val noBtn = alertDialog.findViewById<Button>(R.id.noBtn)
+                noBtn?.setOnClickListener {  // 아니오 버튼 클릭 시
+                    Log.d(TAG, "no Button Clicked")
+
+                    alertDialog.dismiss() // 다이얼로그 창 닫기
+                }
+            }
+        }
 
         plusImageBtn.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
@@ -159,6 +198,8 @@ class DealChatInActivity : AppCompatActivity(), LifecycleObserver {
     private fun setData() {
         yourProfile = findViewById(R.id.yourProfile)
         yourNickNameArea = findViewById(R.id.yourNickNameArea)
+
+        profileArea = findViewById(R.id.profileArea)
 
         itemImageArea = findViewById(R.id.itemImageArea)
         stateText = findViewById(R.id.stateText)

@@ -9,17 +9,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ListView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import org.techtown.myproject.R
+import org.techtown.myproject.utils.BlockModel
 import org.techtown.myproject.utils.FBRef
 
 class ReviewFragment : Fragment() {
     private val TAG = ReviewFragment::class.java.simpleName
 
+    private lateinit var myUid : String
+
     lateinit var writeBtn : ImageView
     lateinit var communityListView : ListView
+
+    private val blockList = mutableListOf<String>() // 차단된 uid 값을 넣는 리스트
 
     private val communityDataList = mutableListOf<CommunityModel>() // 각 게시물을 넣는 리스트
     private val communityKeyList = mutableListOf<String>() // 각 게시물의 키값을 넣는 리스트
@@ -31,6 +37,8 @@ class ReviewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         var v : View? = inflater.inflate(R.layout.fragment_review, container, false)
+
+        myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
 
         communityRVAdapter = CommunityListVAdapter(communityDataList)
         communityListView = v!!.findViewById(R.id.communityListView)
@@ -57,25 +65,53 @@ class ReviewFragment : Fragment() {
     }
 
     private fun getReviewCommunityData() { // 파이어베이스로부터 커뮤니티 데이터 불러오기
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
 
-                communityDataList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
+                    blockList.clear()
 
-                for(dataModel in dataSnapshot.children) {
-                    Log.d(TAG, dataModel.toString())
-                    // dataModel.key
-                    val item = dataModel.getValue(CommunityModel::class.java)
-                    communityDataList.add(item!!)
-                    communityKeyList.add(dataModel.key.toString())
-                    Log.d(TAG, communityKeyList.toString())
-                }
+                    for(dataModel in dataSnapshot.children) {
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(BlockModel::class.java)
+                        blockList.add(item!!.blockUid)
+                    }
 
-                communityKeyList.reverse() // 키 값을 최신순으로 정렬
-                communityDataList.reverse() // 게시물을 최신순으로 정렬
-                communityRVAdapter.notifyDataSetChanged() // 동기화
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try {
+                                communityDataList.clear() // 똑같은 데이터 복사 출력되는 것 막기 위한 초기화
+                                communityKeyList.clear()
 
-                Log.d("communityDataList", communityDataList.toString())
+                                for(dataModel in dataSnapshot.children) {
+                                    Log.d(TAG, dataModel.toString())
+                                    // dataModel.key
+                                    val item = dataModel.getValue(CommunityModel::class.java)
+
+                                    if (!blockList.contains(item!!.uid)) {
+                                        communityDataList.add(item)
+                                        communityKeyList.add(dataModel.key.toString())
+                                    }
+                                }
+
+                                communityKeyList.reverse() // 키 값을 최신순으로 정렬
+                                communityDataList.reverse() // 게시물을 최신순으로 정렬
+                                communityRVAdapter.notifyDataSetChanged() // 동기화
+
+                                Log.d("communityDataList", communityDataList.toString())
+                            } catch(e : Exception) { }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                        }
+                    }
+                    FBRef.communityRef.child("후기").addValueEventListener(postListener)
+
+                } catch(e : Exception) { }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -83,7 +119,7 @@ class ReviewFragment : Fragment() {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        FBRef.communityRef.child("후기").addValueEventListener(postListener)
+        FBRef.blockRef.child(myUid).addValueEventListener(postListener)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {

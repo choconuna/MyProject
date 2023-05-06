@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import org.techtown.myproject.R
 import org.techtown.myproject.note.MealReVAdapter
+import org.techtown.myproject.utils.BlockModel
 import org.techtown.myproject.utils.ChatConnection
 import org.techtown.myproject.utils.FBRef
 import org.techtown.myproject.utils.MessageModel
@@ -28,6 +29,8 @@ class ChatFragment : Fragment() {
     private val TAG = ChatFragment::class.java.simpleName
 
     private lateinit var myUid : String
+
+    private val blockList = mutableListOf<String>() // 차단된 uid 값을 넣는 리스트
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -43,7 +46,6 @@ class ChatFragment : Fragment() {
         val v : View? = inflater.inflate(R.layout.fragment_chat, container, false)
 
         myUid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
-        Log.d("showChatList", myUid)
 
         setData(v!!)
 
@@ -89,36 +91,63 @@ class ChatFragment : Fragment() {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
-                    chatDataList.clear()
-                    Log.d("showChatList", "실행")
+
+                    blockList.clear()
 
                     for(dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(ChatConnection::class.java)
+                        Log.d(TAG, dataModel.toString())
+                        // dataModel.key
+                        val item = dataModel.getValue(BlockModel::class.java)
+                        blockList.add(item!!.blockUid)
+                    }
 
-                        Log.d("showChatList", item!!.toString())
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try {
+                                chatDataList.clear()
 
-                        if(item!!.userId1 == myUid || item!!.userId2 == myUid) {
-                            Log.d("showChatList", item!!.toString())
-                            chatDataList.add(item!!)
+                                for(dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(ChatConnection::class.java)
+
+                                    if(item!!.userId1 == myUid || item!!.userId2 == myUid) {
+                                        if(item!!.userId1 != myUid) {
+                                            if (!blockList.contains(item!!.userId1)) {
+                                                chatDataList.add(item!!)
+                                            }
+                                        } else if(item!!.userId2 != myUid) {
+                                            if (!blockList.contains(item!!.userId2)) {
+                                                chatDataList.add(item!!)
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // 채팅을 최신순으로 정렬
+                                chatDataList.sortByDescending { it.lastTime.toLong() }
+
+                                chatRVAdapter.notifyDataSetChanged()
+
+                            } catch(e : Exception) {
+                                Log.d("showChatList", e.toString())
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Geting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                         }
                     }
 
-                    // 채팅을 최신순으로 정렬
-                    chatDataList.sortByDescending { it.lastTime.toLong() }
+                    FBRef.chatConnectionRef.addValueEventListener(postListener)
 
-                    chatRVAdapter.notifyDataSetChanged()
-
-                } catch(e : Exception) {
-                    Log.d("showChatList", e.toString())
-                }
+                } catch(e : Exception) { }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Geting Post failed, log a message
+                // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-
-        FBRef.chatConnectionRef.addValueEventListener(postListener)
+        FBRef.blockRef.child(myUid).addValueEventListener(postListener)
     }
 }

@@ -18,12 +18,10 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.R
-import org.techtown.myproject.chat.ChatInActivity
 import org.techtown.myproject.community.CommunityModel
 import org.techtown.myproject.note.ImageDetailActivity
 import org.techtown.myproject.utils.*
@@ -46,6 +44,8 @@ class DealInActivity : AppCompatActivity() {
     private lateinit var sellerProfile : ImageView
     private lateinit var sellerNickNameArea : TextView
     private lateinit var communitySet : ImageView // 현재 사용자가 판매자일 경우 거래 게시글 수정/삭제를 위한 아이콘
+
+    private lateinit var textView : LinearLayout // 판매자의 프로필 영역
 
     private lateinit var state : String
     private lateinit var stateSpinner : Spinner // 현재 사용자가 판매자일 경우 상품 판매 상태를 표시하기 위한 스피너
@@ -83,6 +83,65 @@ class DealInActivity : AppCompatActivity() {
 
         communitySet.setOnClickListener {
             showDialog()
+        }
+
+        textView.setOnClickListener {
+            val postListener = object : ValueEventListener { // 파이어베이스 안의 값이 변화할 시 작동됨
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    try { // 게시글 삭제 후 그 키 값에 해당하는 게시글이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
+                        val dataModel = dataSnapshot.getValue(DealModel::class.java)
+
+                        val writerUid = dataModel!!.sellerId // 작성자 key id
+                        var userName = ""
+
+                        FBRef.userRef.child(writerUid).child("nickName").get().addOnSuccessListener {
+                            userName = it.value.toString() // 게시글에 작성자의 닉네임을 가져옴
+
+                            if (myUid != writerUid) { // 작성자의 uid가 현재 사용자의 uid와 같지 않을 경우
+                                val mDialogView = LayoutInflater.from(this@DealInActivity).inflate(R.layout.block_dialog, null)
+                                val mBuilder = AlertDialog.Builder(this@DealInActivity).setView(mDialogView)
+
+                                val alertDialog = mBuilder.show()
+
+                                Log.d("getDeal", "$writerUid $userName")
+
+                                val userNameArea = alertDialog.findViewById<TextView>(R.id.userNameArea)
+                                userNameArea!!.text = userName
+
+                                val yesBtn = alertDialog.findViewById<Button>(R.id.yesBtn)
+                                yesBtn?.setOnClickListener { // 예 버튼 클릭 시
+                                    Log.d(TAG, "yes Button Clicked")
+
+                                    val key = FBRef.blockRef.child(myUid).push().key.toString() // 키 값을 먼저 받아옴
+                                    FBRef.blockRef.child(myUid).child(key).setValue(BlockModel(key, myUid, writerUid)) // 차단 데이터 생성
+
+                                    FBRef.userRef.child(writerUid).child("nickName").get().addOnSuccessListener {
+                                        Toast.makeText(applicationContext, it.value.toString() + "님이 차단되었습니다.", Toast.LENGTH_SHORT).show()
+
+                                        alertDialog.dismiss() // 다이얼로그 창 닫기
+                                        finish() // 창 닫기
+                                    }
+                                }
+
+                                val noBtn = alertDialog.findViewById<Button>(R.id.noBtn)
+                                noBtn?.setOnClickListener {  // 아니오 버튼 클릭 시
+                                    Log.d(TAG, "no Button Clicked")
+
+                                    alertDialog.dismiss() // 다이얼로그 창 닫기
+                                }
+                            }
+                        }
+                    } catch (e : Exception) {
+                        Log.d(TAG, "거래 삭제 완료")
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Getting Post failed, log a message
+                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                }
+            }
+            FBRef.dealRef.child(dealId).addValueEventListener(postListener)
         }
 
         stateSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -223,6 +282,8 @@ class DealInActivity : AppCompatActivity() {
         sellerProfile = findViewById(R.id.selllerProfile)
         sellerNickNameArea = findViewById(R.id.sellerNickNameArea)
         communitySet = findViewById(R.id.communitySet)
+
+        textView = findViewById(R.id.textView)
 
         stateSpinner = findViewById(R.id.stateSpinner)
 

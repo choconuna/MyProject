@@ -27,11 +27,9 @@ import com.google.firebase.storage.ktx.storage
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
 import org.techtown.myproject.R
+import org.techtown.myproject.community.CommunityModel
 import org.techtown.myproject.community.SpecificCommunityEditActivity
-import org.techtown.myproject.utils.ChatConnection
-import org.techtown.myproject.utils.FBRef
-import org.techtown.myproject.utils.FCMToken
-import org.techtown.myproject.utils.MessageModel
+import org.techtown.myproject.utils.*
 import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -55,6 +53,8 @@ class ChatInActivity : AppCompatActivity() {
     lateinit var yourProfile : CircleImageView
     private lateinit var yourNickNameArea : TextView
 
+    private lateinit var profileArea : LinearLayout
+
     lateinit var messageContentListView : ListView
     private val messageDataList = mutableListOf<MessageModel>()
     private lateinit var messageRVAdapter : MessageRVAdapter
@@ -75,6 +75,41 @@ class ChatInActivity : AppCompatActivity() {
         chatConnectionId = intent.getStringExtra("chatConnectionId").toString()
 
         setData()
+
+        profileArea.setOnClickListener {
+
+            FBRef.userRef.child(yourUid).child("nickName").get().addOnSuccessListener {
+                var userName = it.value.toString() // 게시글에 작성자의 닉네임을 가져옴
+
+                val mDialogView = LayoutInflater.from(this@ChatInActivity).inflate(R.layout.block_dialog, null)
+                val mBuilder = AlertDialog.Builder(this@ChatInActivity).setView(mDialogView)
+
+                val alertDialog = mBuilder.show()
+
+                Log.d("getChatProfile", "$yourUid $userName")
+
+                val userNameArea = alertDialog.findViewById<TextView>(R.id.userNameArea)
+                userNameArea!!.text = userName
+
+                val yesBtn = alertDialog.findViewById<Button>(R.id.yesBtn)
+                yesBtn?.setOnClickListener { // 예 버튼 클릭 시
+                    Log.d(TAG, "yes Button Clicked")
+
+                    val key = FBRef.blockRef.child(myUid).push().key.toString() // 키 값을 먼저 받아옴
+                    FBRef.blockRef.child(myUid).child(key).setValue(BlockModel(key, myUid, yourUid)) // 차단 데이터 생성
+
+                    alertDialog.dismiss() // 다이얼로그 창 닫기
+                    finish() // 창 닫기
+                }
+
+                val noBtn = alertDialog.findViewById<Button>(R.id.noBtn)
+                noBtn?.setOnClickListener {  // 아니오 버튼 클릭 시
+                    Log.d(TAG, "no Button Clicked")
+
+                    alertDialog.dismiss() // 다이얼로그 창 닫기
+                }
+            }
+        }
 
         plusImageBtn.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
@@ -119,6 +154,8 @@ class ChatInActivity : AppCompatActivity() {
         yourProfile = findViewById(R.id.yourProfile)
         yourNickNameArea = findViewById(R.id.yourNickNameArea)
 
+        profileArea = findViewById(R.id.profileArea)
+
         messageContentListView = findViewById(R.id.messageContentListView)
         messageRVAdapter = MessageRVAdapter(messageDataList)
         messageContentListView.adapter = messageRVAdapter
@@ -162,56 +199,56 @@ class ChatInActivity : AppCompatActivity() {
                     Log.d("yourToken", yourUid)
 
                     FBRef.tokenRef.child(yourUid).addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                                for (dataModel in dataSnapshot.children) {
+                            for (dataModel in dataSnapshot.children) {
 
-                                    val item = dataModel.getValue(FCMToken::class.java)
-                                    Log.d("yourToken", item!!.toString())
-                                    Log.d("yourToken", item!!.fcmTokenId)
-                                    Log.d("yourToken", item!!.userId)
-                                    Log.d("yourToken", item!!.token)
+                                val item = dataModel.getValue(FCMToken::class.java)
+                                Log.d("yourToken", item!!.toString())
+                                Log.d("yourToken", item!!.fcmTokenId)
+                                Log.d("yourToken", item!!.userId)
+                                Log.d("yourToken", item!!.token)
 
-                                    val yourToken = item!!.token
+                                val yourToken = item!!.token
 
-                                    Thread {
-                                        try {
-                                            val root = JSONObject()
-                                            val notification = JSONObject()
-                                            notification.put("body", "$nickName: $message")
-                                            notification.put("title", "멍노트")
-                                            root.put("notification", notification)
-                                            root.put("to", yourToken)
-                                            val url = URL(FCM_MESSAGE_URL)
-                                            val conn: HttpURLConnection =
-                                                url.openConnection() as HttpURLConnection
-                                            conn.requestMethod = "POST"
-                                            conn.doOutput = true
-                                            conn.doInput = true
-                                            conn.addRequestProperty(
-                                                "Authorization",
-                                                "key=$SERVER_KEY"
-                                            )
-                                            conn.setRequestProperty("Accept", "application/json")
-                                            conn.setRequestProperty(
-                                                "Content-type",
-                                                "application/json"
-                                            )
-                                            val os: OutputStream = conn.outputStream
-                                            os.write(root.toString().toByteArray(charset("utf-8")))
-                                            os.flush()
-                                            conn.responseCode
-                                        } catch (e: java.lang.Exception) {
-                                            e.printStackTrace()
-                                        }
-                                    }.start()
-                                }
+                                Thread {
+                                    try {
+                                        val root = JSONObject()
+                                        val notification = JSONObject()
+                                        notification.put("body", "$nickName: $message")
+                                        notification.put("title", "멍노트")
+                                        root.put("notification", notification)
+                                        root.put("to", yourToken)
+                                        val url = URL(FCM_MESSAGE_URL)
+                                        val conn: HttpURLConnection =
+                                            url.openConnection() as HttpURLConnection
+                                        conn.requestMethod = "POST"
+                                        conn.doOutput = true
+                                        conn.doInput = true
+                                        conn.addRequestProperty(
+                                            "Authorization",
+                                            "key=$SERVER_KEY"
+                                        )
+                                        conn.setRequestProperty("Accept", "application/json")
+                                        conn.setRequestProperty(
+                                            "Content-type",
+                                            "application/json"
+                                        )
+                                        val os: OutputStream = conn.outputStream
+                                        os.write(root.toString().toByteArray(charset("utf-8")))
+                                        os.flush()
+                                        conn.responseCode
+                                    } catch (e: java.lang.Exception) {
+                                        e.printStackTrace()
+                                    }
+                                }.start()
                             }
+                        }
 
-                            override fun onCancelled(error: DatabaseError) {
-                                Log.e("yourToken", "Failed to read value.", error.toException())
-                            }
-                        })
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e("yourToken", "Failed to read value.", error.toException())
+                        }
+                    })
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {}
