@@ -97,6 +97,11 @@ class WeeklyReportFragment : Fragment() {
     private lateinit var heartMore : TextView // 호흡수가 30회 초과인지 보여줌
     private lateinit var heartNormal : TextView
 
+    private lateinit var showMedicinePlan : TextView
+    private lateinit var showNoMedicineArea : LinearLayout // 아무런 약도 투여하지 않았을 시 보여줌
+    private lateinit var showMedicineArea : LinearLayout
+    private lateinit var medicineList : TextView // 약 리스트
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -123,8 +128,8 @@ class WeeklyReportFragment : Fragment() {
             weekEndTextView.text = "${endOfWeek.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.KOREA))}"
 
             getEatData()
-
             getHealth()
+            getMedicine()
         }
 
         backWeekBtn.setOnClickListener {
@@ -139,8 +144,8 @@ class WeeklyReportFragment : Fragment() {
             weekEndTextView.text = "${endOfWeek.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.KOREA))}"
 
             getEatData()
-
             getHealth()
+            getMedicine()
         }
 
         nextWeekBtn.setOnClickListener {
@@ -155,8 +160,8 @@ class WeeklyReportFragment : Fragment() {
             weekEndTextView.text = "${endOfWeek.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.KOREA))}"
 
             getEatData()
-
             getHealth()
+            getMedicine()
         }
 
         return v
@@ -231,9 +236,14 @@ class WeeklyReportFragment : Fragment() {
         heartMore = v.findViewById(R.id.heartMore)
         heartNormal = v.findViewById(R.id.heartNormal)
 
-        getEatData()
+        showMedicinePlan = v.findViewById(R.id.showMedicinePlan)
+        showNoMedicineArea = v.findViewById(R.id.showNoMedicineArea)
+        medicineList = v.findViewById(R.id.medicineList)
+        showMedicineArea = v.findViewById(R.id.showMedicineArea)
 
+        getEatData()
         getHealth()
+        getMedicine()
     }
 
     private fun getEatData() {
@@ -1004,7 +1014,292 @@ class WeeklyReportFragment : Fragment() {
         FBRef.heartRef.child(myUid).child(dogId).addValueEventListener(postListener4)
     }
 
+    private fun getMedicine() {
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    var medicinePlanMap : MutableMap<DogMedicinePlanModel, String> = mutableMapOf()
+
+                    val startDate = LocalDate.parse(weekStartTextView.text, DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.KOREA))
+                    val endDate = LocalDate.parse(weekEndTextView.text, DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.KOREA))
+
+                    for (dataModel in dataSnapshot.children) {
+                        val item = dataModel.getValue(DogMedicinePlanModel::class.java)
+
+                        val startDateSp = item!!.startDate.split(".")
+                        lateinit var parsedDate : LocalDate
+
+                        if(startDateSp[1].length == 1 && startDateSp[2].length == 1) {
+                            parsedDate = LocalDate.parse(item!!.startDate, DateTimeFormatter.ofPattern("yyyy.M.d"))
+                        } else if(startDateSp[1].length == 1 && startDateSp[2].length == 2) {
+                            parsedDate = LocalDate.parse(item!!.startDate, DateTimeFormatter.ofPattern("yyyy.M.dd"))
+                        } else if(startDateSp[1].length == 2 && startDateSp[2].length == 1) {
+                            parsedDate = LocalDate.parse(item!!.startDate, DateTimeFormatter.ofPattern("yyyy.MM.d"))
+                        } else if(startDateSp[1].length == 2 && startDateSp[2].length == 2) {
+                            parsedDate = LocalDate.parse(item!!.startDate, DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+                        }
+
+                        if(item!!.dogMedicinePlanId != "") {
+                            if (item!!.repeat == "하루") {
+                                if (isBetweenDates(parsedDate, startDate, endDate)) {
+                                    medicinePlanMap[item!!] = "$parsedDate $parsedDate"
+                                }
+                            } else if (item!!.repeat == "매일") {
+                                val endDateSp = item!!.endDate.split(".")
+                                lateinit var endParsedDate: LocalDate
+
+                                if (endDateSp[1].length == 1 && endDateSp[2].length == 1) {
+                                    endParsedDate = LocalDate.parse(
+                                        item!!.endDate,
+                                        DateTimeFormatter.ofPattern("yyyy.M.d")
+                                    )
+                                } else if (endDateSp[1].length == 1 && endDateSp[2].length == 2) {
+                                    endParsedDate = LocalDate.parse(
+                                        item!!.endDate,
+                                        DateTimeFormatter.ofPattern("yyyy.M.dd")
+                                    )
+                                } else if (endDateSp[1].length == 2 && endDateSp[2].length == 1) {
+                                    endParsedDate = LocalDate.parse(
+                                        item!!.endDate,
+                                        DateTimeFormatter.ofPattern("yyyy.MM.d")
+                                    )
+                                } else if (endDateSp[1].length == 2 && endDateSp[2].length == 2) {
+                                    endParsedDate = LocalDate.parse(
+                                        item!!.endDate,
+                                        DateTimeFormatter.ofPattern("yyyy.MM.dd")
+                                    )
+                                }
+
+                                if (isAnyDateBetweenDates(parsedDate, endParsedDate, startDate, endDate)) {
+                                    Log.d("medicinePlan", "$parsedDate $endParsedDate $startDate $endDate")
+                                    when {
+                                        parsedDate.isBefore(startDate) -> { // 투약 일정의 시작 날짜가 일주일의 시작 날짜의 전일 경우
+                                            if (endParsedDate.isEqual(startDate)) {
+                                                medicinePlanMap[item!!] = "$endParsedDate $endParsedDate"
+                                            } else if (endParsedDate.isBefore(endDate)) {
+                                                medicinePlanMap[item!!] = "$startDate $endParsedDate"
+                                            } else if (endParsedDate == endDate || endParsedDate.isAfter(endDate)) {
+                                                medicinePlanMap[item!!] = "$startDate $endDate"
+                                            }
+                                        }
+                                        parsedDate.isEqual(startDate) -> { // 투약 일정의 시작 날짜가 일주일의 시작 날짜일 경우
+                                            if (endParsedDate.isBefore(endDate)) {
+                                                medicinePlanMap[item!!] = "$parsedDate $endParsedDate"
+                                            } else if (endParsedDate.isEqual(endDate) || endParsedDate.isAfter(endDate)) {
+                                                medicinePlanMap[item!!] = "$parsedDate $endDate"
+                                            }
+                                        }
+                                        parsedDate.isAfter(startDate) -> { // 투약 일정의 시작 날짜가 일주일의 시작 날짜의 이후인 경우
+                                            if (endParsedDate.isBefore(endDate)) {
+                                                medicinePlanMap[item!!] =
+                                                    "$parsedDate $endParsedDate"
+                                            } else if (endParsedDate.isEqual(endDate) || endParsedDate.isAfter(
+                                                    endDate
+                                                )
+                                            ) {
+                                                medicinePlanMap[item!!] = "$parsedDate $endDate"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Log.d("medicinePlan", medicinePlanMap.toString())
+
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try {
+                                val startDate = LocalDate.parse(weekStartTextView.text, DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.KOREA))
+                                val endDate = LocalDate.parse(weekEndTextView.text, DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.KOREA))
+
+                                var medicineNameMap : MutableMap<String, Int> = mutableMapOf()
+                                var medicineNoNameMap : MutableMap<String, Int> = mutableMapOf()
+
+                                var medicineMap: MutableMap<DogMedicinePlanModel, String> = mutableMapOf()
+
+                                medicineList.text = ""
+
+                                for((key, value) in medicinePlanMap)
+                                    medicineMap[key] = ""
+
+                                var medicineCnt = 0
+
+                                for (dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DogMedicineModel::class.java)
+
+                                    val dateSp = item!!.date.split(".")
+                                    lateinit var parsedDate : LocalDate
+
+                                    if(dateSp[1].length == 1 && dateSp[2].length == 1) {
+                                        parsedDate = LocalDate.parse(item!!.date, DateTimeFormatter.ofPattern("yyyy.M.d"))
+                                    } else if(dateSp[1].length == 1 && dateSp[2].length == 2) {
+                                        parsedDate = LocalDate.parse(item!!.date, DateTimeFormatter.ofPattern("yyyy.M.dd"))
+                                    } else if(dateSp[1].length == 2 && dateSp[2].length == 1) {
+                                        parsedDate = LocalDate.parse(item!!.date, DateTimeFormatter.ofPattern("yyyy.MM.d"))
+                                    } else if(dateSp[1].length == 2 && dateSp[2].length == 2) {
+                                        parsedDate = LocalDate.parse(item!!.date, DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+                                    }
+
+                                    for ((key, value) in medicinePlanMap) {
+                                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                                        val start = LocalDate.parse(value.split(" ")[0], formatter)
+                                        val end = LocalDate.parse(value.split(" ")[1], formatter)
+                                        var date = start
+
+                                        while (!date.isAfter(end)) {
+                                            var i = 0
+                                            if ((!date.isBefore(start) && !date.isAfter(end)) || date.isEqual(start) || date.isEqual(end)) {
+                                                if(isBetweenDates(parsedDate, date, end) && key!!.dogMedicinePlanId == item!!.dogMedicinePlanId) {
+                                                    medicineNameMap[item!!.medicineName] = 0
+                                                    medicineCnt += 0
+                                                }
+                                            }
+                                            date = date.plusDays(1)
+                                        }
+                                    }
+                                }
+
+
+                                Log.d("medicineMap", medicineMap.toString())
+                                if(medicinePlanMap.isEmpty() && medicineMap.isEmpty()) {
+                                    showNoMedicineArea.visibility = VISIBLE
+                                    medicineList.visibility = VISIBLE
+                                    showMedicineArea.visibility = GONE
+                                } else {
+                                    val allValuesEmpty = medicineMap.all { it.value.isEmpty() }
+                                    val allPlanValuesEmpty = medicinePlanMap.all { it.value.isEmpty() }
+
+                                    if (allValuesEmpty && allPlanValuesEmpty) { // 투약 일정과 투약 패스 기록이 모두 존재하지 않을 경우
+                                        showNoMedicineArea.visibility = VISIBLE
+                                        showMedicineArea.visibility = GONE
+                                        showMedicinePlan.visibility = GONE
+                                    } else if(allValuesEmpty && !allPlanValuesEmpty) { // 투약 일정은 존재하고 투약 패스 기록이 존재하지 않을 경우
+                                        showMedicinePlan.text = ""
+                                        val medicineNameMap: MutableMap<String, MutableList<String>> = mutableMapOf()
+
+                                        for ((key, value) in medicinePlanMap) {
+                                            val medicineName = key!!.medicineName
+                                            val start = value.split(" ")[0]
+                                            val end = value.split(" ")[1]
+
+                                            if (medicineNameMap.containsKey(medicineName)) {
+                                                medicineNameMap[medicineName]!!.add("$start~$end")
+                                            } else {
+                                                medicineNameMap[medicineName] = mutableListOf("$start~$end")
+                                            }
+                                        }
+
+                                        for ((medicineName, values) in medicineNameMap) {
+                                            showMedicinePlan.text = showMedicinePlan.text.toString() + "$medicineName\n ${values.joinToString(separator = " ")}" + "\n\n"
+                                        }
+
+                                        showMedicinePlan.visibility = VISIBLE
+
+                                        if(medicineNameMap.isEmpty()) { // 아무런 약을 먹이지 않았을 경우
+                                            showNoMedicineArea.visibility = VISIBLE
+                                            showMedicineArea.visibility = GONE
+                                        } else { // 약을 먹였을 경우
+                                            medicineList.text = ""
+
+                                            for ((key, value) in medicineNameMap.entries) {
+                                                if (key == medicineNameMap.keys.last()) { // 마지막 요소일 경우
+                                                    medicineList.text = medicineList.text.toString() + key
+                                                } else {
+                                                    medicineList.text = medicineList.text.toString() + key + " ∙ "
+                                                }
+                                            }
+
+                                            showNoMedicineArea.visibility = GONE
+                                            showMedicineArea.visibility = VISIBLE
+                                        }
+                                    } else if(!allValuesEmpty && !allPlanValuesEmpty) { // 투약 일정과 투약 패스 기록이 모두 존재할 경우 -> 일부 약을 빠트렸을 경우
+                                        showMedicinePlan.text = ""
+                                        val medicineNameMap: MutableMap<String, MutableList<String>> = mutableMapOf()
+
+                                        for ((key, value) in medicinePlanMap) {
+                                            val medicineName = key!!.medicineName
+                                            val start = value.split(" ")[0]
+                                            val end = value.split(" ")[1]
+
+                                            if (medicineNameMap.containsKey(medicineName)) {
+                                                medicineNameMap[medicineName]!!.add("$start~$end")
+                                            } else {
+                                                medicineNameMap[medicineName] = mutableListOf("$start~$end")
+                                            }
+                                        }
+
+                                        for ((medicineName, values) in medicineNameMap) {
+                                            showMedicinePlan.text = showMedicinePlan.text.toString() + "$medicineName\n ${values.joinToString(separator = " ")}" + "\n\n"
+                                        }
+
+                                        showMedicinePlan.visibility = VISIBLE
+
+                                        medicineList.text = ""
+
+                                        for ((key, value) in medicineNameMap.entries) {
+                                            if (key == medicineNameMap.keys.last()) { // 마지막 요소일 경우
+                                                medicineList.text = medicineList.text.toString() + key
+                                            } else {
+                                                medicineList.text = medicineList.text.toString() + key + " ∙ "
+                                            }
+                                        }
+
+                                        showNoMedicineArea.visibility = GONE
+                                        showMedicineArea.visibility = VISIBLE
+                                    }
+                                }
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, " 기록 삭제 완료")
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                        }
+                    }
+                    FBRef.medicineRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
+                } catch (e: Exception) {
+                    Log.d(TAG, " 기록 삭제 완료")
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.medicinePlanRef.child(myUid).child(dogId).addValueEventListener(postListener)
+    }
+
     fun isBetweenDates(date: LocalDate, startDate: LocalDate, endDate: LocalDate): Boolean {
         return (date.isEqual(startDate) || date.isAfter(startDate)) && (date.isEqual(endDate) || date.isBefore(endDate))
+    }
+
+    fun isAnyDateBetweenDates(startDate: LocalDate, endDate: LocalDate, sDate: LocalDate, eDate: LocalDate): Boolean {
+        var result = false
+        var date = startDate
+        while (!date.isAfter(endDate)) {
+            if ((!date.isBefore(sDate) && !date.isAfter(eDate)) || date.isEqual(sDate) || date.isEqual(eDate)) {
+                result = true
+                break
+            }
+            date = date.plusDays(1)
+        }
+        return result
+    }
+
+    fun getDatesBetween(startDate: LocalDate, endDate: LocalDate): List<LocalDate> {
+        var dates = mutableListOf<LocalDate>()
+        var currentDate = startDate
+        while (!currentDate.isAfter(endDate)) {
+            dates.add(currentDate)
+            currentDate = currentDate.plusDays(1)
+        }
+        return dates
     }
 }
