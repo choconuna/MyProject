@@ -11,10 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -203,8 +205,7 @@ class VomitStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.GONE
 
-                setWeekChartReady()
-                barWeekChartGraph(v, weekChart, weekMap)
+                setWeekChartReady(v)
             }
             "1개월" -> {
                 oneDayChart.visibility = View.GONE
@@ -214,8 +215,7 @@ class VomitStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.GONE
 
-                setOneMonthChartReady()
-                barOneMonthChartGraph(v, oneMonthChart, oneMonthMap)
+                setOneMonthChartReady(v)
             }
             "3개월" -> {
                 oneDayChart.visibility = View.GONE
@@ -225,8 +225,7 @@ class VomitStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.GONE
 
-                setThreeMonthChartReady()
-                barThreeMonthChartGraph(v, threeMonthChart, threeMonthMap)
+                setThreeMonthChartReady(v)
             }
             "6개월" -> {
                 oneDayChart.visibility = View.GONE
@@ -236,8 +235,7 @@ class VomitStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.VISIBLE
                 yearChart.visibility = View.GONE
 
-                setSixMonthChartReady()
-                barSixMonthChartGraph(v, sixMonthChart, sixMonthMap)
+                setSixMonthChartReady(v)
             }
             "1년" -> {
                 oneDayChart.visibility = View.GONE
@@ -247,8 +245,7 @@ class VomitStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.VISIBLE
 
-                setYearChartReady()
-                barYearChartGraph(v, yearChart, yearMap)
+                setYearChartReady(v)
             }
         }
     }
@@ -302,6 +299,8 @@ class VomitStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
@@ -344,7 +343,7 @@ class VomitStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setWeekChartReady() {
+    private fun setWeekChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -411,6 +410,9 @@ class VomitStatisticsFragment : Fragment() {
                             }
                         }
                     }
+
+                    barWeekChartGraph(v, weekChart, weekMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "구토 기록 삭제 완료")
                 }
@@ -439,6 +441,8 @@ class VomitStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
@@ -459,14 +463,17 @@ class VomitStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#778899")
 
         val data = PieData(depenses)
         with(data) {
@@ -479,11 +486,10 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "구토"
         }
     }
 
-    private fun setOneMonthChartReady() {
+    private fun setOneMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -614,6 +620,9 @@ class VomitStatisticsFragment : Fragment() {
                             }
                         }
                     }
+
+                    barOneMonthChartGraph(v, oneMonthChart, oneMonthMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "구토 기록 삭제 완료")
                 }
@@ -641,6 +650,8 @@ class VomitStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
@@ -661,14 +672,18 @@ class VomitStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#778899")
 
         val data = PieData(depenses)
         with(data) {
@@ -681,11 +696,10 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "구토"
         }
     }
 
-    private fun setThreeMonthChartReady() {
+    private fun setThreeMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -814,6 +828,9 @@ class VomitStatisticsFragment : Fragment() {
                             }
                         }
                     }
+
+                    barThreeMonthChartGraph(v, threeMonthChart, threeMonthMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "구토 기록 삭제 완료")
                 }
@@ -841,6 +858,8 @@ class VomitStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
@@ -861,14 +880,18 @@ class VomitStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#778899")
 
         val data = PieData(depenses)
         with(data) {
@@ -881,11 +904,10 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "구토"
         }
     }
 
-    private fun setSixMonthChartReady() {
+    private fun setSixMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -1110,8 +1132,10 @@ class VomitStatisticsFragment : Fragment() {
                                 sixMonthMap[item!!.vomitType] = sixMonthMap[item!!.vomitType]!! + item!!.vomitCount.toFloat()
                             }
                         }
-
                     }
+
+                    barSixMonthChartGraph(v, sixMonthChart, sixMonthMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "구토 기록 삭제 완료")
                 }
@@ -1139,6 +1163,8 @@ class VomitStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
@@ -1159,14 +1185,18 @@ class VomitStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#778899")
 
         val data = PieData(depenses)
         with(data) {
@@ -1179,11 +1209,10 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "구토"
         }
     }
 
-    private fun setYearChartReady() {
+    private fun setYearChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -1608,8 +1637,10 @@ class VomitStatisticsFragment : Fragment() {
                                 }
                             }
                         }
-
                     }
+
+                    barYearChartGraph(v, yearChart, yearMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "구토 기록 삭제 완료")
                 }
@@ -1637,6 +1668,8 @@ class VomitStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
@@ -1657,14 +1690,17 @@ class VomitStatisticsFragment : Fragment() {
             }
         }
 
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#778899")
 
         val data = PieData(depenses)
         with(data) {
@@ -1677,7 +1713,6 @@ class VomitStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "구토"
         }
     }
 

@@ -11,12 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -205,8 +207,7 @@ class DungStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.GONE
 
-                setWeekChartReady()
-                barWeekChartGraph(v, weekChart, weekMap)
+                setWeekChartReady(v)
             }
             "1개월" -> {
                 oneDayChart.visibility = View.GONE
@@ -216,8 +217,7 @@ class DungStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.GONE
 
-                setOneMonthChartReady()
-                barOneMonthChartGraph(v, oneMonthChart, oneMonthMap)
+                setOneMonthChartReady(v)
             }
             "3개월" -> {
                 oneDayChart.visibility = View.GONE
@@ -227,8 +227,7 @@ class DungStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.GONE
 
-                setThreeMonthChartReady()
-                barThreeMonthChartGraph(v, threeMonthChart, threeMonthMap)
+                setThreeMonthChartReady(v)
             }
             "6개월" -> {
                 oneDayChart.visibility = View.GONE
@@ -238,8 +237,7 @@ class DungStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.VISIBLE
                 yearChart.visibility = View.GONE
 
-                setSixMonthChartReady()
-                barSixMonthChartGraph(v, sixMonthChart, sixMonthMap)
+                setSixMonthChartReady(v)
             }
             "1년" -> {
                 oneDayChart.visibility = View.GONE
@@ -249,8 +247,7 @@ class DungStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.VISIBLE
 
-                setYearChartReady()
-                barYearChartGraph(v, yearChart, yearMap)
+                setYearChartReady(v)
             }
         }
     }
@@ -305,29 +302,45 @@ class DungStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
+
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             when (key) {
-                "regular" -> entries.add(PieEntry(value, "보통"))
-                "watery" -> entries.add(PieEntry(value, "묽은"))
-                "diarrhea" -> entries.add(PieEntry(value, "설사"))
-                "hard" -> entries.add(PieEntry(value, "질고 딱딱"))
-                "red" -> entries.add(PieEntry(value, "붉은"))
-                "black" -> entries.add(PieEntry(value, "검은"))
-                "white" -> entries.add(PieEntry(value, "흰색 점"))
+                "regular" -> entries.add(PieEntry(value / sum * 100, "보통"))
+                "watery" -> entries.add(PieEntry(value / sum * 100, "묽은"))
+                "diarrhea" -> entries.add(PieEntry(value / sum * 100, "설사"))
+                "hard" -> entries.add(PieEntry(value / sum * 100, "질고 딱딱"))
+                "red" -> entries.add(PieEntry(value / sum * 100, "붉은"))
+                "black" -> entries.add(PieEntry(value / sum * 100, "검은"))
+                "white" -> entries.add(PieEntry(value / sum * 100, "흰색 점"))
             }
         }
+
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.COLORFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
 
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#8B4513")
 
         val data = PieData(depenses)
         with(data) {
@@ -340,11 +353,10 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "대변"
         }
     }
 
-    private fun setWeekChartReady() {
+    private fun setWeekChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -408,6 +420,9 @@ class DungStatisticsFragment : Fragment() {
                             }
                         }
                     }
+
+                    barWeekChartGraph(v, weekChart, weekMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "대변 기록 삭제 완료")
                 }
@@ -437,31 +452,45 @@ class DungStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value > 0) {
                 when (key) {
-                    "regular" -> entries.add(PieEntry(value, "보통"))
-                    "watery" -> entries.add(PieEntry(value, "묽은"))
-                    "diarrhea" -> entries.add(PieEntry(value, "설사"))
-                    "hard" -> entries.add(PieEntry(value, "질고 딱딱"))
-                    "red" -> entries.add(PieEntry(value, "붉은"))
-                    "black" -> entries.add(PieEntry(value, "검은"))
-                    "white" -> entries.add(PieEntry(value, "흰색 점"))
+                    "regular" -> entries.add(PieEntry(value / sum * 100, "보통"))
+                    "watery" -> entries.add(PieEntry(value / sum * 100, "묽은"))
+                    "diarrhea" -> entries.add(PieEntry(value / sum * 100, "설사"))
+                    "hard" -> entries.add(PieEntry(value / sum * 100, "질고 딱딱"))
+                    "red" -> entries.add(PieEntry(value / sum * 100, "붉은"))
+                    "black" -> entries.add(PieEntry(value / sum * 100, "검은"))
+                    "white" -> entries.add(PieEntry(value / sum * 100, "흰색 점"))
                 }
             }
         }
+
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.COLORFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
 
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#8B4513")
 
         val data = PieData(depenses)
         with(data) {
@@ -474,11 +503,10 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "대변"
         }
     }
 
-    private fun setOneMonthChartReady() {
+    private fun setOneMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -606,6 +634,9 @@ class DungStatisticsFragment : Fragment() {
                             }
                         }
                     }
+
+                    barOneMonthChartGraph(v, oneMonthChart, oneMonthMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "소변 기록 삭제 완료")
                 }
@@ -634,31 +665,46 @@ class DungStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value > 0) {
                 when (key) {
-                    "regular" -> entries.add(PieEntry(value, "보통"))
-                    "watery" -> entries.add(PieEntry(value, "묽은"))
-                    "diarrhea" -> entries.add(PieEntry(value, "설사"))
-                    "hard" -> entries.add(PieEntry(value, "질고 딱딱"))
-                    "red" -> entries.add(PieEntry(value, "붉은"))
-                    "black" -> entries.add(PieEntry(value, "검은"))
-                    "white" -> entries.add(PieEntry(value, "흰색 점"))
+                    "regular" -> entries.add(PieEntry(value / sum * 100, "보통"))
+                    "watery" -> entries.add(PieEntry(value / sum * 100, "묽은"))
+                    "diarrhea" -> entries.add(PieEntry(value / sum * 100, "설사"))
+                    "hard" -> entries.add(PieEntry(value / sum * 100, "질고 딱딱"))
+                    "red" -> entries.add(PieEntry(value / sum * 100, "붉은"))
+                    "black" -> entries.add(PieEntry(value / sum * 100, "검은"))
+                    "white" -> entries.add(PieEntry(value / sum * 100, "흰색 점"))
                 }
             }
         }
+
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.COLORFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
 
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#8B4513")
 
         val data = PieData(depenses)
         with(data) {
@@ -671,11 +717,10 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "대변"
         }
     }
 
-    private fun setThreeMonthChartReady() {
+    private fun setThreeMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -801,6 +846,9 @@ class DungStatisticsFragment : Fragment() {
                             }
                         }
                     }
+
+                    barThreeMonthChartGraph(v, threeMonthChart, threeMonthMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "대변 기록 삭제 완료")
                 }
@@ -829,31 +877,46 @@ class DungStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value > 0) {
                 when (key) {
-                    "regular" -> entries.add(PieEntry(value, "보통"))
-                    "watery" -> entries.add(PieEntry(value, "묽은"))
-                    "diarrhea" -> entries.add(PieEntry(value, "설사"))
-                    "hard" -> entries.add(PieEntry(value, "질고 딱딱"))
-                    "red" -> entries.add(PieEntry(value, "붉은"))
-                    "black" -> entries.add(PieEntry(value, "검은"))
-                    "white" -> entries.add(PieEntry(value, "흰색 점"))
+                    "regular" -> entries.add(PieEntry(value / sum * 100, "보통"))
+                    "watery" -> entries.add(PieEntry(value / sum * 100, "묽은"))
+                    "diarrhea" -> entries.add(PieEntry(value / sum * 100, "설사"))
+                    "hard" -> entries.add(PieEntry(value / sum * 100, "질고 딱딱"))
+                    "red" -> entries.add(PieEntry(value / sum * 100, "붉은"))
+                    "black" -> entries.add(PieEntry(value / sum * 100, "검은"))
+                    "white" -> entries.add(PieEntry(value / sum * 100, "흰색 점"))
                 }
             }
         }
+
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.COLORFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
 
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#8B4513")
 
         val data = PieData(depenses)
         with(data) {
@@ -866,11 +929,10 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "대변"
         }
     }
 
-    private fun setSixMonthChartReady() {
+    private fun setSixMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -1092,8 +1154,10 @@ class DungStatisticsFragment : Fragment() {
                                 sixMonthMap[item!!.dungType] = sixMonthMap[item!!.dungType]!! + item!!.dungCount.toFloat()
                             }
                         }
-
                     }
+
+                    barSixMonthChartGraph(v, sixMonthChart, sixMonthMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "소변 기록 삭제 완료")
                 }
@@ -1122,31 +1186,46 @@ class DungStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value > 0) {
                 when (key) {
-                    "regular" -> entries.add(PieEntry(value, "보통"))
-                    "watery" -> entries.add(PieEntry(value, "묽은"))
-                    "diarrhea" -> entries.add(PieEntry(value, "설사"))
-                    "hard" -> entries.add(PieEntry(value, "질고 딱딱"))
-                    "red" -> entries.add(PieEntry(value, "붉은"))
-                    "black" -> entries.add(PieEntry(value, "검은"))
-                    "white" -> entries.add(PieEntry(value, "흰색 점"))
+                    "regular" -> entries.add(PieEntry(value / sum * 100, "보통"))
+                    "watery" -> entries.add(PieEntry(value / sum * 100, "묽은"))
+                    "diarrhea" -> entries.add(PieEntry(value / sum * 100, "설사"))
+                    "hard" -> entries.add(PieEntry(value / sum * 100, "질고 딱딱"))
+                    "red" -> entries.add(PieEntry(value / sum * 100, "붉은"))
+                    "black" -> entries.add(PieEntry(value / sum * 100, "검은"))
+                    "white" -> entries.add(PieEntry(value / sum * 100, "흰색 점"))
                 }
             }
         }
+
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.COLORFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
 
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#8B4513")
 
         val data = PieData(depenses)
         with(data) {
@@ -1159,11 +1238,10 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "대변"
         }
     }
 
-    private fun setYearChartReady() {
+    private fun setYearChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -1585,8 +1663,10 @@ class DungStatisticsFragment : Fragment() {
                                 }
                             }
                         }
-
                     }
+
+                    barYearChartGraph(v, yearChart, yearMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "대변 기록 삭제 완료")
                 }
@@ -1615,31 +1695,46 @@ class DungStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(8f)
             setEntryLabelColor(Color.parseColor("#FFFFF0"))
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value > 0) {
                 when (key) {
-                    "regular" -> entries.add(PieEntry(value, "보통"))
-                    "watery" -> entries.add(PieEntry(value, "묽은"))
-                    "diarrhea" -> entries.add(PieEntry(value, "설사"))
-                    "hard" -> entries.add(PieEntry(value, "질고 딱딱"))
-                    "red" -> entries.add(PieEntry(value, "붉은"))
-                    "black" -> entries.add(PieEntry(value, "검은"))
-                    "white" -> entries.add(PieEntry(value, "흰색 점"))
+                    "regular" -> entries.add(PieEntry(value / sum * 100, "보통"))
+                    "watery" -> entries.add(PieEntry(value / sum * 100, "묽은"))
+                    "diarrhea" -> entries.add(PieEntry(value / sum * 100, "설사"))
+                    "hard" -> entries.add(PieEntry(value / sum * 100, "질고 딱딱"))
+                    "red" -> entries.add(PieEntry(value / sum * 100, "붉은"))
+                    "black" -> entries.add(PieEntry(value / sum * 100, "검은"))
+                    "white" -> entries.add(PieEntry(value / sum * 100, "흰색 점"))
                 }
             }
         }
+
+        val colors: ArrayList<Int> = ArrayList()
+        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.COLORFUL_COLORS) colors.add(c)
+        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
 
         var depenses = PieDataSet(entries, "")
         with(depenses) {
             sliceSpace = 3f
             selectionShift = 5f
             valueTextSize = 5f
+
+            setColors(colors)
         }
         depenses.valueFormatter = CustomFormatter()
-        depenses.color = Color.parseColor("#8B4513")
 
         val data = PieData(depenses)
         with(data) {
@@ -1652,14 +1747,13 @@ class DungStatisticsFragment : Fragment() {
             description.isEnabled = false
             animate()
             invalidate()
-            centerText = "대변"
         }
     }
 
     class CustomFormatter : ValueFormatter() {
         override fun getFormattedValue(value: Float): String {
             val waterWeight = value.toString().split(".")
-            return waterWeight[0] + "회"
+            return waterWeight[0] + "%"
         }
     }
 }

@@ -225,26 +225,9 @@ class WaterStatisticsFragment : Fragment() {
                 weekLabelList.clear()
                 weekValueList.clear()
 
-                setWeekChartReady()
-                setWeekChart()
+                setWeekChartReady(v)
 
                 Log.d("weekDay", "$weekMap $weekLabelMap")
-
-                val sortedWeekLabelMap = sortMapByKey1(weekLabelMap)
-                // key(String)에 따른 정렬
-                for((key, value) in sortedWeekLabelMap.entries) {
-                    weekLabelList.add(value)
-                }
-
-                val sortedWeekMap = sortMapByKey2(weekMap)
-                // key(String)에 따른 정렬
-                for((key, value) in sortedWeekMap.entries) {
-                    weekValueList.add(value)
-                }
-
-                Log.d("weekDay", "$weekLabelList $weekValueList")
-
-                barWeekChartGraph(v, weekChart, weekValueList, weekLabelList)
             }
             "1개월" -> {
                 oneDayChart.visibility = GONE
@@ -256,24 +239,9 @@ class WaterStatisticsFragment : Fragment() {
 
                 oneMonthLabelList.clear()
 
-                setOneMonthChartReady()
+                setOneMonthChartReady(v)
 
                 Log.d("oneMonthDay", "$oneMonthMap")
-
-                oneMonthLabelList.add("1주차")
-                oneMonthLabelList.add("2주차")
-                oneMonthLabelList.add("3주차")
-                oneMonthLabelList.add("4주차")
-
-                val sortedMonthMap = sortMapByKey2(oneMonthMap)
-                // key(String)에 따른 정렬
-                for((key, value) in sortedMonthMap.entries) {
-                    oneMonthValueList.add(value / 7)
-                }
-
-                Log.d("oneMonthDay", "$oneMonthLabelList $oneMonthValueList")
-
-                barOneMonthChartGraph(v, oneMonthChart, oneMonthValueList, oneMonthLabelList)
             }
             "3개월" -> {
                 oneDayChart.visibility = GONE
@@ -286,23 +254,9 @@ class WaterStatisticsFragment : Fragment() {
                 threeMonthLabelList.clear()
                 threeMonthValueList.clear()
 
-                setThreeMonthChartReady()
+                setThreeMonthChartReady(v)
 
                 Log.d("threeMonthDay", "$threeMonthMap")
-
-                threeMonthLabelList.add("1개월")
-                threeMonthLabelList.add("2개월")
-                threeMonthLabelList.add("3개월")
-
-                val sortedThreeMonthMap = sortMapByKey2(threeMonthMap)
-                // key(String)에 따른 정렬
-                for((key, value) in sortedThreeMonthMap.entries) {
-                    threeMonthValueList.add(value / 30)
-                }
-
-                Log.d("threeMonthDay", "$threeMonthLabelList $threeMonthValueList")
-
-                barThreeMonthChartGraph(v, threeMonthChart, threeMonthValueList, threeMonthLabelList)
             }
             "6개월" -> {
                 oneDayChart.visibility = GONE
@@ -315,26 +269,9 @@ class WaterStatisticsFragment : Fragment() {
                 sixMonthLabelList.clear()
                 sixMonthValueList.clear()
 
-                setSixMonthChartReady()
+                setSixMonthChartReady(v)
 
                 Log.d("sixMonthDay", "$sixMonthMap")
-
-                sixMonthLabelList.add("1개월")
-                sixMonthLabelList.add("2개월")
-                sixMonthLabelList.add("3개월")
-                sixMonthLabelList.add("4개월")
-                sixMonthLabelList.add("5개월")
-                sixMonthLabelList.add("6개월")
-
-                val sortedSixMonthMap = sortMapByKey2(sixMonthMap)
-                // key(String)에 따른 정렬
-                for((key, value) in sortedSixMonthMap.entries) {
-                    sixMonthValueList.add(value / 30)
-                }
-
-                Log.d("sixMonthDay", "$sixMonthLabelList $sixMonthValueList")
-
-                barSixMonthChartGraph(v, sixMonthChart, sixMonthValueList, sixMonthLabelList)
             }
             "1년" -> {
                 oneDayChart.visibility = GONE
@@ -344,32 +281,9 @@ class WaterStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = GONE
                 yearChart.visibility = VISIBLE
 
-                setYearChartReady()
+                setYearChartReady(v)
 
                 Log.d("yearMonthDay", "$yearMap")
-
-                yearLabelList.add("1개월")
-                yearLabelList.add("2개월")
-                yearLabelList.add("3개월")
-                yearLabelList.add("4개월")
-                yearLabelList.add("5개월")
-                yearLabelList.add("6개월")
-                yearLabelList.add("7개월")
-                yearLabelList.add("8개월")
-                yearLabelList.add("9개월")
-                yearLabelList.add("10개월")
-                yearLabelList.add("11개월")
-                yearLabelList.add("12개월")
-
-                val sortedSixMonthMap = sortMapByKey2(yearMap)
-                // key(String)에 따른 정렬
-                for((key, value) in sortedSixMonthMap.entries) {
-                    yearValueList.add(value / 30)
-                }
-
-                Log.d("yearDay", "$yearLabelList $yearValueList")
-
-                barYearChartGraph(v, yearChart, yearValueList, yearLabelList)
             }
         }
     }
@@ -462,6 +376,7 @@ class WaterStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#87CEEB")
         depenses.valueFormatter = CustomFormatter()
+        depenses.valueTextSize = 10f
 
         val data = BarData(depenses)
         data.barWidth = 0.8f
@@ -473,7 +388,7 @@ class WaterStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setWeekChartReady() {
+    private fun setWeekChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -533,75 +448,91 @@ class WaterStatisticsFragment : Fragment() {
                             }
                         }
                     }
-                } catch (e: Exception) {
-                    Log.d(TAG, "물 기록 삭제 완료")
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.waterRef.child(myUid).child(dogId).addValueEventListener(postListener)
-    }
+                    val nowSp = nowDate.split(".") // 오늘 날짜
+                    val nowYear = nowSp[0].toInt()
+                    val nowMonth = nowSp[1].toInt()
+                    val nowDay = nowSp[2].toInt()
+                    val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
 
-    private fun setWeekChart() {
-        val nowSp = nowDate.split(".") // 오늘 날짜
-        val nowYear = nowSp[0].toInt()
-        val nowMonth = nowSp[1].toInt()
-        val nowDay = nowSp[2].toInt()
-        val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
+                    val weekSp = weekDate.split(".") // 일주일 전 날짜
+                    val weekYear = weekSp[0].toInt()
+                    val weekMonth = weekSp[1].toInt()
+                    val weekDay = weekSp[2].toInt()
+                    val weekDateNum = weekSp[0] + weekSp[1] + weekSp[2]
 
-        val weekSp = weekDate.split(".") // 일주일 전 날짜
-        val weekYear = weekSp[0].toInt()
-        val weekMonth = weekSp[1].toInt()
-        val weekDay = weekSp[2].toInt()
-        val weekDateNum = weekSp[0] + weekSp[1] + weekSp[2]
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try { // 물 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try { // 물 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
+                                for (dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DogWaterModel::class.java)
+                                    val date = item!!.date
+                                    val sp = date.split(".")
+                                    val year = sp[0].toInt()
+                                    val month = sp[1].toInt()
+                                    val day = sp[2].toInt()
 
-                    for (dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogWaterModel::class.java)
-                        val date = item!!.date
-                        val sp = date.split(".")
-                        val year = sp[0].toInt()
-                        val month = sp[1].toInt()
-                        val day = sp[2].toInt()
+                                    var dayNum = ""
+                                    if(sp[1].length == 1 && sp[2].length ==1) {
+                                        dayNum = sp[0] + "0" + sp[1] + "0" + sp[2]
+                                    } else if(sp[1].length == 1 && sp[2].length == 2) {
+                                        dayNum = sp[0] + "0" + sp[1] + sp[2]
+                                    } else if(sp[1].length == 2 && sp[2].length == 1) {
+                                        dayNum = sp[0] + sp[1] + "0" + sp[2]
+                                    } else if(sp[1].length == 2 && sp[2].length == 2) {
+                                        dayNum = sp[0] + sp[1] + sp[2]
+                                    }
 
-                        var dayNum = ""
-                        if(sp[1].length == 1 && sp[2].length ==1) {
-                            dayNum = sp[0] + "0" + sp[1] + "0" + sp[2]
-                        } else if(sp[1].length == 1 && sp[2].length == 2) {
-                            dayNum = sp[0] + "0" + sp[1] + sp[2]
-                        } else if(sp[1].length == 2 && sp[2].length == 1) {
-                            dayNum = sp[0] + sp[1] + "0" + sp[2]
-                        } else if(sp[1].length == 2 && sp[2].length == 2) {
-                            dayNum = sp[0] + sp[1] + sp[2]
+                                    if(year == nowYear && year == weekYear) { // 일주일 전이 같은 연도일 경우
+                                        if(month == nowMonth && month == weekMonth) { // 일주일 전이 같은 달일 경우
+                                            if(day in weekDay..nowDay) {
+                                                weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.waterWeight.toFloat()
+                                            }
+                                        } else if(month < nowMonth && month == weekMonth) { // 일주일 전이 전달일 경우
+                                            if(day >= weekDay) {
+                                                weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.waterWeight.toFloat()
+                                            }
+                                        } else if(month == nowMonth && month > weekMonth) { // 일주일 전이 이번달일 경우
+                                            if(day <= nowDay) {
+                                                weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.waterWeight.toFloat()
+                                            }
+                                        }
+                                    } else if(year < nowYear && year == weekYear) { // 일주일 전이 전년도일 경우
+                                        if(weekMonth == month && day >= weekDay) {
+                                            weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.waterWeight.toFloat()
+                                        }
+                                    }
+                                }
+
+                                val sortedWeekLabelMap = sortMapByKey1(weekLabelMap)
+                                // key(String)에 따른 정렬
+                                for((key, value) in sortedWeekLabelMap.entries) {
+                                    weekLabelList.add(value)
+                                }
+
+                                val sortedWeekMap = sortMapByKey2(weekMap)
+                                // key(String)에 따른 정렬
+                                for((key, value) in sortedWeekMap.entries) {
+                                    weekValueList.add(value)
+                                }
+
+                                Log.d("weekDay", "$weekLabelList $weekValueList")
+
+                                barWeekChartGraph(v, weekChart, weekValueList, weekLabelList)
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, "물 기록 삭제 완료")
+                            }
                         }
 
-                        if(year == nowYear && year == weekYear) { // 일주일 전이 같은 연도일 경우
-                            if(month == nowMonth && month == weekMonth) { // 일주일 전이 같은 달일 경우
-                                if(day in weekDay..nowDay) {
-                                    weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.waterWeight.toFloat()
-                                }
-                            } else if(month < nowMonth && month == weekMonth) { // 일주일 전이 전달일 경우
-                                if(day >= weekDay) {
-                                    weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.waterWeight.toFloat()
-                                }
-                            } else if(month == nowMonth && month > weekMonth) { // 일주일 전이 이번달일 경우
-                                if(day <= nowDay) {
-                                    weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.waterWeight.toFloat()
-                                }
-                            }
-                        } else if(year < nowYear && year == weekYear) { // 일주일 전이 전년도일 경우
-                            if(weekMonth == month && day >= weekDay) {
-                                weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.waterWeight.toFloat()
-                            }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                         }
                     }
+                    FBRef.waterRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "물 기록 삭제 완료")
                 }
@@ -662,6 +593,7 @@ class WaterStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#87CEEB")
         depenses.valueFormatter = CustomFormatter()
+        depenses.valueTextSize = 10f
 
         val data = BarData(depenses)
         data.barWidth = 0.5f
@@ -673,7 +605,7 @@ class WaterStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setOneMonthChartReady() {
+    private fun setOneMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -701,6 +633,8 @@ class WaterStatisticsFragment : Fragment() {
         val oneMonthMonth = oneMonthWeekSp[1].toInt()
         val oneMonthDay = oneMonthWeekSp[2].toInt()
 
+        var yearCount : MutableMap<Int, Int> = mutableMapOf()
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try { // 물 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
@@ -711,6 +645,11 @@ class WaterStatisticsFragment : Fragment() {
                     oneMonthMap[2] = 0.toFloat()
                     oneMonthMap[3] = 0.toFloat()
                     oneMonthMap[4] = 0.toFloat()
+
+                    yearCount[1] = 0
+                    yearCount[2] = 0
+                    yearCount[3] = 0
+                    yearCount[4] = 0
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogWaterModel::class.java)
@@ -724,19 +663,31 @@ class WaterStatisticsFragment : Fragment() {
                             if(month == nowMonth && month == weekMonth) { // 일주일 전이 같은 달일 경우
                                 if(day in weekDay..nowDay) {
                                     oneMonthMap[4] = oneMonthMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             } else if(month < nowMonth && month == weekMonth) { // 일주일 전이 이전 달일 경우
                                 if(day >= weekDay) {
                                     oneMonthMap[4] = oneMonthMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             } else if(month == nowMonth && month > weekMonth) { // 일주일 전이 이번 달일 경우
                                 if(day <= nowDay) {
                                     oneMonthMap[4] = oneMonthMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             }
                         } else if(year < nowYear && year == weekYear) { // 일주일 전이 전년도일 경우
                             if(weekMonth == month && day >= weekDay) {
                                 oneMonthMap[4] = oneMonthMap[4]!! + item!!.waterWeight.toFloat()
+
+                                if(item!!.waterWeight.toInt() > 0)
+                                    yearCount[4] = yearCount[4]!! + 1
                             }
                         }
 
@@ -744,19 +695,31 @@ class WaterStatisticsFragment : Fragment() {
                             if(month == weekMonth && month == twoWeekMonth) { // 2주일 전이 같은 달일 경우
                                 if(day in twoWeekDay until weekDay) {
                                     oneMonthMap[3] = oneMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             } else if(month < weekMonth && month == twoWeekMonth) { // 2주일 전이 이전 달일 경우
                                 if(day >= twoWeekDay) {
                                     oneMonthMap[3] = oneMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             } else if(month == weekMonth && month > twoWeekMonth) { // 2주일 전이 이번 달일 경우
                                 if(day < weekDay) {
                                     oneMonthMap[3] = oneMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
                         } else if(year < weekYear && year == twoWeekYear) { // 2주일 전이 전년도일 경우
                             if(twoWeekMonth == month && day >= twoWeekDay) {
                                 oneMonthMap[3] = oneMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                if(item!!.waterWeight.toInt() > 0)
+                                    yearCount[3] = yearCount[3]!! + 1
                             }
                         }
 
@@ -764,19 +727,31 @@ class WaterStatisticsFragment : Fragment() {
                             if(month == twoWeekMonth && month == threeWeekMonth) { // 3주일 전이 같은 달일 경우
                                 if(day in threeWeekDay until twoWeekDay) {
                                     oneMonthMap[2] = oneMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             } else if(month < twoWeekMonth && month == threeWeekMonth) { // 3주일 전이 이전 달일 경우
                                 if(day >= threeWeekDay) {
                                     oneMonthMap[2] = oneMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             } else if(month == twoWeekMonth && month > threeWeekMonth) { // 3주일 전이 이번 달일 경우
                                 if(day < twoWeekDay) {
                                     oneMonthMap[2] = oneMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             }
                         } else if(year < twoWeekYear && year == threeWeekYear) { // 3주일 전이 전년도일 경우
                             if(threeWeekMonth == month && day >= threeWeekDay) {
                                 oneMonthMap[2] = oneMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                if(item!!.waterWeight.toInt() > 0)
+                                    yearCount[2] = yearCount[2]!! + 1
                             }
                         }
 
@@ -784,22 +759,59 @@ class WaterStatisticsFragment : Fragment() {
                             if(month == threeWeekMonth && month == oneMonthMonth) { // 한달 전이 같은 달일 경우
                                 if(day in oneMonthDay until threeWeekDay) {
                                     oneMonthMap[1] = oneMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             } else if(month < threeWeekMonth && month == oneMonthMonth) { // 한달 전이 이전 달일 경우
                                 if(day >= oneMonthDay) {
                                     oneMonthMap[1] = oneMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             } else if(month == threeWeekMonth && month > oneMonthMonth) { // 한달 전이 이번 달일 경우
                                 if(day < threeWeekDay) {
                                     oneMonthMap[1] = oneMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             }
                         } else if(year < threeWeekYear && year == oneMonthYear) { // 한달 전이 전년도일 경우
                             if(oneMonthMonth == month && day >= oneMonthDay) {
                                 oneMonthMap[1] = oneMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                if(item!!.waterWeight.toInt() > 0)
+                                    yearCount[1] = yearCount[1]!! + 1
                             }
                         }
                     }
+
+                    oneMonthLabelList.add("1주차")
+                    oneMonthLabelList.add("2주차")
+                    oneMonthLabelList.add("3주차")
+                    oneMonthLabelList.add("4주차")
+
+                    val sortedMonthMap = sortMapByKey2(oneMonthMap)
+                    val sortedMonthCountMap = sortMapByKey3(yearCount)
+                    var count :  ArrayList<Int> = ArrayList()
+                    for((key, value) in sortedMonthCountMap)
+                        count.add(value)
+
+                    var i = 0
+                    for((key, value) in sortedMonthMap.entries) {
+                        if(count[i] == 0)
+                            oneMonthValueList.add(value)
+                        else
+                            oneMonthValueList.add(value / count[i])
+                        i += 1
+                    }
+
+                    Log.d("oneMonthDay", "$oneMonthLabelList $oneMonthValueList")
+
+                    barOneMonthChartGraph(v, oneMonthChart, oneMonthValueList, oneMonthLabelList)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "물 기록 삭제 완료")
                 }
@@ -860,6 +872,7 @@ class WaterStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#87CEEB")
         depenses.valueFormatter = CustomFormatter()
+        depenses.valueTextSize = 10f
 
         val data = BarData(depenses)
         data.barWidth = 0.8f
@@ -872,7 +885,7 @@ class WaterStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setThreeMonthChartReady() {
+    private fun setThreeMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -894,6 +907,8 @@ class WaterStatisticsFragment : Fragment() {
         val threeMonthMonth = threeMonthWeekSp[1].toInt()
         val threeMonthDay = threeMonthWeekSp[2].toInt()
 
+        var yearCount : MutableMap<Int, Int> = mutableMapOf()
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try { // 물 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
@@ -903,6 +918,10 @@ class WaterStatisticsFragment : Fragment() {
                     threeMonthMap[1] = 0.toFloat()
                     threeMonthMap[2] = 0.toFloat()
                     threeMonthMap[3] = 0.toFloat()
+
+                    yearCount[1] = 0
+                    yearCount[2] = 0
+                    yearCount[3] = 0
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogWaterModel::class.java)
@@ -917,16 +936,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in oneMonthDay..nowDay) {
                                     threeMonthMap[3] =
                                         threeMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
                                 if (day >= oneMonthDay) {
                                     threeMonthMap[3] =
                                         threeMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
                                 if (day <= nowDay) {
                                     threeMonthMap[3] =
                                         threeMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
                         } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
@@ -934,6 +962,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= oneMonthDay) {
                                     threeMonthMap[3] =
                                         threeMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
                         } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -941,6 +972,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day <= nowDay) {
                                     threeMonthMap[3] =
                                         threeMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
                         }
@@ -950,16 +984,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in twoMonthDay until oneMonthDay) {
                                     threeMonthMap[2] =
                                         threeMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
                                 if (day >= twoMonthDay) {
                                     threeMonthMap[2] =
                                         threeMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
                                 if (day < oneMonthDay) {
                                     threeMonthMap[2] =
                                         threeMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             }
                         } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -967,6 +1010,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= twoMonthDay) {
                                     threeMonthMap[2] =
                                         threeMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             }
                         } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -974,6 +1020,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < oneMonthDay) {
                                     threeMonthMap[2] =
                                         threeMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             }
                         }
@@ -983,16 +1032,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in threeMonthDay until twoMonthDay) {
                                     threeMonthMap[1] =
                                         threeMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
                                 if (day >= threeMonthDay) {
                                     threeMonthMap[1] =
                                         threeMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
                                 if (day < twoMonthDay) {
                                     threeMonthMap[1] =
                                         threeMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             }
                         } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1000,6 +1058,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= threeMonthDay) {
                                     threeMonthMap[1] =
                                         threeMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             }
                         } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1007,10 +1068,37 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < twoMonthDay) {
                                     threeMonthMap[1] =
                                         threeMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             }
                         }
                     }
+
+                    threeMonthLabelList.add("1개월")
+                    threeMonthLabelList.add("2개월")
+                    threeMonthLabelList.add("3개월")
+
+                    val sortedThreeMonthMap = sortMapByKey2(threeMonthMap)
+                    val sortedThreeMonthCountMap = sortMapByKey3(yearCount)
+                    var count :  ArrayList<Int> = ArrayList()
+                    for((key, value) in sortedThreeMonthCountMap)
+                        count.add(value)
+
+                    var i = 0
+                    for((key, value) in sortedThreeMonthMap.entries) {
+                        if(count[i] == 0)
+                            threeMonthValueList.add(value)
+                        else
+                            threeMonthValueList.add(value / count[i])
+                        i += 1
+                    }
+
+                    Log.d("threeMonthDay", "$threeMonthLabelList $threeMonthValueList")
+
+                    barThreeMonthChartGraph(v, threeMonthChart, threeMonthValueList, threeMonthLabelList)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "물 기록 삭제 완료")
                 }
@@ -1071,6 +1159,7 @@ class WaterStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#87CEEB")
         depenses.valueFormatter = CustomFormatter()
+        depenses.valueTextSize = 10f
 
         val data = BarData(depenses)
         data.barWidth = 0.8f
@@ -1083,7 +1172,7 @@ class WaterStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setSixMonthChartReady() {
+    private fun setSixMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -1120,6 +1209,8 @@ class WaterStatisticsFragment : Fragment() {
         val sixMonthMonth = sixMonthWeekSp[1].toInt()
         val sixMonthDay = sixMonthWeekSp[2].toInt()
 
+         var yearCount : MutableMap<Int, Int> = mutableMapOf()
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try { // 물 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
@@ -1132,6 +1223,13 @@ class WaterStatisticsFragment : Fragment() {
                     sixMonthMap[4] = 0.toFloat()
                     sixMonthMap[5] = 0.toFloat()
                     sixMonthMap[6] = 0.toFloat()
+
+                    yearCount[1] = 0
+                    yearCount[2] = 0
+                    yearCount[3] = 0
+                    yearCount[4] = 0
+                    yearCount[5] = 0
+                    yearCount[6] = 0
 
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogWaterModel::class.java)
@@ -1146,16 +1244,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in oneMonthDay..nowDay) {
                                     sixMonthMap[6] =
                                         sixMonthMap[6]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[6] = yearCount[6]!! + 1
                                 }
                             } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
                                 if (day >= oneMonthDay) {
                                     sixMonthMap[6] =
                                         sixMonthMap[6]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[6] = yearCount[6]!! + 1
                                 }
                             } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
                                 if (day <= nowDay) {
                                     sixMonthMap[6] =
                                         sixMonthMap[6]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[6] = yearCount[6]!! + 1
                                 }
                             }
                         } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
@@ -1163,6 +1270,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= oneMonthDay) {
                                     sixMonthMap[6] =
                                         sixMonthMap[6]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[6] = yearCount[6]!! + 1
                                 }
                             }
                         } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1170,6 +1280,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day <= nowDay) {
                                     sixMonthMap[6] =
                                         sixMonthMap[6]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[6] = yearCount[6]!! + 1
                                 }
                             }
                         }
@@ -1179,16 +1292,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in twoMonthDay until oneMonthDay) {
                                     sixMonthMap[5] =
                                         sixMonthMap[5]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[5] = yearCount[5]!! + 1
                                 }
                             } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
                                 if (day >= twoMonthDay) {
                                     sixMonthMap[5] =
                                         sixMonthMap[5]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[5] = yearCount[5]!! + 1
                                 }
                             } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
                                 if (day < oneMonthDay) {
                                     sixMonthMap[5] =
                                         sixMonthMap[5]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[5] = yearCount[5]!! + 1
                                 }
                             }
                         } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1196,6 +1318,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= twoMonthDay) {
                                     sixMonthMap[5] =
                                         sixMonthMap[5]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[5] = yearCount[5]!! + 1
                                 }
                             }
                         } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1203,6 +1328,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < oneMonthDay) {
                                     sixMonthMap[5] =
                                         sixMonthMap[5]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[5] = yearCount[5]!! + 1
                                 }
                             }
                         }
@@ -1212,16 +1340,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in threeMonthDay until twoMonthDay) {
                                     sixMonthMap[4] =
                                         sixMonthMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
                                 if (day >= threeMonthDay) {
                                     sixMonthMap[4] =
                                         sixMonthMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
                                 if (day < twoMonthDay) {
                                     sixMonthMap[4] =
                                         sixMonthMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             }
                         } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1229,6 +1366,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= threeMonthDay) {
                                     sixMonthMap[4] =
                                         sixMonthMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             }
                         } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1236,6 +1376,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < twoMonthDay) {
                                     sixMonthMap[4] =
                                         sixMonthMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             }
                         }
@@ -1245,16 +1388,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in fourMonthDay until threeMonthDay) {
                                     sixMonthMap[3] =
                                         sixMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             } else if (month < threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 전달일 경우
                                 if (day >= fourMonthDay) {
                                     sixMonthMap[3] =
                                         sixMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             } else if (month == threeMonthMonth && month > fourMonthMonth) { // 4개월 전이 이번달일 경우
                                 if (day < threeMonthDay) {
                                     sixMonthMap[3] =
                                         sixMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
                         } else if (year < threeMonthYear && year == fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1262,6 +1414,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= fourMonthDay) {
                                     sixMonthMap[3] =
                                         sixMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
                         } else if (year == threeMonthYear && year > fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1269,6 +1424,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < threeMonthDay) {
                                     sixMonthMap[3] =
                                         sixMonthMap[3]!! + item!!.waterWeight.toFloat()
+
+                                       if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
                         }
@@ -1278,16 +1436,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in fiveMonthDay until fourMonthDay) {
                                     sixMonthMap[2] =
                                         sixMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             } else if (month < fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 전달일 경우
                                 if (day >= fourMonthDay) {
                                     sixMonthMap[2] =
                                         sixMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             } else if (month == fourMonthMonth && month > fiveMonthMonth) { // 5개월 전이 이번달일 경우
                                 if (day < fiveMonthDay) {
                                     sixMonthMap[2] =
                                         sixMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             }
                         } else if (year < fourMonthYear && year == fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1295,6 +1462,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= fiveMonthDay) {
                                     sixMonthMap[2] =
                                         sixMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             }
                         } else if (year == fourMonthYear && year > fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1302,6 +1472,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < fourMonthDay) {
                                     sixMonthMap[2] =
                                         sixMonthMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             }
                         }
@@ -1311,16 +1484,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in sixMonthDay until fiveMonthDay) {
                                     sixMonthMap[1] =
                                         sixMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             } else if (month < fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 전달일 경우
                                 if (day >= sixMonthDay) {
                                     sixMonthMap[1] =
                                         sixMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             } else if (month == fiveMonthMonth && month > sixMonthMonth) { // 6개월 전이 이번달일 경우
                                 if (day < fiveMonthDay) {
                                     sixMonthMap[1] =
                                         sixMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             }
                         } else if (year < fiveMonthYear && year == sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1328,16 +1510,50 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= sixMonthDay) {
                                     sixMonthMap[1] =
                                         sixMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             }
                         } else if (year == fiveMonthYear && year > sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
                             if(day < fiveMonthDay) {
                                 sixMonthMap[1] =
                                     sixMonthMap[1]!! + item!!.waterWeight.toFloat()
+
+                                 if(item!!.waterWeight.toInt() > 0)
+                                    yearCount[1] = yearCount[1]!! + 1
                             }
                         }
 
                     }
+
+                    sixMonthLabelList.add("1개월")
+                    sixMonthLabelList.add("2개월")
+                    sixMonthLabelList.add("3개월")
+                    sixMonthLabelList.add("4개월")
+                    sixMonthLabelList.add("5개월")
+                    sixMonthLabelList.add("6개월")
+
+                    val sortedSixMonthMap = sortMapByKey2(sixMonthMap)
+                    val sortedSixMonthCountMap = sortMapByKey3(yearCount)
+                    var count :  ArrayList<Int> = ArrayList()
+                    for((key, value) in sortedSixMonthCountMap)
+                        count.add(value)
+
+                    // key(String)에 따른 정렬
+                    var i = 0
+                    for((key, value) in sortedSixMonthMap.entries) {
+                        if(count[i] == 0)
+                            sixMonthValueList.add(value)
+                        else
+                            sixMonthValueList.add(value / count[i])
+                        i += 1
+                    }
+
+                    Log.d("sixMonthDay", "$sixMonthLabelList $sixMonthValueList")
+
+                    barSixMonthChartGraph(v, sixMonthChart, sixMonthValueList, sixMonthLabelList)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "물 기록 삭제 완료")
                 }
@@ -1398,6 +1614,7 @@ class WaterStatisticsFragment : Fragment() {
         depenses.axisDependency = YAxis.AxisDependency.LEFT
         depenses.color = Color.parseColor("#87CEEB")
         depenses.valueFormatter = CustomFormatter()
+        depenses.valueTextSize = 8f
 
         val data = BarData(depenses)
         data.barWidth = 0.5f
@@ -1410,7 +1627,7 @@ class WaterStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setYearChartReady() {
+    private fun setYearChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -1477,6 +1694,8 @@ class WaterStatisticsFragment : Fragment() {
         val yearMonth = yearWeekSp[1].toInt()
         val yearDay = yearWeekSp[2].toInt()
 
+        var yearCount : MutableMap<Int, Int> = mutableMapOf()
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try { // 물 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
@@ -1496,6 +1715,19 @@ class WaterStatisticsFragment : Fragment() {
                     yearMap[11] = 0.toFloat()
                     yearMap[12] = 0.toFloat()
 
+                    yearCount[1] = 0
+                    yearCount[2] = 0
+                    yearCount[3] = 0
+                    yearCount[4] = 0
+                    yearCount[5] = 0
+                    yearCount[6] = 0
+                    yearCount[7] = 0
+                    yearCount[8] = 0
+                    yearCount[9] = 0
+                    yearCount[10] = 0
+                    yearCount[11] = 0
+                    yearCount[12] = 0
+
                     for (dataModel in dataSnapshot.children) {
                         val item = dataModel.getValue(DogWaterModel::class.java)
                         val date = item!!.date
@@ -1509,16 +1741,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in oneMonthDay..nowDay) {
                                     yearMap[12] =
                                         yearMap[12]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[12] = yearCount[12]!! + 1
                                 }
                             } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
                                 if (day >= oneMonthDay) {
                                     yearMap[12] =
                                         yearMap[12]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[12] = yearCount[12]!! + 1
                                 }
                             } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
                                 if (day <= nowDay) {
                                     yearMap[12] =
                                         yearMap[12]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[12] = yearCount[12]!! + 1
                                 }
                             }
                         } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
@@ -1526,6 +1767,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= oneMonthDay) {
                                     yearMap[12] =
                                         yearMap[12]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[12] = yearCount[12]!! + 1
                                 }
                             }
                         } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1533,6 +1777,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day <= nowDay) {
                                     yearMap[12] =
                                         yearMap[12]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[12] = yearCount[12]!! + 1
                                 }
                             }
                         }
@@ -1542,16 +1789,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in twoMonthDay until oneMonthDay) {
                                     yearMap[11] =
                                         yearMap[11]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[11] = yearCount[11]!! + 1
                                 }
                             } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
                                 if (day >= twoMonthDay) {
                                     yearMap[11] =
                                         yearMap[11]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[11] = yearCount[11]!! + 1
                                 }
                             } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
                                 if (day < oneMonthDay) {
                                     yearMap[11] =
                                         yearMap[11]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[11] = yearCount[11]!! + 1
                                 }
                             }
                         } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1559,6 +1815,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= twoMonthDay) {
                                     yearMap[11] =
                                         yearMap[11]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[11] = yearCount[11]!! + 1
                                 }
                             }
                         } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1566,6 +1825,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < oneMonthDay) {
                                     yearMap[11] =
                                         yearMap[11]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[11] = yearCount[11]!! + 1
                                 }
                             }
                         }
@@ -1575,16 +1837,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in threeMonthDay until twoMonthDay) {
                                     yearMap[10] =
                                         yearMap[10]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[10] = yearCount[10]!! + 1
                                 }
                             } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
                                 if (day >= threeMonthDay) {
                                     yearMap[10] =
                                         yearMap[10]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[10] = yearCount[10]!! + 1
                                 }
                             } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
                                 if (day < twoMonthDay) {
                                     yearMap[10] =
                                         yearMap[10]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[10] = yearCount[10]!! + 1
                                 }
                             }
                         } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1592,6 +1863,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= threeMonthDay) {
                                     yearMap[10] =
                                         yearMap[10]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[10] = yearCount[10]!! + 1
                                 }
                             }
                         } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1599,6 +1873,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < twoMonthDay) {
                                     yearMap[10] =
                                         yearMap[10]!! + item!!.waterWeight.toFloat()
+
+                                     if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[10] = yearCount[10]!! + 1
                                 }
                             }
                         }
@@ -1608,16 +1885,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in fourMonthDay until threeMonthDay) {
                                     yearMap[9] =
                                         yearMap[9]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[9] = yearCount[9]!! + 1
                                 }
                             } else if (month < threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 전달일 경우
                                 if (day >= fourMonthDay) {
                                     yearMap[9] =
                                         yearMap[9]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[9] = yearCount[9]!! + 1
                                 }
                             } else if (month == threeMonthMonth && month > fourMonthMonth) { // 4개월 전이 이번달일 경우
                                 if (day < threeMonthDay) {
                                     yearMap[9] =
                                         yearMap[9]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[9] = yearCount[9]!! + 1
                                 }
                             }
                         } else if (year < threeMonthYear && year == fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1625,6 +1911,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= fourMonthDay) {
                                     yearMap[9] =
                                         yearMap[9]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[9] = yearCount[9]!! + 1
                                 }
                             }
                         } else if (year == threeMonthYear && year > fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1632,6 +1921,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < threeMonthDay) {
                                     yearMap[9] =
                                         yearMap[9]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[9] = yearCount[9]!! + 1
                                 }
                             }
                         }
@@ -1641,16 +1933,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in fiveMonthDay until fourMonthDay) {
                                     yearMap[8] =
                                         yearMap[8]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[8] = yearCount[8]!! + 1
                                 }
                             } else if (month < fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 전달일 경우
                                 if (day >= fourMonthDay) {
                                     yearMap[8] =
                                         yearMap[8]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[8] = yearCount[8]!! + 1
                                 }
                             } else if (month == fourMonthMonth && month > fiveMonthMonth) { // 5개월 전이 이번달일 경우
                                 if (day < fiveMonthDay) {
                                     yearMap[8] =
                                         yearMap[8]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[8] = yearCount[8]!! + 1
                                 }
                             }
                         } else if (year < fourMonthYear && year == fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1658,6 +1959,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= fiveMonthDay) {
                                     yearMap[8] =
                                         yearMap[8]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[8] = yearCount[8]!! + 1
                                 }
                             }
                         } else if (year == fourMonthYear && year > fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1665,6 +1969,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < fourMonthDay) {
                                     yearMap[8] =
                                         yearMap[8]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[8] = yearCount[8]!! + 1
                                 }
                             }
                         }
@@ -1674,16 +1981,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in sixMonthDay until fiveMonthDay) {
                                     yearMap[7] =
                                         yearMap[7]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[7] = yearCount[7]!! + 1
                                 }
                             } else if (month < fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 전달일 경우
                                 if (day >= sixMonthDay) {
                                     yearMap[7] =
                                         yearMap[7]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[7] = yearCount[7]!! + 1
                                 }
                             } else if (month == fiveMonthMonth && month > sixMonthMonth) { // 6개월 전이 이번달일 경우
                                 if (day < fiveMonthDay) {
                                     yearMap[7] =
                                         yearMap[7]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[7] = yearCount[7]!! + 1
                                 }
                             }
                         } else if (year < fiveMonthYear && year == sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1691,6 +2007,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= sixMonthDay) {
                                     yearMap[7] =
                                         yearMap[7]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[7] = yearCount[7]!! + 1
                                 }
                             }
                         } else if (year == fiveMonthYear && year > sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1698,6 +2017,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < fiveMonthDay) {
                                     yearMap[7] =
                                         yearMap[7]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[7] = yearCount[7]!! + 1
                                 }
                             }
                         }
@@ -1707,16 +2029,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in sevenMonthDay until sixMonthDay) {
                                     yearMap[6] =
                                         yearMap[6]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[6] = yearCount[6]!! + 1
                                 }
                             } else if (month < sixMonthMonth && month == sevenMonthMonth) { // 7개월 전이 전달일 경우
                                 if (day >= sevenMonthDay) {
                                     yearMap[6] =
                                         yearMap[6]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[6] = yearCount[6]!! + 1
                                 }
                             } else if (month == sixMonthMonth && month > sevenMonthMonth) { // 7개월 전이 이번달일 경우
                                 if (day < sixMonthDay) {
                                     yearMap[6] =
                                         yearMap[6]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[6] = yearCount[6]!! + 1
                                 }
                             }
                         } else if (year < sixMonthYear && year == sevenMonthYear) { // 7개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1724,6 +2055,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= sevenMonthDay) {
                                     yearMap[6] =
                                         yearMap[6]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[6] = yearCount[6]!! + 1
                                 }
                             }
                         } else if (year == sixMonthYear && year > sevenMonthYear) { // 7개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1731,6 +2065,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < sixMonthDay) {
                                     yearMap[6] =
                                         yearMap[6]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[6] = yearCount[6]!! + 1
                                 }
                             }
                         }
@@ -1740,16 +2077,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in eightMonthDay until sevenMonthDay) {
                                     yearMap[5] =
                                         yearMap[5]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[5] = yearCount[5]!! + 1
                                 }
                             } else if (month < sevenMonthMonth && month == eightMonthMonth) { // 8개월 전이 전달일 경우
                                 if (day >= eightMonthDay) {
                                     yearMap[5] =
                                         yearMap[5]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[5] = yearCount[5]!! + 1
                                 }
                             } else if (month == sevenMonthMonth && month > eightMonthMonth) { // 8개월 전이 이번달일 경우
                                 if (day < sevenMonthDay) {
                                     yearMap[5] =
                                         yearMap[5]!! + item!!.waterWeight.toFloat()
+
+                                      if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[5] = yearCount[5]!! + 1
                                 }
                             }
                         } else if (year < sevenMonthYear && year == eightMonthYear) { // 8개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1757,6 +2103,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= eightMonthDay) {
                                     yearMap[5] =
                                         yearMap[5]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[5] = yearCount[5]!! + 1
                                 }
                             }
                         } else if (year == sevenMonthYear && year > eightMonthYear) { // 8개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1764,6 +2113,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < sevenMonthDay) {
                                     yearMap[5] =
                                         yearMap[5]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[5] = yearCount[5]!! + 1
                                 }
                             }
                         }
@@ -1773,16 +2125,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in nineMonthDay until eightMonthDay) {
                                     yearMap[4] =
                                         yearMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             } else if (month < eightMonthMonth && month == nineMonthMonth) { // 9개월 전이 전달일 경우
                                 if (day >= nineMonthDay) {
                                     yearMap[4] =
                                         yearMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             } else if (month == eightMonthMonth && month > nineMonthMonth) { // 9개월 전이 이번달일 경우
                                 if (day < eightMonthDay) {
                                     yearMap[4] =
                                         yearMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             }
                         } else if (year < eightMonthYear && year == nineMonthYear) { // 9개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1790,6 +2151,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= nineMonthDay) {
                                     yearMap[4] =
                                         yearMap[4]!! + item!!.waterWeight.toFloat()
+
+                                     if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             }
                         } else if (year == eightMonthYear && year > nineMonthYear) { // 9개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1797,6 +2161,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < eightMonthDay) {
                                     yearMap[4] =
                                         yearMap[4]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[4] = yearCount[4]!! + 1
                                 }
                             }
                         }
@@ -1806,16 +2173,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in tenMonthDay until nineMonthDay) {
                                     yearMap[3] =
                                         yearMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             } else if (month < nineMonthMonth && month == tenMonthMonth) { // 10개월 전이 전달일 경우
                                 if (day >= tenMonthDay) {
                                     yearMap[3] =
                                         yearMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             } else if (month == nineMonthMonth && month > tenMonthMonth) { // 10개월 전이 이번달일 경우
                                 if (day < nineMonthDay) {
                                     yearMap[3] =
                                         yearMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
                         } else if (year < nineMonthYear && year == tenMonthYear) { // 10개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1823,6 +2199,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= tenMonthDay) {
                                     yearMap[3] =
                                         yearMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
                         } else if (year == nineMonthYear && year > tenMonthYear) { // 10개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1830,6 +2209,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < nineMonthDay) {
                                     yearMap[3] =
                                         yearMap[3]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
                         }
@@ -1839,16 +2221,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in elevenMonthDay until tenMonthDay) {
                                     yearMap[2] =
                                         yearMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             } else if (month < tenMonthMonth && month == elevenMonthMonth) { // 11개월 전이 전달일 경우
                                 if (day >= elevenMonthDay) {
                                     yearMap[2] =
                                         yearMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             } else if (month == tenMonthMonth && month > elevenMonthMonth) { // 11개월 전이 이번달일 경우
                                 if (day < tenMonthDay) {
                                     yearMap[2] =
                                         yearMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             }
                         } else if (year < tenMonthYear && year == elevenMonthYear) { // 11개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1856,6 +2247,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= elevenMonthDay) {
                                     yearMap[2] =
                                         yearMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             }
                         } else if (year == tenMonthYear && year > elevenMonthYear) { // 11개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1863,6 +2257,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < tenMonthDay) {
                                     yearMap[2] =
                                         yearMap[2]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[2] = yearCount[2]!! + 1
                                 }
                             }
                         }
@@ -1872,16 +2269,25 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day in yearDay until elevenMonthDay) {
                                     yearMap[1] =
                                         yearMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             } else if (month < elevenMonthMonth && month == yearMonth) { // 1년 전이 전달일 경우
                                 if (day >= yearDay) {
                                     yearMap[1] =
                                         yearMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             } else if (month == elevenMonthMonth && month > yearMonth) { // 1년 전이 이번달일 경우
                                 if (day < elevenMonthDay) {
                                     yearMap[1] =
                                         yearMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             }
                         } else if (year < elevenMonthYear && year == yearYear) { // 1년 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
@@ -1889,6 +2295,9 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day >= yearDay) {
                                     yearMap[1] =
                                         yearMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             }
                         } else if (year == elevenMonthYear && year > yearYear) { // 1년 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
@@ -1896,11 +2305,47 @@ class WaterStatisticsFragment : Fragment() {
                                 if (day < elevenMonthDay) {
                                     yearMap[1] =
                                         yearMap[1]!! + item!!.waterWeight.toFloat()
+
+                                    if(item!!.waterWeight.toInt() > 0)
+                                        yearCount[1] = yearCount[1]!! + 1
                                 }
                             }
                         }
-
                     }
+
+                    yearLabelList.add("1개월")
+                    yearLabelList.add("2개월")
+                    yearLabelList.add("3개월")
+                    yearLabelList.add("4개월")
+                    yearLabelList.add("5개월")
+                    yearLabelList.add("6개월")
+                    yearLabelList.add("7개월")
+                    yearLabelList.add("8개월")
+                    yearLabelList.add("9개월")
+                    yearLabelList.add("10개월")
+                    yearLabelList.add("11개월")
+                    yearLabelList.add("12개월")
+
+                    val sortedSixMonthMap = sortMapByKey2(yearMap)
+                    val sortedSixMonthCountMap = sortMapByKey3(yearCount)
+                    var count :  ArrayList<Int> = ArrayList()
+                    for((key, value) in sortedSixMonthCountMap)
+                        count.add(value)
+
+                    // key(String)에 따른 정렬
+                    var i = 0
+                    for((key, value) in sortedSixMonthMap.entries) {
+                        if(count[i] == 0)
+                            yearValueList.add(value)
+                        else
+                            yearValueList.add(value / count[i])
+                        i += 1
+                    }
+
+                    Log.d("yearDay", "$yearLabelList $yearValueList")
+
+                    barYearChartGraph(v, yearChart, yearValueList, yearLabelList)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "물 기록 삭제 완료")
                 }
@@ -1992,6 +2437,19 @@ class WaterStatisticsFragment : Fragment() {
         entries.sortBy { it.key }
 
         val result = LinkedHashMap<Int, Float>()
+        for(entry in entries) {
+            result[entry.key] = entry.value
+        }
+
+        return result
+    }
+
+    fun sortMapByKey3(map: MutableMap<Int, Int>): LinkedHashMap<Int, Int> {
+        val entries = LinkedList(map.entries)
+
+        entries.sortBy { it.key }
+
+        val result = LinkedHashMap<Int, Int>()
         for(entry in entries) {
             result[entry.key] = entry.value
         }

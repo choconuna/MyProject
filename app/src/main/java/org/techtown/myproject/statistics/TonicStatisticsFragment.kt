@@ -13,6 +13,7 @@ import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
@@ -328,10 +329,7 @@ class TonicStatisticsFragment : Fragment() {
                 yearPieChart.visibility = View.GONE
                 yearRecyclerView.visibility = View.GONE
 
-                setWeekPieChartReady()
-                setWeekPieChart()
-                pieWeekChartGraph(v, weekPieChart, weekPieMap)
-                setWeekTonic()
+                setWeekPieChartReady(v)
                 Log.d("tonicList", weekLabelList.toString())
             }
             "1개월" -> {
@@ -348,10 +346,7 @@ class TonicStatisticsFragment : Fragment() {
                 yearPieChart.visibility = View.GONE
                 yearRecyclerView.visibility = View.GONE
 
-                setOneMonthPieChartReady()
-                setOneMonthPieChart()
-                pieOneMonthPieChartGraph(v, oneMonthPieChart, oneMonthPieMap)
-                setOneMonthTonic()
+                setOneMonthPieChartReady(v)
                 Log.d("tonicList", oneMonthLabelList.toString())
             }
             "3개월" -> {
@@ -368,10 +363,7 @@ class TonicStatisticsFragment : Fragment() {
                 yearPieChart.visibility = View.GONE
                 yearRecyclerView.visibility = View.GONE
 
-                setThreeMonthBarChartReady()
-                setThreeMonthBarChart()
-                pieThreeMonthBarChartGraph(v, threeMonthPieChart, threeMonthPieMap)
-                setThreeMonthTonic()
+                setThreeMonthBarChartReady(v)
                 Log.d("tonicList", threeMonthLabelList.toString())
             }
             "6개월" -> {
@@ -388,10 +380,7 @@ class TonicStatisticsFragment : Fragment() {
                 yearPieChart.visibility = View.GONE
                 yearRecyclerView.visibility = View.GONE
 
-                setSixPieMonthChartReady()
-                setSixPieMonthChart()
-                pieSixMonthChartGraph(v, sixMonthPieChart, sixMonthPieMap)
-                setSixMonthTonic()
+                setSixPieMonthChartReady(v)
                 Log.d("tonicList", sixMonthLabelList.toString())
             }
             "1년" -> {
@@ -408,10 +397,7 @@ class TonicStatisticsFragment : Fragment() {
                 yearPieChart.visibility = View.VISIBLE
                 yearRecyclerView.visibility = View.VISIBLE
 
-                setYearPieChartReady()
-                setYearPieChart()
-                pieYearChartGraph(v, yearPieChart, yearPieMap)
-                yearTonic()
+                setYearPieChartReady(v)
                 Log.d("tonicList", yearLabelList.toString())
             }
         }
@@ -508,6 +494,8 @@ class TonicStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var sum = 0.toFloat()
@@ -565,7 +553,7 @@ class TonicStatisticsFragment : Fragment() {
         tonicStatisticsRVAdapter.notifyDataSetChanged()
     }
 
-    private fun setWeekPieChartReady() {
+    private fun setWeekPieChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -630,79 +618,82 @@ class TonicStatisticsFragment : Fragment() {
                             }
                         }
                     }
-                } catch (e: Exception) {
-                    Log.d(TAG, "영양제 기록 삭제 완료")
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
-    }
+                    val nowSp = nowDate.split(".") // 오늘 날짜
+                    val nowYear = nowSp[0].toInt()
+                    val nowMonth = nowSp[1].toInt()
+                    val nowDay = nowSp[2].toInt()
+                    val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
 
-    private fun setWeekPieChart() {
-        val nowSp = nowDate.split(".") // 오늘 날짜
-        val nowYear = nowSp[0].toInt()
-        val nowMonth = nowSp[1].toInt()
-        val nowDay = nowSp[2].toInt()
-        val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
+                    val weekSp = weekDate.split(".") // 일주일 전 날짜
+                    val weekYear = weekSp[0].toInt()
+                    val weekMonth = weekSp[1].toInt()
+                    val weekDay = weekSp[2].toInt()
+                    val weekDateNum = weekSp[0] + weekSp[1] + weekSp[2]
 
-        val weekSp = weekDate.split(".") // 일주일 전 날짜
-        val weekYear = weekSp[0].toInt()
-        val weekMonth = weekSp[1].toInt()
-        val weekDay = weekSp[2].toInt()
-        val weekDateNum = weekSp[0] + weekSp[1] + weekSp[2]
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
+                                for (dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DogTonicModel::class.java)
+                                    val date = item!!.date
+                                    val sp = date.split(".")
+                                    val year = sp[0].toInt()
+                                    val month = sp[1].toInt()
+                                    val day = sp[2].toInt()
 
-                    for (dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogTonicModel::class.java)
-                        val date = item!!.date
-                        val sp = date.split(".")
-                        val year = sp[0].toInt()
-                        val month = sp[1].toInt()
-                        val day = sp[2].toInt()
+                                    var dayNum = ""
+                                    if(sp[1].length == 1 && sp[2].length ==1) {
+                                        dayNum = sp[0] + "0" + sp[1] + "0" + sp[2]
+                                    } else if(sp[1].length == 1 && sp[2].length == 2) {
+                                        dayNum = sp[0] + "0" + sp[1] + sp[2]
+                                    } else if(sp[1].length == 2 && sp[2].length == 1) {
+                                        dayNum = sp[0] + sp[1] + "0" + sp[2]
+                                    } else if(sp[1].length == 2 && sp[2].length == 2) {
+                                        dayNum = sp[0] + sp[1] + sp[2]
+                                    }
 
-                        var dayNum = ""
-                        if(sp[1].length == 1 && sp[2].length ==1) {
-                            dayNum = sp[0] + "0" + sp[1] + "0" + sp[2]
-                        } else if(sp[1].length == 1 && sp[2].length == 2) {
-                            dayNum = sp[0] + "0" + sp[1] + sp[2]
-                        } else if(sp[1].length == 2 && sp[2].length == 1) {
-                            dayNum = sp[0] + sp[1] + "0" + sp[2]
-                        } else if(sp[1].length == 2 && sp[2].length == 2) {
-                            dayNum = sp[0] + sp[1] + sp[2]
+                                    if(year == nowYear && year == weekYear) { // 일주일 전이 같은 연도일 경우
+                                        if(month == nowMonth && month == weekMonth) { // 일주일 전이 같은 달일 경우
+                                            if(day in weekDay..nowDay) {
+                                                weekPieMap[item!!.tonicPart] = weekPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                                // weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.mealWeight.toFloat()
+                                            }
+                                        } else if(month < nowMonth && month == weekMonth) { // 일주일 전이 전달일 경우
+                                            if(day >= weekDay) {
+                                                weekPieMap[item!!.tonicPart] = weekPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                                // weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.mealWeight.toFloat()
+                                            }
+                                        } else if(month == nowMonth && month > weekMonth) { // 일주일 전이 이번달일 경우
+                                            if(day <= nowDay) {
+                                                weekPieMap[item!!.tonicPart] = weekPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                                // weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.mealWeight.toFloat()
+                                            }
+                                        }
+                                    } else if(year < nowYear && year == weekYear) { // 일주일 전이 전년도일 경우
+                                        if(weekMonth == month && day >= weekDay) {
+                                            weekPieMap[item!!.tonicPart] = weekPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            // weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.mealWeight.toFloat()
+                                        }
+                                    }
+                                }
+
+                                pieWeekChartGraph(v, weekPieChart, weekPieMap)
+                                setWeekTonic()
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, "영양제 기록 삭제 완료")
+                            }
                         }
 
-                        if(year == nowYear && year == weekYear) { // 일주일 전이 같은 연도일 경우
-                            if(month == nowMonth && month == weekMonth) { // 일주일 전이 같은 달일 경우
-                                if(day in weekDay..nowDay) {
-                                    weekPieMap[item!!.tonicPart] = weekPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                    // weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.mealWeight.toFloat()
-                                }
-                            } else if(month < nowMonth && month == weekMonth) { // 일주일 전이 전달일 경우
-                                if(day >= weekDay) {
-                                    weekPieMap[item!!.tonicPart] = weekPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                    // weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.mealWeight.toFloat()
-                                }
-                            } else if(month == nowMonth && month > weekMonth) { // 일주일 전이 이번달일 경우
-                                if(day <= nowDay) {
-                                    weekPieMap[item!!.tonicPart] = weekPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                    // weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.mealWeight.toFloat()
-                                }
-                            }
-                        } else if(year < nowYear && year == weekYear) { // 일주일 전이 전년도일 경우
-                            if(weekMonth == month && day >= weekDay) {
-                                weekPieMap[item!!.tonicPart] = weekPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                // weekMap[dayNum.toInt()] = weekMap[dayNum.toInt()]!!.toFloat() + item!!.mealWeight.toFloat()
-                            }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                         }
                     }
+                    FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "영양제 기록 삭제 완료")
                 }
@@ -731,6 +722,7 @@ class TonicStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+              animateY(1400, Easing.EaseInOutQuad)
         }
 
         var sum = 0.toFloat()
@@ -790,7 +782,7 @@ class TonicStatisticsFragment : Fragment() {
         weekTonicStatisticsRVAdapter.notifyDataSetChanged()
     }
 
-    private fun setOneMonthPieChartReady() {
+    private fun setOneMonthPieChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -931,139 +923,142 @@ class TonicStatisticsFragment : Fragment() {
                             }
                         }
                     }
-                } catch (e: Exception) {
-                    Log.d(TAG, "영양제 기록 삭제 완료")
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
-    }
+                    val nowSp = nowDate.split(".") // 오늘 날짜
+                    val nowYear = nowSp[0].toInt()
+                    val nowMonth = nowSp[1].toInt()
+                    val nowDay = nowSp[2].toInt()
+                    val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
 
-    private fun setOneMonthPieChart() {
-        val nowSp = nowDate.split(".") // 오늘 날짜
-        val nowYear = nowSp[0].toInt()
-        val nowMonth = nowSp[1].toInt()
-        val nowDay = nowSp[2].toInt()
-        val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
+                    val weekSp = weekDate.split(".") // 1주 전 날짜
+                    val weekYear = weekSp[0].toInt()
+                    val weekMonth = weekSp[1].toInt()
+                    val weekDay = weekSp[2].toInt()
+                    val weekDateNum = weekSp[0] + weekSp[1] + weekSp[2]
 
-        val weekSp = weekDate.split(".") // 1주 전 날짜
-        val weekYear = weekSp[0].toInt()
-        val weekMonth = weekSp[1].toInt()
-        val weekDay = weekSp[2].toInt()
-        val weekDateNum = weekSp[0] + weekSp[1] + weekSp[2]
+                    val twoWeekSp = twoWeekDate.split(".") // 2주 전 날짜
+                    val twoWeekYear = twoWeekSp[0].toInt()
+                    val twoWeekMonth = twoWeekSp[1].toInt()
+                    val twoWeekDay = twoWeekSp[2].toInt()
 
-        val twoWeekSp = twoWeekDate.split(".") // 2주 전 날짜
-        val twoWeekYear = twoWeekSp[0].toInt()
-        val twoWeekMonth = twoWeekSp[1].toInt()
-        val twoWeekDay = twoWeekSp[2].toInt()
+                    val threeWeekSp = threeWeekDate.split(".") // 3주 전 날짜
+                    val threeWeekYear = threeWeekSp[0].toInt()
+                    val threeWeekMonth = threeWeekSp[1].toInt()
+                    val threeWeekDay = threeWeekSp[2].toInt()
 
-        val threeWeekSp = threeWeekDate.split(".") // 3주 전 날짜
-        val threeWeekYear = threeWeekSp[0].toInt()
-        val threeWeekMonth = threeWeekSp[1].toInt()
-        val threeWeekDay = threeWeekSp[2].toInt()
+                    val oneMonthWeekSp = oneMonthDate.split(".") // 1개월 전 날짜
+                    val oneMonthYear = oneMonthWeekSp[0].toInt()
+                    val oneMonthMonth = oneMonthWeekSp[1].toInt()
+                    val oneMonthDay = oneMonthWeekSp[2].toInt()
 
-        val oneMonthWeekSp = oneMonthDate.split(".") // 1개월 전 날짜
-        val oneMonthYear = oneMonthWeekSp[0].toInt()
-        val oneMonthMonth = oneMonthWeekSp[1].toInt()
-        val oneMonthDay = oneMonthWeekSp[2].toInt()
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
+                                for (dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DogTonicModel::class.java)
+                                    val date = item!!.date
+                                    val sp = date.split(".")
+                                    val year = sp[0].toInt()
+                                    val month = sp[1].toInt()
+                                    val day = sp[2].toInt()
 
-                    for (dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogTonicModel::class.java)
-                        val date = item!!.date
-                        val sp = date.split(".")
-                        val year = sp[0].toInt()
-                        val month = sp[1].toInt()
-                        val day = sp[2].toInt()
+                                    if(year == nowYear && year == weekYear) { // 일주일 전이 같은 연도일 경우
+                                        if(month == nowMonth && month == weekMonth) { // 일주일 전이 같은 달일 경우
+                                            if(day in weekDay..nowDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if(month < nowMonth && month == weekMonth) { // 일주일 전이 이전 달일 경우
+                                            if(day >= weekDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if(month == nowMonth && month > weekMonth) { // 일주일 전이 이번 달일 경우
+                                            if(day <= nowDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if(year < nowYear && year == weekYear) { // 일주일 전이 전년도일 경우
+                                        if(weekMonth == month && day >= weekDay) {
+                                            oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                        }
+                                    }
 
-                        if(year == nowYear && year == weekYear) { // 일주일 전이 같은 연도일 경우
-                            if(month == nowMonth && month == weekMonth) { // 일주일 전이 같은 달일 경우
-                                if(day in weekDay..nowDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                    if(year == weekYear && year == twoWeekYear) { // 2주일 전이 같은 연도일 경우
+                                        if(month == weekMonth && month == twoWeekMonth) { // 2주일 전이 같은 달일 경우
+                                            if(day in twoWeekDay until weekDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if(month < weekMonth && month == twoWeekMonth) { // 2주일 전이 이전 달일 경우
+                                            if(day >= twoWeekDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if(month == weekMonth && month > twoWeekMonth) { // 2주일 전이 이번 달일 경우
+                                            if(day < weekDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if(year < weekYear && year == twoWeekYear) { // 2주일 전이 전년도일 경우
+                                        if(twoWeekMonth == month && day >= twoWeekDay) {
+                                            oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                        }
+                                    }
+
+                                    if(year == twoWeekYear && year == threeWeekYear) { // 3주일 전이 같은 연도일 경우
+                                        if(month == twoWeekMonth && month == threeWeekMonth) { // 3주일 전이 같은 달일 경우
+                                            if(day in threeWeekDay until twoWeekDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if(month < twoWeekMonth && month == threeWeekMonth) { // 3주일 전이 이전 달일 경우
+                                            if(day >= threeWeekDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if(month == twoWeekMonth && month > threeWeekMonth) { // 3주일 전이 이번 달일 경우
+                                            if(day < twoWeekDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if(year < twoWeekYear && year == threeWeekYear) { // 3주일 전이 전년도일 경우
+                                        if(threeWeekMonth == month && day >= threeWeekDay) {
+                                            oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                        }
+                                    }
+
+                                    if(year == threeWeekYear && year == oneMonthYear) { // 한달 전이 같은 연도일 경우
+                                        if(month == threeWeekMonth && month == oneMonthMonth) { // 한달 전이 같은 달일 경우
+                                            if(day in oneMonthDay until threeWeekDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if(month < threeWeekMonth && month == oneMonthMonth) { // 한달 전이 이전 달일 경우
+                                            if(day >= oneMonthDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if(month == threeWeekMonth && month > oneMonthMonth) { // 한달 전이 이번 달일 경우
+                                            if(day < threeWeekDay) {
+                                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if(year < threeWeekYear && year == oneMonthYear) { // 한달 전이 전년도일 경우
+                                        if(oneMonthMonth == month && day >= oneMonthDay) {
+                                            oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                        }
+                                    }
                                 }
-                            } else if(month < nowMonth && month == weekMonth) { // 일주일 전이 이전 달일 경우
-                                if(day >= weekDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if(month == nowMonth && month > weekMonth) { // 일주일 전이 이번 달일 경우
-                                if(day <= nowDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if(year < nowYear && year == weekYear) { // 일주일 전이 전년도일 경우
-                            if(weekMonth == month && day >= weekDay) {
-                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+
+                                pieOneMonthPieChartGraph(v, oneMonthPieChart, oneMonthPieMap)
+                                setOneMonthTonic()
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, "영양제 기록 삭제 완료")
                             }
                         }
 
-                        if(year == weekYear && year == twoWeekYear) { // 2주일 전이 같은 연도일 경우
-                            if(month == weekMonth && month == twoWeekMonth) { // 2주일 전이 같은 달일 경우
-                                if(day in twoWeekDay until weekDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if(month < weekMonth && month == twoWeekMonth) { // 2주일 전이 이전 달일 경우
-                                if(day >= twoWeekDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if(month == weekMonth && month > twoWeekMonth) { // 2주일 전이 이번 달일 경우
-                                if(day < weekDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if(year < weekYear && year == twoWeekYear) { // 2주일 전이 전년도일 경우
-                            if(twoWeekMonth == month && day >= twoWeekDay) {
-                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                            }
-                        }
-
-                        if(year == twoWeekYear && year == threeWeekYear) { // 3주일 전이 같은 연도일 경우
-                            if(month == twoWeekMonth && month == threeWeekMonth) { // 3주일 전이 같은 달일 경우
-                                if(day in threeWeekDay until twoWeekDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if(month < twoWeekMonth && month == threeWeekMonth) { // 3주일 전이 이전 달일 경우
-                                if(day >= threeWeekDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if(month == twoWeekMonth && month > threeWeekMonth) { // 3주일 전이 이번 달일 경우
-                                if(day < twoWeekDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if(year < twoWeekYear && year == threeWeekYear) { // 3주일 전이 전년도일 경우
-                            if(threeWeekMonth == month && day >= threeWeekDay) {
-                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                            }
-                        }
-
-                        if(year == threeWeekYear && year == oneMonthYear) { // 한달 전이 같은 연도일 경우
-                            if(month == threeWeekMonth && month == oneMonthMonth) { // 한달 전이 같은 달일 경우
-                                if(day in oneMonthDay until threeWeekDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if(month < threeWeekMonth && month == oneMonthMonth) { // 한달 전이 이전 달일 경우
-                                if(day >= oneMonthDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if(month == threeWeekMonth && month > oneMonthMonth) { // 한달 전이 이번 달일 경우
-                                if(day < threeWeekDay) {
-                                    oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if(year < threeWeekYear && year == oneMonthYear) { // 한달 전이 전년도일 경우
-                            if(oneMonthMonth == month && day >= oneMonthDay) {
-                                oneMonthPieMap[item!!.tonicPart] = oneMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                            }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                         }
                     }
+                    FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "영양제 기록 삭제 완료")
                 }
@@ -1092,6 +1087,8 @@ class TonicStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var sum = 0.toFloat()
@@ -1149,7 +1146,7 @@ class TonicStatisticsFragment : Fragment() {
         oneMonthTonicStatisticsRVAdapter.notifyDataSetChanged()
     }
 
-    private fun setThreeMonthBarChartReady() {
+    private fun setThreeMonthBarChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -1287,137 +1284,140 @@ class TonicStatisticsFragment : Fragment() {
                             }
                         }
                     }
-                } catch (e: Exception) {
-                    Log.d(TAG, "영양제 기록 삭제 완료")
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
-    }
+                    val nowSp = nowDate.split(".") // 오늘 날짜
+                    val nowYear = nowSp[0].toInt()
+                    val nowMonth = nowSp[1].toInt()
+                    val nowDay = nowSp[2].toInt()
+                    val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
 
-    private fun setThreeMonthBarChart() {
-        val nowSp = nowDate.split(".") // 오늘 날짜
-        val nowYear = nowSp[0].toInt()
-        val nowMonth = nowSp[1].toInt()
-        val nowDay = nowSp[2].toInt()
-        val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
+                    val oneMonthWeekSp = oneMonthDate.split(".") // 1개월 전 날짜
+                    val oneMonthYear = oneMonthWeekSp[0].toInt()
+                    val oneMonthMonth = oneMonthWeekSp[1].toInt()
+                    val oneMonthDay = oneMonthWeekSp[2].toInt()
 
-        val oneMonthWeekSp = oneMonthDate.split(".") // 1개월 전 날짜
-        val oneMonthYear = oneMonthWeekSp[0].toInt()
-        val oneMonthMonth = oneMonthWeekSp[1].toInt()
-        val oneMonthDay = oneMonthWeekSp[2].toInt()
+                    val twoMonthWeekSp = twoMonthDate.split(".") // 2개월 전 날짜
+                    val twoMonthYear = twoMonthWeekSp[0].toInt()
+                    val twoMonthMonth = twoMonthWeekSp[1].toInt()
+                    val twoMonthDay = twoMonthWeekSp[2].toInt()
 
-        val twoMonthWeekSp = twoMonthDate.split(".") // 2개월 전 날짜
-        val twoMonthYear = twoMonthWeekSp[0].toInt()
-        val twoMonthMonth = twoMonthWeekSp[1].toInt()
-        val twoMonthDay = twoMonthWeekSp[2].toInt()
+                    val threeMonthWeekSp = threeMonthDate.split(".") // 3개월 전 날짜
+                    val threeMonthYear = threeMonthWeekSp[0].toInt()
+                    val threeMonthMonth = threeMonthWeekSp[1].toInt()
+                    val threeMonthDay = threeMonthWeekSp[2].toInt()
 
-        val threeMonthWeekSp = threeMonthDate.split(".") // 3개월 전 날짜
-        val threeMonthYear = threeMonthWeekSp[0].toInt()
-        val threeMonthMonth = threeMonthWeekSp[1].toInt()
-        val threeMonthDay = threeMonthWeekSp[2].toInt()
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
+                                for (dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DogTonicModel::class.java)
+                                    val date = item!!.date
+                                    val sp = date.split(".")
+                                    val year = sp[0].toInt()
+                                    val month = sp[1].toInt()
+                                    val day = sp[2].toInt()
 
-                    for (dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogTonicModel::class.java)
-                        val date = item!!.date
-                        val sp = date.split(".")
-                        val year = sp[0].toInt()
-                        val month = sp[1].toInt()
-                        val day = sp[2].toInt()
+                                    if (year == nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도일 경우
+                                        if (month == nowMonth && month == oneMonthMonth) { // 1개월 전이 같은 달일 경우
+                                            if (day in oneMonthDay..nowDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
+                                            if (day >= oneMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
+                                            if (day <= nowDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
+                                        if (month == oneMonthMonth) { // 1개월 전이 전달일 경우
+                                            if (day >= oneMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if (month == nowMonth) { // 1개월 전이 이번달일 경우
+                                            if (day <= nowDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
 
-                        if (year == nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도일 경우
-                            if (month == nowMonth && month == oneMonthMonth) { // 1개월 전이 같은 달일 경우
-                                if (day in oneMonthDay..nowDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                    if (year == oneMonthYear && year == twoMonthYear) { // 2개월 전에 오늘일 경우
+                                        if (month == oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 같은 달일 경우
+                                            if (day in twoMonthDay until oneMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
+                                            if (day >= twoMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
+                                            if (day < oneMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == twoMonthMonth) { // 2개월 전이 전달일 경우
+                                            if (day >= twoMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if (month == oneMonthMonth) { // 2개월 전이 이번달일 경우
+                                            if (day < oneMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == twoMonthYear && year == threeMonthYear) { // 3개월 전이 올해일 경우
+                                        if (month == twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 같은 달일 경우
+                                            if (day in threeMonthDay until twoMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
+                                            if (day >= threeMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
+                                            if (day < twoMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == threeMonthMonth) { // 3개월 전이 전달일 경우
+                                            if (day >= threeMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == twoMonthMonth) {
+                                            if (day < twoMonthDay) {
+                                                threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
                                 }
-                            } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
-                                if (day >= oneMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
-                                if (day <= nowDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
-                            if (month == oneMonthMonth) { // 1개월 전이 전달일 경우
-                                if (day >= oneMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if (month == nowMonth) { // 1개월 전이 이번달일 경우
-                                if (day <= nowDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
+
+                                pieThreeMonthBarChartGraph(v, threeMonthPieChart, threeMonthPieMap)
+                                setThreeMonthTonic()
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, "영양제 기록 삭제 완료")
                             }
                         }
 
-                        if (year == oneMonthYear && year == twoMonthYear) { // 2개월 전에 오늘일 경우
-                            if (month == oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 같은 달일 경우
-                                if (day in twoMonthDay until oneMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
-                                if (day >= twoMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
-                                if (day < oneMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == twoMonthMonth) { // 2개월 전이 전달일 경우
-                                if (day >= twoMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if (month == oneMonthMonth) { // 2개월 전이 이번달일 경우
-                                if (day < oneMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == twoMonthYear && year == threeMonthYear) { // 3개월 전이 올해일 경우
-                            if (month == twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 같은 달일 경우
-                                if (day in threeMonthDay until twoMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
-                                if (day >= threeMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
-                                if (day < twoMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == threeMonthMonth) { // 3개월 전이 전달일 경우
-                                if (day >= threeMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == twoMonthMonth) {
-                                if (day < twoMonthDay) {
-                                    threeMonthPieMap[item!!.tonicPart] = threeMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                         }
                     }
+                    FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "영양제 기록 삭제 완료")
                 }
@@ -1446,6 +1446,8 @@ class TonicStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var sum = 0.toFloat()
@@ -1503,7 +1505,7 @@ class TonicStatisticsFragment : Fragment() {
         threeMonthTonicStatisticsRVAdapter.notifyDataSetChanged()
     }
 
-    private fun setSixPieMonthChartReady() {
+    private fun setSixPieMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -1754,235 +1756,238 @@ class TonicStatisticsFragment : Fragment() {
                         }
 
                     }
-                } catch (e: Exception) {
-                    Log.d(TAG, "영양제 기록 삭제 완료")
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
-    }
+                    val nowSp = nowDate.split(".") // 오늘 날짜
+                    val nowYear = nowSp[0].toInt()
+                    val nowMonth = nowSp[1].toInt()
+                    val nowDay = nowSp[2].toInt()
+                    val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
 
-    private fun setSixPieMonthChart() {
-        val nowSp = nowDate.split(".") // 오늘 날짜
-        val nowYear = nowSp[0].toInt()
-        val nowMonth = nowSp[1].toInt()
-        val nowDay = nowSp[2].toInt()
-        val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
+                    val oneMonthWeekSp = oneMonthDate.split(".") // 1개월 전 날짜
+                    val oneMonthYear = oneMonthWeekSp[0].toInt()
+                    val oneMonthMonth = oneMonthWeekSp[1].toInt()
+                    val oneMonthDay = oneMonthWeekSp[2].toInt()
 
-        val oneMonthWeekSp = oneMonthDate.split(".") // 1개월 전 날짜
-        val oneMonthYear = oneMonthWeekSp[0].toInt()
-        val oneMonthMonth = oneMonthWeekSp[1].toInt()
-        val oneMonthDay = oneMonthWeekSp[2].toInt()
+                    val twoMonthWeekSp = twoMonthDate.split(".") // 2개월 전 날짜
+                    val twoMonthYear = twoMonthWeekSp[0].toInt()
+                    val twoMonthMonth = twoMonthWeekSp[1].toInt()
+                    val twoMonthDay = twoMonthWeekSp[2].toInt()
 
-        val twoMonthWeekSp = twoMonthDate.split(".") // 2개월 전 날짜
-        val twoMonthYear = twoMonthWeekSp[0].toInt()
-        val twoMonthMonth = twoMonthWeekSp[1].toInt()
-        val twoMonthDay = twoMonthWeekSp[2].toInt()
+                    val threeMonthWeekSp = threeMonthDate.split(".") // 3개월 전 날짜
+                    val threeMonthYear = threeMonthWeekSp[0].toInt()
+                    val threeMonthMonth = threeMonthWeekSp[1].toInt()
+                    val threeMonthDay = threeMonthWeekSp[2].toInt()
 
-        val threeMonthWeekSp = threeMonthDate.split(".") // 3개월 전 날짜
-        val threeMonthYear = threeMonthWeekSp[0].toInt()
-        val threeMonthMonth = threeMonthWeekSp[1].toInt()
-        val threeMonthDay = threeMonthWeekSp[2].toInt()
+                    val fourMonthWeekSp = fourMonthDate.split(".") // 4개월 전 날짜
+                    val fourMonthYear = fourMonthWeekSp[0].toInt()
+                    val fourMonthMonth = fourMonthWeekSp[1].toInt()
+                    val fourMonthDay = fourMonthWeekSp[2].toInt()
 
-        val fourMonthWeekSp = fourMonthDate.split(".") // 4개월 전 날짜
-        val fourMonthYear = fourMonthWeekSp[0].toInt()
-        val fourMonthMonth = fourMonthWeekSp[1].toInt()
-        val fourMonthDay = fourMonthWeekSp[2].toInt()
+                    val fiveMonthWeekSp = fiveMonthDate.split(".") // 5개월 전 날짜
+                    val fiveMonthYear = fiveMonthWeekSp[0].toInt()
+                    val fiveMonthMonth = fiveMonthWeekSp[1].toInt()
+                    val fiveMonthDay = fiveMonthWeekSp[2].toInt()
 
-        val fiveMonthWeekSp = fiveMonthDate.split(".") // 5개월 전 날짜
-        val fiveMonthYear = fiveMonthWeekSp[0].toInt()
-        val fiveMonthMonth = fiveMonthWeekSp[1].toInt()
-        val fiveMonthDay = fiveMonthWeekSp[2].toInt()
+                    val sixMonthWeekSp = sixMonthDate.split(".") // 6개월 전 날짜
+                    val sixMonthYear = sixMonthWeekSp[0].toInt()
+                    val sixMonthMonth = sixMonthWeekSp[1].toInt()
+                    val sixMonthDay = sixMonthWeekSp[2].toInt()
 
-        val sixMonthWeekSp = sixMonthDate.split(".") // 6개월 전 날짜
-        val sixMonthYear = sixMonthWeekSp[0].toInt()
-        val sixMonthMonth = sixMonthWeekSp[1].toInt()
-        val sixMonthDay = sixMonthWeekSp[2].toInt()
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
+                                for (dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DogTonicModel::class.java)
+                                    val date = item!!.date
+                                    val sp = date.split(".")
+                                    val year = sp[0].toInt()
+                                    val month = sp[1].toInt()
+                                    val day = sp[2].toInt()
 
-                    for (dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogTonicModel::class.java)
-                        val date = item!!.date
-                        val sp = date.split(".")
-                        val year = sp[0].toInt()
-                        val month = sp[1].toInt()
-                        val day = sp[2].toInt()
+                                    if (year == nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도일 경우
+                                        if (month == nowMonth && month == oneMonthMonth) { // 1개월 전이 같은 달일 경우
+                                            if (day in oneMonthDay..nowDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
+                                            if (day >= oneMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
+                                            if (day <= nowDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
+                                        if (month == oneMonthMonth) { // 1개월 전이 전달일 경우
+                                            if (day >= oneMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if (month == nowMonth) { // 1개월 전이 이번달일 경우
+                                            if (day <= nowDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
 
-                        if (year == nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도일 경우
-                            if (month == nowMonth && month == oneMonthMonth) { // 1개월 전이 같은 달일 경우
-                                if (day in oneMonthDay..nowDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                    if (year == oneMonthYear && year == twoMonthYear) { // 2개월 전에 오늘일 경우
+                                        if (month == oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 같은 달일 경우
+                                            if (day in twoMonthDay until oneMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
+                                            if (day >= twoMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
+                                            if (day < oneMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == twoMonthMonth) { // 2개월 전이 전달일 경우
+                                            if (day >= twoMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if (month == oneMonthMonth) { // 2개월 전이 이번달일 경우
+                                            if (day < oneMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == twoMonthYear && year == threeMonthYear) { // 3개월 전이 올해일 경우
+                                        if (month == twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 같은 달일 경우
+                                            if (day in threeMonthDay until twoMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
+                                            if (day >= threeMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
+                                            if (day < twoMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == threeMonthMonth) { // 3개월 전이 전달일 경우
+                                            if (day >= threeMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == twoMonthMonth) {
+                                            if (day < twoMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == threeMonthYear && year == fourMonthYear) { // 4개월 전이 올해일 경우
+                                        if (month == threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 같은 달일 경우
+                                            if (day in fourMonthDay until threeMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 전달일 경우
+                                            if (day >= fourMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == threeMonthMonth && month > fourMonthMonth) { // 4개월 전이 이번달일 경우
+                                            if (day < threeMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < threeMonthYear && year == fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == fourMonthMonth) { // 4개월 전이 전달일 경우
+                                            if (day >= fourMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == threeMonthYear && year > fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == threeMonthMonth) {
+                                            if (day < threeMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == fourMonthYear && year == fiveMonthYear) { // 5개월 전이 올해일 경우
+                                        if (month == fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 같은 달일 경우
+                                            if (day in fiveMonthDay until fourMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 전달일 경우
+                                            if (day >= fourMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == fourMonthMonth && month > fiveMonthMonth) { // 5개월 전이 이번달일 경우
+                                            if (day < fiveMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < fourMonthYear && year == fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == fiveMonthMonth) { // 4개월 전이 전달일 경우
+                                            if (day >= fiveMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == fourMonthYear && year > fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == fourMonthMonth) {
+                                            if (day < fourMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == fiveMonthYear && year == sixMonthYear) { // 6개월 전이 올해일 경우
+                                        if (month == fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 같은 달일 경우
+                                            if (day in sixMonthDay until fiveMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 전달일 경우
+                                            if (day >= sixMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == fiveMonthMonth && month > sixMonthMonth) { // 6개월 전이 이번달일 경우
+                                            if (day < fiveMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < fiveMonthYear && year == sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == sixMonthMonth) { // 6개월 전이 전달일 경우
+                                            if (day >= sixMonthDay) {
+                                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == fiveMonthYear && year > sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(day < fiveMonthDay) {
+                                            sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                        }
+                                    }
+
                                 }
-                            } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
-                                if (day >= oneMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
-                                if (day <= nowDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
-                            if (month == oneMonthMonth) { // 1개월 전이 전달일 경우
-                                if (day >= oneMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if (month == nowMonth) { // 1개월 전이 이번달일 경우
-                                if (day <= nowDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
+
+                                pieSixMonthChartGraph(v, sixMonthPieChart, sixMonthPieMap)
+                                setSixMonthTonic()
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, "영양제 기록 삭제 완료")
                             }
                         }
 
-                        if (year == oneMonthYear && year == twoMonthYear) { // 2개월 전에 오늘일 경우
-                            if (month == oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 같은 달일 경우
-                                if (day in twoMonthDay until oneMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
-                                if (day >= twoMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
-                                if (day < oneMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == twoMonthMonth) { // 2개월 전이 전달일 경우
-                                if (day >= twoMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if (month == oneMonthMonth) { // 2개월 전이 이번달일 경우
-                                if (day < oneMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                         }
-
-                        if (year == twoMonthYear && year == threeMonthYear) { // 3개월 전이 올해일 경우
-                            if (month == twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 같은 달일 경우
-                                if (day in threeMonthDay until twoMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
-                                if (day >= threeMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
-                                if (day < twoMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == threeMonthMonth) { // 3개월 전이 전달일 경우
-                                if (day >= threeMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == twoMonthMonth) {
-                                if (day < twoMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == threeMonthYear && year == fourMonthYear) { // 4개월 전이 올해일 경우
-                            if (month == threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 같은 달일 경우
-                                if (day in fourMonthDay until threeMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 전달일 경우
-                                if (day >= fourMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == threeMonthMonth && month > fourMonthMonth) { // 4개월 전이 이번달일 경우
-                                if (day < threeMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < threeMonthYear && year == fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == fourMonthMonth) { // 4개월 전이 전달일 경우
-                                if (day >= fourMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == threeMonthYear && year > fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == threeMonthMonth) {
-                                if (day < threeMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == fourMonthYear && year == fiveMonthYear) { // 5개월 전이 올해일 경우
-                            if (month == fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 같은 달일 경우
-                                if (day in fiveMonthDay until fourMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 전달일 경우
-                                if (day >= fourMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == fourMonthMonth && month > fiveMonthMonth) { // 5개월 전이 이번달일 경우
-                                if (day < fiveMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < fourMonthYear && year == fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == fiveMonthMonth) { // 4개월 전이 전달일 경우
-                                if (day >= fiveMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == fourMonthYear && year > fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == fourMonthMonth) {
-                                if (day < fourMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == fiveMonthYear && year == sixMonthYear) { // 6개월 전이 올해일 경우
-                            if (month == fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 같은 달일 경우
-                                if (day in sixMonthDay until fiveMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 전달일 경우
-                                if (day >= sixMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == fiveMonthMonth && month > sixMonthMonth) { // 6개월 전이 이번달일 경우
-                                if (day < fiveMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < fiveMonthYear && year == sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == sixMonthMonth) { // 6개월 전이 전달일 경우
-                                if (day >= sixMonthDay) {
-                                    sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == fiveMonthYear && year > sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(day < fiveMonthDay) {
-                                sixMonthPieMap[item!!.tonicPart] = sixMonthPieMap[item!!.tonicPart]!! + 1.toFloat()
-                            }
-                        }
-
                     }
+                    FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "영양제 기록 삭제 완료")
                 }
@@ -2011,6 +2016,8 @@ class TonicStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var sum = 0.toFloat()
@@ -2068,7 +2075,7 @@ class TonicStatisticsFragment : Fragment() {
         sixMonthTonicStatisticsRVAdapter.notifyDataSetChanged()
     }
 
-    private fun setYearPieChartReady() {
+    private fun setYearPieChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -2547,437 +2554,439 @@ class TonicStatisticsFragment : Fragment() {
                                 }
                             }
                         }
-
                     }
-                } catch (e: Exception) {
-                    Log.d(TAG, "영양제 기록 삭제 완료")
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
-    }
+                    val nowSp = nowDate.split(".") // 오늘 날짜
+                    val nowYear = nowSp[0].toInt()
+                    val nowMonth = nowSp[1].toInt()
+                    val nowDay = nowSp[2].toInt()
+                    val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
 
-    private fun setYearPieChart() {
-        val nowSp = nowDate.split(".") // 오늘 날짜
-        val nowYear = nowSp[0].toInt()
-        val nowMonth = nowSp[1].toInt()
-        val nowDay = nowSp[2].toInt()
-        val nowDateNum = nowSp[0] + nowSp[1] + nowSp[2]
+                    val oneMonthWeekSp = oneMonthDate.split(".") // 1개월 전 날짜
+                    val oneMonthYear = oneMonthWeekSp[0].toInt()
+                    val oneMonthMonth = oneMonthWeekSp[1].toInt()
+                    val oneMonthDay = oneMonthWeekSp[2].toInt()
 
-        val oneMonthWeekSp = oneMonthDate.split(".") // 1개월 전 날짜
-        val oneMonthYear = oneMonthWeekSp[0].toInt()
-        val oneMonthMonth = oneMonthWeekSp[1].toInt()
-        val oneMonthDay = oneMonthWeekSp[2].toInt()
+                    val twoMonthWeekSp = twoMonthDate.split(".") // 2개월 전 날짜
+                    val twoMonthYear = twoMonthWeekSp[0].toInt()
+                    val twoMonthMonth = twoMonthWeekSp[1].toInt()
+                    val twoMonthDay = twoMonthWeekSp[2].toInt()
 
-        val twoMonthWeekSp = twoMonthDate.split(".") // 2개월 전 날짜
-        val twoMonthYear = twoMonthWeekSp[0].toInt()
-        val twoMonthMonth = twoMonthWeekSp[1].toInt()
-        val twoMonthDay = twoMonthWeekSp[2].toInt()
+                    val threeMonthWeekSp = threeMonthDate.split(".") // 3개월 전 날짜
+                    val threeMonthYear = threeMonthWeekSp[0].toInt()
+                    val threeMonthMonth = threeMonthWeekSp[1].toInt()
+                    val threeMonthDay = threeMonthWeekSp[2].toInt()
 
-        val threeMonthWeekSp = threeMonthDate.split(".") // 3개월 전 날짜
-        val threeMonthYear = threeMonthWeekSp[0].toInt()
-        val threeMonthMonth = threeMonthWeekSp[1].toInt()
-        val threeMonthDay = threeMonthWeekSp[2].toInt()
+                    val fourMonthWeekSp = fourMonthDate.split(".") // 4개월 전 날짜
+                    val fourMonthYear = fourMonthWeekSp[0].toInt()
+                    val fourMonthMonth = fourMonthWeekSp[1].toInt()
+                    val fourMonthDay = fourMonthWeekSp[2].toInt()
 
-        val fourMonthWeekSp = fourMonthDate.split(".") // 4개월 전 날짜
-        val fourMonthYear = fourMonthWeekSp[0].toInt()
-        val fourMonthMonth = fourMonthWeekSp[1].toInt()
-        val fourMonthDay = fourMonthWeekSp[2].toInt()
+                    val fiveMonthWeekSp = fiveMonthDate.split(".") // 5개월 전 날짜
+                    val fiveMonthYear = fiveMonthWeekSp[0].toInt()
+                    val fiveMonthMonth = fiveMonthWeekSp[1].toInt()
+                    val fiveMonthDay = fiveMonthWeekSp[2].toInt()
 
-        val fiveMonthWeekSp = fiveMonthDate.split(".") // 5개월 전 날짜
-        val fiveMonthYear = fiveMonthWeekSp[0].toInt()
-        val fiveMonthMonth = fiveMonthWeekSp[1].toInt()
-        val fiveMonthDay = fiveMonthWeekSp[2].toInt()
+                    val sixMonthWeekSp = sixMonthDate.split(".") // 6개월 전 날짜
+                    val sixMonthYear = sixMonthWeekSp[0].toInt()
+                    val sixMonthMonth = sixMonthWeekSp[1].toInt()
+                    val sixMonthDay = sixMonthWeekSp[2].toInt()
 
-        val sixMonthWeekSp = sixMonthDate.split(".") // 6개월 전 날짜
-        val sixMonthYear = sixMonthWeekSp[0].toInt()
-        val sixMonthMonth = sixMonthWeekSp[1].toInt()
-        val sixMonthDay = sixMonthWeekSp[2].toInt()
+                    val sevenMonthWeekSp = sevenMonthDate.split(".") // 7개월 전 날짜
+                    val sevenMonthYear = sevenMonthWeekSp[0].toInt()
+                    val sevenMonthMonth = sevenMonthWeekSp[1].toInt()
+                    val sevenMonthDay = sevenMonthWeekSp[2].toInt()
 
-        val sevenMonthWeekSp = sevenMonthDate.split(".") // 7개월 전 날짜
-        val sevenMonthYear = sevenMonthWeekSp[0].toInt()
-        val sevenMonthMonth = sevenMonthWeekSp[1].toInt()
-        val sevenMonthDay = sevenMonthWeekSp[2].toInt()
+                    val eightMonthWeekSp = eightMonthDate.split(".") // 8개월 전 날짜
+                    val eightMonthYear = eightMonthWeekSp[0].toInt()
+                    val eightMonthMonth = eightMonthWeekSp[1].toInt()
+                    val eightMonthDay = eightMonthWeekSp[2].toInt()
 
-        val eightMonthWeekSp = eightMonthDate.split(".") // 8개월 전 날짜
-        val eightMonthYear = eightMonthWeekSp[0].toInt()
-        val eightMonthMonth = eightMonthWeekSp[1].toInt()
-        val eightMonthDay = eightMonthWeekSp[2].toInt()
+                    val nineMonthWeekSp = nineMonthDate.split(".") // 9개월 전 날짜
+                    val nineMonthYear = nineMonthWeekSp[0].toInt()
+                    val nineMonthMonth = nineMonthWeekSp[1].toInt()
+                    val nineMonthDay = nineMonthWeekSp[2].toInt()
 
-        val nineMonthWeekSp = nineMonthDate.split(".") // 9개월 전 날짜
-        val nineMonthYear = nineMonthWeekSp[0].toInt()
-        val nineMonthMonth = nineMonthWeekSp[1].toInt()
-        val nineMonthDay = nineMonthWeekSp[2].toInt()
+                    val tenMonthWeekSp = tenMonthDate.split(".") // 10개월 전 날짜
+                    val tenMonthYear = tenMonthWeekSp[0].toInt()
+                    val tenMonthMonth = tenMonthWeekSp[1].toInt()
+                    val tenMonthDay = tenMonthWeekSp[2].toInt()
 
-        val tenMonthWeekSp = tenMonthDate.split(".") // 10개월 전 날짜
-        val tenMonthYear = tenMonthWeekSp[0].toInt()
-        val tenMonthMonth = tenMonthWeekSp[1].toInt()
-        val tenMonthDay = tenMonthWeekSp[2].toInt()
+                    val elevenMonthWeekSp = elevenMonthDate.split(".") // 11개월 전 날짜
+                    val elevenMonthYear = elevenMonthWeekSp[0].toInt()
+                    val elevenMonthMonth = elevenMonthWeekSp[1].toInt()
+                    val elevenMonthDay = elevenMonthWeekSp[2].toInt()
 
-        val elevenMonthWeekSp = elevenMonthDate.split(".") // 11개월 전 날짜
-        val elevenMonthYear = elevenMonthWeekSp[0].toInt()
-        val elevenMonthMonth = elevenMonthWeekSp[1].toInt()
-        val elevenMonthDay = elevenMonthWeekSp[2].toInt()
+                    val yearWeekSp = yearDate.split(".") // 1년 전 날짜
+                    val yearYear = yearWeekSp[0].toInt()
+                    val yearMonth = yearWeekSp[1].toInt()
+                    val yearDay = yearWeekSp[2].toInt()
 
-        val yearWeekSp = yearDate.split(".") // 1년 전 날짜
-        val yearYear = yearWeekSp[0].toInt()
-        val yearMonth = yearWeekSp[1].toInt()
-        val yearDay = yearWeekSp[2].toInt()
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
+                                for (dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DogTonicModel::class.java)
+                                    val date = item!!.date
+                                    val sp = date.split(".")
+                                    val year = sp[0].toInt()
+                                    val month = sp[1].toInt()
+                                    val day = sp[2].toInt()
 
-                    for (dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogTonicModel::class.java)
-                        val date = item!!.date
-                        val sp = date.split(".")
-                        val year = sp[0].toInt()
-                        val month = sp[1].toInt()
-                        val day = sp[2].toInt()
+                                    if (year == nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도일 경우
+                                        if (month == nowMonth && month == oneMonthMonth) { // 1개월 전이 같은 달일 경우
+                                            if (day in oneMonthDay..nowDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
+                                            if (day >= oneMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
+                                            if (day <= nowDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
+                                        if (month == oneMonthMonth) { // 1개월 전이 전달일 경우
+                                            if (day >= oneMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if (month == nowMonth) { // 1개월 전이 이번달일 경우
+                                            if (day <= nowDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
 
-                        if (year == nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도일 경우
-                            if (month == nowMonth && month == oneMonthMonth) { // 1개월 전이 같은 달일 경우
-                                if (day in oneMonthDay..nowDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                    if (year == oneMonthYear && year == twoMonthYear) { // 2개월 전에 오늘일 경우
+                                        if (month == oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 같은 달일 경우
+                                            if (day in twoMonthDay until oneMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
+                                            if (day >= twoMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
+                                            if (day < oneMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == twoMonthMonth) { // 2개월 전이 전달일 경우
+                                            if (day >= twoMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if (month == oneMonthMonth) { // 2개월 전이 이번달일 경우
+                                            if (day < oneMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == twoMonthYear && year == threeMonthYear) { // 3개월 전이 올해일 경우
+                                        if (month == twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 같은 달일 경우
+                                            if (day in threeMonthDay until twoMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
+                                            if (day >= threeMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
+                                            if (day < twoMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == threeMonthMonth) { // 3개월 전이 전달일 경우
+                                            if (day >= threeMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == twoMonthMonth) {
+                                            if (day < twoMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == threeMonthYear && year == fourMonthYear) { // 4개월 전이 올해일 경우
+                                        if (month == threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 같은 달일 경우
+                                            if (day in fourMonthDay until threeMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 전달일 경우
+                                            if (day >= fourMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == threeMonthMonth && month > fourMonthMonth) { // 4개월 전이 이번달일 경우
+                                            if (day < threeMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < threeMonthYear && year == fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == fourMonthMonth) { // 4개월 전이 전달일 경우
+                                            if (day >= fourMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == threeMonthYear && year > fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == threeMonthMonth) {
+                                            if (day < threeMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == fourMonthYear && year == fiveMonthYear) { // 5개월 전이 올해일 경우
+                                        if (month == fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 같은 달일 경우
+                                            if (day in fiveMonthDay until fourMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 전달일 경우
+                                            if (day >= fourMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == fourMonthMonth && month > fiveMonthMonth) { // 5개월 전이 이번달일 경우
+                                            if (day < fiveMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < fourMonthYear && year == fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == fiveMonthMonth) { // 4개월 전이 전달일 경우
+                                            if (day >= fiveMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == fourMonthYear && year > fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == fourMonthMonth) {
+                                            if (day < fourMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == fiveMonthYear && year == sixMonthYear) { // 6개월 전이 올해일 경우
+                                        if (month == fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 같은 달일 경우
+                                            if (day in sixMonthDay until fiveMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 전달일 경우
+                                            if (day >= sixMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == fiveMonthMonth && month > sixMonthMonth) { // 6개월 전이 이번달일 경우
+                                            if (day < fiveMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < fiveMonthYear && year == sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == sixMonthMonth) { // 6개월 전이 전달일 경우
+                                            if (day >= sixMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == fiveMonthYear && year > sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == fiveMonthMonth) {
+                                            if (day < fiveMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == sixMonthYear && year == sevenMonthYear) { // 7개월 전이 올해일 경우
+                                        if (month == sixMonthMonth && month == sevenMonthMonth) { // 7개월 전이 같은 달일 경우
+                                            if (day in sevenMonthDay until sixMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < sixMonthMonth && month == sevenMonthMonth) { // 7개월 전이 전달일 경우
+                                            if (day >= sevenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == sixMonthMonth && month > sevenMonthMonth) { // 7개월 전이 이번달일 경우
+                                            if (day < sixMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < sixMonthYear && year == sevenMonthYear) { // 7개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == sevenMonthMonth) { // 7개월 전이 전달일 경우
+                                            if (day >= sevenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == sixMonthYear && year > sevenMonthYear) { // 7개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == sixMonthMonth) {
+                                            if (day < sixMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == sevenMonthYear && year == eightMonthYear) { // 8개월 전이 올해일 경우
+                                        if (month == sevenMonthMonth && month == eightMonthMonth) { // 8개월 전이 같은 달일 경우
+                                            if (day in eightMonthDay until sevenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < sevenMonthMonth && month == eightMonthMonth) { // 8개월 전이 전달일 경우
+                                            if (day >= eightMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == sevenMonthMonth && month > eightMonthMonth) { // 8개월 전이 이번달일 경우
+                                            if (day < sevenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < sevenMonthYear && year == eightMonthYear) { // 8개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == eightMonthMonth) { // 8개월 전이 전달일 경우
+                                            if (day >= eightMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == sevenMonthYear && year > eightMonthYear) { // 8개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == sevenMonthMonth) {
+                                            if (day < sevenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == eightMonthYear && year == nineMonthYear) { // 9개월 전이 올해일 경우
+                                        if (month == eightMonthMonth && month == nineMonthMonth) { // 9개월 전이 같은 달일 경우
+                                            if (day in nineMonthDay until eightMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < eightMonthMonth && month == nineMonthMonth) { // 9개월 전이 전달일 경우
+                                            if (day >= nineMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == eightMonthMonth && month > nineMonthMonth) { // 9개월 전이 이번달일 경우
+                                            if (day < eightMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < eightMonthYear && year == nineMonthYear) { // 9개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == nineMonthMonth) { // 9개월 전이 전달일 경우
+                                            if (day >= nineMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == eightMonthYear && year > nineMonthYear) { // 9개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == eightMonthMonth) {
+                                            if (day < eightMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == nineMonthYear && year == tenMonthYear) { // 10개월 전이 올해일 경우
+                                        if (month == nineMonthMonth && month == tenMonthMonth) { // 10개월 전이 같은 달일 경우
+                                            if (day in tenMonthDay until nineMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < nineMonthMonth && month == tenMonthMonth) { // 10개월 전이 전달일 경우
+                                            if (day >= tenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == nineMonthMonth && month > tenMonthMonth) { // 10개월 전이 이번달일 경우
+                                            if (day < nineMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < nineMonthYear && year == tenMonthYear) { // 10개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == tenMonthMonth) { // 10개월 전이 전달일 경우
+                                            if (day >= tenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == nineMonthYear && year > tenMonthYear) { // 10개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == nineMonthMonth) {
+                                            if (day < nineMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == tenMonthYear && year == elevenMonthYear) { // 11개월 전이 올해일 경우
+                                        if (month == tenMonthMonth && month == elevenMonthMonth) { // 11개월 전이 같은 달일 경우
+                                            if (day in elevenMonthDay until tenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < tenMonthMonth && month == elevenMonthMonth) { // 11개월 전이 전달일 경우
+                                            if (day >= elevenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == tenMonthMonth && month > elevenMonthMonth) { // 11개월 전이 이번달일 경우
+                                            if (day < tenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < tenMonthYear && year == elevenMonthYear) { // 11개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == elevenMonthMonth) { // 11개월 전이 전달일 경우
+                                            if (day >= elevenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == tenMonthYear && year > elevenMonthYear) { // 11개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == tenMonthMonth) {
+                                            if (day < tenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
+                                    if (year == elevenMonthYear && year == yearYear) { // 1년 전이 올해일 경우
+                                        if (month == elevenMonthMonth && month == yearMonth) { // 1년 전이 같은 달일 경우
+                                            if (day in yearDay until elevenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month < elevenMonthMonth && month == yearMonth) { // 1년 전이 전달일 경우
+                                            if (day >= yearDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        } else if (month == elevenMonthMonth && month > yearMonth) { // 1년 전이 이번달일 경우
+                                            if (day < elevenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year < elevenMonthYear && year == yearYear) { // 1년 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
+                                        if (month == yearMonth) { // 1년 전이 전달일 경우
+                                            if (day >= yearDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    } else if (year == elevenMonthYear && year > yearYear) { // 1년 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
+                                        if(month == elevenMonthMonth) {
+                                            if (day < elevenMonthDay) {
+                                                yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                            }
+                                        }
+                                    }
+
                                 }
-                            } else if (month < nowMonth && month == oneMonthMonth) { // 1개월 전이 전달일 경우
-                                if (day >= oneMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == nowMonth && month > oneMonthMonth) { // 1개월 전이 이번 달일 경우
-                                if (day <= nowDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < nowYear && year == oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 년도일 경우
-                            if (month == oneMonthMonth) { // 1개월 전이 전달일 경우
-                                if (day >= oneMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == nowYear && year > oneMonthYear) { // 1개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if (month == nowMonth) { // 1개월 전이 이번달일 경우
-                                if (day <= nowDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
+
+                                pieYearChartGraph(v, yearPieChart, yearPieMap)
+                                yearTonic()
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, "영양제 기록 삭제 완료")
                             }
                         }
 
-                        if (year == oneMonthYear && year == twoMonthYear) { // 2개월 전에 오늘일 경우
-                            if (month == oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 같은 달일 경우
-                                if (day in twoMonthDay until oneMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < oneMonthMonth && month == twoMonthMonth) { // 2개월 전이 전달일 경우
-                                if (day >= twoMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == oneMonthMonth && month > twoMonthMonth) { // 2개월 전이 이번달일 경우
-                                if (day < oneMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < oneMonthYear && year == twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == twoMonthMonth) { // 2개월 전이 전달일 경우
-                                if (day >= twoMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == oneMonthYear && year > twoMonthYear) { // 2개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if (month == oneMonthMonth) { // 2개월 전이 이번달일 경우
-                                if (day < oneMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                         }
-
-                        if (year == twoMonthYear && year == threeMonthYear) { // 3개월 전이 올해일 경우
-                            if (month == twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 같은 달일 경우
-                                if (day in threeMonthDay until twoMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < twoMonthMonth && month == threeMonthMonth) { // 3개월 전이 전달일 경우
-                                if (day >= threeMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == twoMonthMonth && month > threeMonthMonth) { // 3개월 전이 이번달일 경우
-                                if (day < twoMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < twoMonthYear && year == threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == threeMonthMonth) { // 3개월 전이 전달일 경우
-                                if (day >= threeMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == twoMonthYear && year > threeMonthYear) { // 3개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == twoMonthMonth) {
-                                if (day < twoMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == threeMonthYear && year == fourMonthYear) { // 4개월 전이 올해일 경우
-                            if (month == threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 같은 달일 경우
-                                if (day in fourMonthDay until threeMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < threeMonthMonth && month == fourMonthMonth) { // 4개월 전이 전달일 경우
-                                if (day >= fourMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == threeMonthMonth && month > fourMonthMonth) { // 4개월 전이 이번달일 경우
-                                if (day < threeMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < threeMonthYear && year == fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == fourMonthMonth) { // 4개월 전이 전달일 경우
-                                if (day >= fourMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == threeMonthYear && year > fourMonthYear) { // 4개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == threeMonthMonth) {
-                                if (day < threeMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == fourMonthYear && year == fiveMonthYear) { // 5개월 전이 올해일 경우
-                            if (month == fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 같은 달일 경우
-                                if (day in fiveMonthDay until fourMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < fourMonthMonth && month == fiveMonthMonth) { // 5개월 전이 전달일 경우
-                                if (day >= fourMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == fourMonthMonth && month > fiveMonthMonth) { // 5개월 전이 이번달일 경우
-                                if (day < fiveMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < fourMonthYear && year == fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == fiveMonthMonth) { // 4개월 전이 전달일 경우
-                                if (day >= fiveMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == fourMonthYear && year > fiveMonthYear) { // 5개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == fourMonthMonth) {
-                                if (day < fourMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == fiveMonthYear && year == sixMonthYear) { // 6개월 전이 올해일 경우
-                            if (month == fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 같은 달일 경우
-                                if (day in sixMonthDay until fiveMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < fiveMonthMonth && month == sixMonthMonth) { // 6개월 전이 전달일 경우
-                                if (day >= sixMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == fiveMonthMonth && month > sixMonthMonth) { // 6개월 전이 이번달일 경우
-                                if (day < fiveMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < fiveMonthYear && year == sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == sixMonthMonth) { // 6개월 전이 전달일 경우
-                                if (day >= sixMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == fiveMonthYear && year > sixMonthYear) { // 6개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == fiveMonthMonth) {
-                                if (day < fiveMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == sixMonthYear && year == sevenMonthYear) { // 7개월 전이 올해일 경우
-                            if (month == sixMonthMonth && month == sevenMonthMonth) { // 7개월 전이 같은 달일 경우
-                                if (day in sevenMonthDay until sixMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < sixMonthMonth && month == sevenMonthMonth) { // 7개월 전이 전달일 경우
-                                if (day >= sevenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == sixMonthMonth && month > sevenMonthMonth) { // 7개월 전이 이번달일 경우
-                                if (day < sixMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < sixMonthYear && year == sevenMonthYear) { // 7개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == sevenMonthMonth) { // 7개월 전이 전달일 경우
-                                if (day >= sevenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == sixMonthYear && year > sevenMonthYear) { // 7개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == sixMonthMonth) {
-                                if (day < sixMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == sevenMonthYear && year == eightMonthYear) { // 8개월 전이 올해일 경우
-                            if (month == sevenMonthMonth && month == eightMonthMonth) { // 8개월 전이 같은 달일 경우
-                                if (day in eightMonthDay until sevenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < sevenMonthMonth && month == eightMonthMonth) { // 8개월 전이 전달일 경우
-                                if (day >= eightMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == sevenMonthMonth && month > eightMonthMonth) { // 8개월 전이 이번달일 경우
-                                if (day < sevenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < sevenMonthYear && year == eightMonthYear) { // 8개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == eightMonthMonth) { // 8개월 전이 전달일 경우
-                                if (day >= eightMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == sevenMonthYear && year > eightMonthYear) { // 8개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == sevenMonthMonth) {
-                                if (day < sevenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == eightMonthYear && year == nineMonthYear) { // 9개월 전이 올해일 경우
-                            if (month == eightMonthMonth && month == nineMonthMonth) { // 9개월 전이 같은 달일 경우
-                                if (day in nineMonthDay until eightMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < eightMonthMonth && month == nineMonthMonth) { // 9개월 전이 전달일 경우
-                                if (day >= nineMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == eightMonthMonth && month > nineMonthMonth) { // 9개월 전이 이번달일 경우
-                                if (day < eightMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < eightMonthYear && year == nineMonthYear) { // 9개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == nineMonthMonth) { // 9개월 전이 전달일 경우
-                                if (day >= nineMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == eightMonthYear && year > nineMonthYear) { // 9개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == eightMonthMonth) {
-                                if (day < eightMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == nineMonthYear && year == tenMonthYear) { // 10개월 전이 올해일 경우
-                            if (month == nineMonthMonth && month == tenMonthMonth) { // 10개월 전이 같은 달일 경우
-                                if (day in tenMonthDay until nineMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < nineMonthMonth && month == tenMonthMonth) { // 10개월 전이 전달일 경우
-                                if (day >= tenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == nineMonthMonth && month > tenMonthMonth) { // 10개월 전이 이번달일 경우
-                                if (day < nineMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < nineMonthYear && year == tenMonthYear) { // 10개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == tenMonthMonth) { // 10개월 전이 전달일 경우
-                                if (day >= tenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == nineMonthYear && year > tenMonthYear) { // 10개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == nineMonthMonth) {
-                                if (day < nineMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == tenMonthYear && year == elevenMonthYear) { // 11개월 전이 올해일 경우
-                            if (month == tenMonthMonth && month == elevenMonthMonth) { // 11개월 전이 같은 달일 경우
-                                if (day in elevenMonthDay until tenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < tenMonthMonth && month == elevenMonthMonth) { // 11개월 전이 전달일 경우
-                                if (day >= elevenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == tenMonthMonth && month > elevenMonthMonth) { // 11개월 전이 이번달일 경우
-                                if (day < tenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < tenMonthYear && year == elevenMonthYear) { // 11개월 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == elevenMonthMonth) { // 11개월 전이 전달일 경우
-                                if (day >= elevenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == tenMonthYear && year > elevenMonthYear) { // 11개월 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == tenMonthMonth) {
-                                if (day < tenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
-                        if (year == elevenMonthYear && year == yearYear) { // 1년 전이 올해일 경우
-                            if (month == elevenMonthMonth && month == yearMonth) { // 1년 전이 같은 달일 경우
-                                if (day in yearDay until elevenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month < elevenMonthMonth && month == yearMonth) { // 1년 전이 전달일 경우
-                                if (day >= yearDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            } else if (month == elevenMonthMonth && month > yearMonth) { // 1년 전이 이번달일 경우
-                                if (day < elevenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year < elevenMonthYear && year == yearYear) { // 1년 전후가 같은 연도가 아닌데 현재 날짜가 이전 연도일 경우
-                            if (month == yearMonth) { // 1년 전이 전달일 경우
-                                if (day >= yearDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        } else if (year == elevenMonthYear && year > yearYear) { // 1년 전후가 같은 연도가 아닌데 현재 날짜가 이번 년도인 경우
-                            if(month == elevenMonthMonth) {
-                                if (day < elevenMonthDay) {
-                                    yearPieMap[item!!.tonicPart] = yearPieMap[item!!.tonicPart]!! + 1.toFloat()
-                                }
-                            }
-                        }
-
                     }
+                    FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "영양제 기록 삭제 완료")
                 }
@@ -3006,6 +3015,8 @@ class TonicStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var sum = 0.toFloat()

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -207,8 +208,7 @@ class PeeStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.GONE
 
-                setWeekChartReady()
-                barWeekChartGraph(v, weekChart, weekMap)
+                setWeekChartReady(v)
             }
             "1개월" -> {
                 oneDayChart.visibility = View.GONE
@@ -218,8 +218,7 @@ class PeeStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.GONE
 
-                setOneMonthChartReady()
-                barOneMonthChartGraph(v, oneMonthChart, oneMonthMap)
+                setOneMonthChartReady(v)
             }
             "3개월" -> {
                 oneDayChart.visibility = View.GONE
@@ -229,8 +228,7 @@ class PeeStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.GONE
 
-                setThreeMonthChartReady()
-                barThreeMonthChartGraph(v, threeMonthChart, threeMonthMap)
+                setThreeMonthChartReady(v)
             }
             "6개월" -> {
                 oneDayChart.visibility = View.GONE
@@ -240,8 +238,7 @@ class PeeStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.VISIBLE
                 yearChart.visibility = View.GONE
 
-                setSixMonthChartReady()
-                barSixMonthChartGraph(v, sixMonthChart, sixMonthMap)
+                setSixMonthChartReady(v)
             }
             "1년" -> {
                 oneDayChart.visibility = View.GONE
@@ -251,8 +248,7 @@ class PeeStatisticsFragment : Fragment() {
                 sixMonthChart.visibility = View.GONE
                 yearChart.visibility = View.VISIBLE
 
-                setYearChartReady()
-                barYearChartGraph(v, yearChart, yearMap)
+                setYearChartReady(v)
             }
         }
     }
@@ -307,16 +303,25 @@ class PeeStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             when (key) {
-                "transparent" -> entries.add(PieEntry(value, "투명 무색"))
-                "lightYellow" -> entries.add(PieEntry(value, "투명 노랑"))
-                "darkYellow" -> entries.add(PieEntry(value, "주황색 어두운 노랑"))
-                "red" -> entries.add(PieEntry(value, "붉은 색"))
-                "brown" -> entries.add(PieEntry(value, "갈색"))
+                "transparent" -> entries.add(PieEntry(value / sum * 100, "투명 무색"))
+                "lightYellow" -> entries.add(PieEntry(value / sum * 100, "투명 노랑"))
+                "darkYellow" -> entries.add(PieEntry(value / sum * 100, "주황색 어두운 노랑"))
+                "red" -> entries.add(PieEntry(value / sum * 100, "붉은 색"))
+                "brown" -> entries.add(PieEntry(value / sum * 100, "갈색"))
             }
         }
 
@@ -347,7 +352,7 @@ class PeeStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setWeekChartReady() {
+    private fun setWeekChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -409,6 +414,9 @@ class PeeStatisticsFragment : Fragment() {
                             }
                         }
                     }
+
+                    barWeekChartGraph(v, weekChart, weekMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "소변 기록 삭제 완료")
                 }
@@ -438,17 +446,26 @@ class PeeStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value >= 1) {
                 when (key) {
-                    "transparent" -> entries.add(PieEntry(value, "투명 무색"))
-                    "lightYellow" -> entries.add(PieEntry(value, "투명 노랑"))
-                    "darkYellow" -> entries.add(PieEntry(value, "주황색 어두운 노랑"))
-                    "red" -> entries.add(PieEntry(value, "붉은 색"))
-                    "brown" -> entries.add(PieEntry(value, "갈색"))
+                    "transparent" -> entries.add(PieEntry(value / sum * 100, "투명 무색"))
+                    "lightYellow" -> entries.add(PieEntry(value / sum * 100, "투명 노랑"))
+                    "darkYellow" -> entries.add(PieEntry(value / sum * 100, "주황색 어두운 노랑"))
+                    "red" -> entries.add(PieEntry(value / sum * 100, "붉은 색"))
+                    "brown" -> entries.add(PieEntry(value / sum * 100, "갈색"))
                 }
             }
         }
@@ -480,7 +497,7 @@ class PeeStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setOneMonthChartReady() {
+    private fun setOneMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -606,6 +623,9 @@ class PeeStatisticsFragment : Fragment() {
                             }
                         }
                     }
+
+                    barOneMonthChartGraph(v, oneMonthChart, oneMonthMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "소변 기록 삭제 완료")
                 }
@@ -634,17 +654,26 @@ class PeeStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value >= 1) {
                 when (key) {
-                    "transparent" -> entries.add(PieEntry(value, "투명 무색"))
-                    "lightYellow" -> entries.add(PieEntry(value, "투명 노랑"))
-                    "darkYellow" -> entries.add(PieEntry(value, "주황색 어두운 노랑"))
-                    "red" -> entries.add(PieEntry(value, "붉은 색"))
-                    "brown" -> entries.add(PieEntry(value, "갈색"))
+                    "transparent" -> entries.add(PieEntry(value / sum * 100, "투명 무색"))
+                    "lightYellow" -> entries.add(PieEntry(value / sum * 100, "투명 노랑"))
+                    "darkYellow" -> entries.add(PieEntry(value / sum * 100, "주황색 어두운 노랑"))
+                    "red" -> entries.add(PieEntry(value / sum * 100, "붉은 색"))
+                    "brown" -> entries.add(PieEntry(value / sum * 100, "갈색"))
                 }
             }
         }
@@ -676,7 +705,7 @@ class PeeStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setThreeMonthChartReady() {
+    private fun setThreeMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -800,6 +829,9 @@ class PeeStatisticsFragment : Fragment() {
                             }
                         }
                     }
+
+                    barThreeMonthChartGraph(v, threeMonthChart, threeMonthMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "소변 기록 삭제 완료")
                 }
@@ -828,17 +860,26 @@ class PeeStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value >= 1) {
                 when (key) {
-                    "transparent" -> entries.add(PieEntry(value, "투명 무색"))
-                    "lightYellow" -> entries.add(PieEntry(value, "투명 노랑"))
-                    "darkYellow" -> entries.add(PieEntry(value, "주황색 어두운 노랑"))
-                    "red" -> entries.add(PieEntry(value, "붉은 색"))
-                    "brown" -> entries.add(PieEntry(value, "갈색"))
+                    "transparent" -> entries.add(PieEntry(value / sum * 100, "투명 무색"))
+                    "lightYellow" -> entries.add(PieEntry(value / sum * 100, "투명 노랑"))
+                    "darkYellow" -> entries.add(PieEntry(value / sum * 100, "주황색 어두운 노랑"))
+                    "red" -> entries.add(PieEntry(value / sum * 100, "붉은 색"))
+                    "brown" -> entries.add(PieEntry(value / sum * 100, "갈색"))
                 }
             }
         }
@@ -870,7 +911,7 @@ class PeeStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setSixMonthChartReady() {
+    private fun setSixMonthChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -1090,8 +1131,10 @@ class PeeStatisticsFragment : Fragment() {
                                 sixMonthMap[item!!.peeType] = sixMonthMap[item!!.peeType]!! + item!!.peeCount.toFloat()
                             }
                         }
-
                     }
+
+                    barSixMonthChartGraph(v, sixMonthChart, sixMonthMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "소변 기록 삭제 완료")
                 }
@@ -1120,17 +1163,26 @@ class PeeStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value >= 1) {
                 when (key) {
-                    "transparent" -> entries.add(PieEntry(value, "투명 무색"))
-                    "lightYellow" -> entries.add(PieEntry(value, "투명 노랑"))
-                    "darkYellow" -> entries.add(PieEntry(value, "주황색 어두운 노랑"))
-                    "red" -> entries.add(PieEntry(value, "붉은 색"))
-                    "brown" -> entries.add(PieEntry(value, "갈색"))
+                    "transparent" -> entries.add(PieEntry(value / sum * 100, "투명 무색"))
+                    "lightYellow" -> entries.add(PieEntry(value / sum * 100, "투명 노랑"))
+                    "darkYellow" -> entries.add(PieEntry(value / sum * 100, "주황색 어두운 노랑"))
+                    "red" -> entries.add(PieEntry(value / sum * 100, "붉은 색"))
+                    "brown" -> entries.add(PieEntry(value / sum * 100, "갈색"))
                 }
             }
         }
@@ -1162,7 +1214,7 @@ class PeeStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setYearChartReady() {
+    private fun setYearChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -1582,8 +1634,10 @@ class PeeStatisticsFragment : Fragment() {
                                 }
                             }
                         }
-
                     }
+
+                    barYearChartGraph(v, yearChart, yearMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "소변 기록 삭제 완료")
                 }
@@ -1612,17 +1666,26 @@ class PeeStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
+
+            animateY(1400, Easing.EaseInOutQuad)
+        }
+
+        var sum = 0.toFloat()
+        for((key, value) in valList.entries) {
+            if(value >= 1) {
+                sum += value
+            }
         }
 
         var entries : ArrayList<PieEntry> = ArrayList()
         for((key, value) in valList.entries) {
             if(value >= 1) {
                 when (key) {
-                    "transparent" -> entries.add(PieEntry(value, "투명 무색"))
-                    "lightYellow" -> entries.add(PieEntry(value, "투명 노랑"))
-                    "darkYellow" -> entries.add(PieEntry(value, "주황색 어두운 노랑"))
-                    "red" -> entries.add(PieEntry(value, "붉은 색"))
-                    "brown" -> entries.add(PieEntry(value, "갈색"))
+                    "transparent" -> entries.add(PieEntry(value / sum * 100, "투명 무색"))
+                    "lightYellow" -> entries.add(PieEntry(value / sum * 100, "투명 노랑"))
+                    "darkYellow" -> entries.add(PieEntry(value / sum * 100, "주황색 어두운 노랑"))
+                    "red" -> entries.add(PieEntry(value / sum * 100, "붉은 색"))
+                    "brown" -> entries.add(PieEntry(value / sum * 100, "갈색"))
                 }
             }
         }
@@ -1657,7 +1720,7 @@ class PeeStatisticsFragment : Fragment() {
     class CustomFormatter : ValueFormatter() {
         override fun getFormattedValue(value: Float): String {
             val waterWeight = value.toString().split(".")
-            return waterWeight[0] + "회"
+            return waterWeight[0] + "%"
         }
     }
 }
