@@ -1,6 +1,9 @@
 package org.techtown.myproject.note
 
 import android.app.Activity
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
 import android.util.Log
@@ -17,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import org.techtown.myproject.MyNotificationReceiver
 import org.techtown.myproject.R
 import org.techtown.myproject.comment.CommentEditActivity
 import org.techtown.myproject.utils.DogMedicineModel
@@ -176,6 +180,12 @@ class MedicinePlanReVAdapter(val dogMeidicinePlanList : ArrayList<DogMedicinePla
                     }
                 }
                 FBRef.medicineRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
+                // 투약 일정에 해당하는 투약 알림 삭제하기
+                val pendingIntent = PendingIntent.getBroadcast(holder!!.view!!.context, dogMeidicinePlanList[position].dogMedicinePlanId.hashCode(), Intent(holder!!.view!!.context, MyNotificationReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
+                val alarmManager = holder!!.view!!.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                alarmManager.cancel(pendingIntent)
+                pendingIntent.cancel()
 
                 FBRef.medicinePlanRef.child(myUid).child(dogMeidicinePlanList[position].dogId).child(dogMeidicinePlanList[position].dogMedicinePlanId).removeValue() // 파이어베이스에서 해당 기록의 데이터 삭제
             }

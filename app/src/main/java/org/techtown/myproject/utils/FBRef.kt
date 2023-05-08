@@ -68,8 +68,6 @@ class FBRef {
         val tokenRef = database.getReference("FCMToken") // FCM 토큰 데이터를 DB에 삽입하는 경로
 
         val blockRef = database.getReference("block") // 차단 데이터를 DB에 삽입하는 경로
-
-        val alarmRef = database.getReference("alarm") // 알림 데이터를 DB에 삽입하는 경로
    }
 
 }

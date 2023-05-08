@@ -53,6 +53,8 @@ class DealChatReVAdapter(val dealChatList : ArrayList<DealChatConnection>):
         else if(dealChatList[position].userId2 == myUid)
             yourUid = dealChatList[position].userId1
 
+        Log.d("chatUid", yourUid)
+
 
         val profileFile = FBRef.userRef.child(yourUid).child("profileImage").get().addOnSuccessListener {
             val storageReference = Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴
@@ -76,7 +78,8 @@ class DealChatReVAdapter(val dealChatList : ArrayList<DealChatConnection>):
                 for (locationSnapshot in dataSnapshot.children) {
                     val item = locationSnapshot.getValue(UserLocationModel::class.java)
                     Log.d("yourLocation", item!!.location)
-                    holder!!.yourLocationArea!!.text = item!!.location.split(" ")[2]
+                    if(item!!.location.split(" ").size == 3)
+                        holder!!.yourLocationArea!!.text = item!!.location.split(" ")[2]
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {

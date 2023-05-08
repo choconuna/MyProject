@@ -120,7 +120,7 @@ class DealChatFragment : Fragment() {
                                                     val item = dataModel.getValue(DealChatConnection::class.java)
                                                     var isBlocked = false
 
-                                                    if (item!!.userId1 != myUid) {
+                                                    if (item!!.userId1 != myUid && item!!.userId2 == myUid) {
                                                         if (!blockList.contains(item!!.userId1)) {
                                                             val index = dealChatDataList.indexOfFirst { it.dealId == item.dealId }
                                                             if (index == -1) {
@@ -128,7 +128,7 @@ class DealChatFragment : Fragment() {
                                                                 unsortedDealChatDataList.add(item!!)
                                                             }
                                                         }
-                                                    } else if (item!!.userId2 != myUid) {
+                                                    } else if (item!!.userId2 != myUid && item!!.userId1 == myUid) {
                                                         if (!blockList.contains(item!!.userId2)) {
                                                             val index = dealChatDataList.indexOfFirst { it.dealId == item.dealId }
                                                             if (index == -1) {

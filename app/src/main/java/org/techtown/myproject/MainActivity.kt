@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity() {
                         val intent = Intent(this@MainActivity, MyNotificationReceiver::class.java).apply {
                             putExtra("medicineName", medicinePlan?.medicineName)
                         }
-                        val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                        val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, medicinePlan?.dogMedicinePlanId.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
                         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
                         if (medicinePlan?.repeat == "매일") {
