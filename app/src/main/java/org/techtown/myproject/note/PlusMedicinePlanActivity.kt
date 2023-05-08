@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import org.techtown.myproject.AlarmReceiver
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.DogMedicinePlanModel
 import org.techtown.myproject.utils.FBRef
@@ -231,94 +230,5 @@ class PlusMedicinePlanActivity : AppCompatActivity() {
         val key = FBRef.medicinePlanRef.child(userId).child(dogId).push().key.toString() // 키 값을 먼저 받아옴
 
         FBRef.medicinePlanRef.child(userId).child(dogId).child(key).setValue(DogMedicinePlanModel(key, dogId, startDate, endDate, time, repeat, medicineName)) // 반려견 투약 일정 정보 데이터베이스에 저장
-
-        val planList = mutableListOf<DogMedicinePlanModel>() // 투약 일정 리스트
-
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try {
-                    planList.clear() // 기존 일정을 모두 제거하고 새로 추가하기 위해 리스트를 비웁니다.
-
-                    for (dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogMedicinePlanModel::class.java)
-                        item?.let { planList.add(it) } // 일정 데이터를 리스트에 추가합니다.
-                    }
-
-                    // 알림을 등록합니다.
-                    setAlarmForMedicinePlan(applicationContext, planList)
-
-                } catch (e: Exception) {
-                    Log.d(TAG, "투약 일정 로딩 실패")
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-
-        FBRef.medicinePlanRef.child(userId).child(dogId).addValueEventListener(postListener)
-    }
-
-    // 알림을 등록하는 함수
-    fun setAlarmForMedicinePlan(context: Context, planList: List<DogMedicinePlanModel>) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        for (plan in planList) {
-            val startDateStr = plan.startDate // 알림 시작 시간
-            val endDateStr = plan.endDate // 알림 종료 시간
-
-            val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
-            val startTime = dateFormat.parse(startDateStr)
-            val endTime = dateFormat.parse(endDateStr)
-
-            val repeat = plan.repeat // 알림 반복 여부
-            val medicineName = plan.medicineName // 알림에 보여줄 텍스트
-
-            // 시작 시간이 현재 시간보다 이전인 경우, 해당 알림은 이미 지난 시간이므로 등록하지 않습니다.
-            if (startTime!!.time < System.currentTimeMillis()) continue
-
-            // 알림 시간을 설정합니다.
-            val calendar = Calendar.getInstance()
-            calendar.time = startTime
-
-            while (calendar.timeInMillis <= endTime!!.time) {
-                val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
-                    putExtra("medicineName", medicineName)
-                }
-
-                val pendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    Random().nextInt(), // PendingIntent ID
-                    alarmIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-
-                // plan.time 에 저장된 시간 문자열을 가져와서 Calendar 에 반영합니다.
-                val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                val time = timeFormat.parse(plan.time)
-                val timeCalendar = Calendar.getInstance()
-                timeCalendar.time = time!!
-                calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY))
-                calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE))
-
-                // AlarmManager를 이용하여 알림을 등록합니다.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        calendar.timeInMillis,
-                        pendingIntent
-                    )
-                }
-
-                // 알림 반복 주기를 설정합니다.
-                if (repeat == "매일") {
-                    calendar.add(Calendar.DAY_OF_MONTH, 1)
-                } else {
-                    break
-                }
-            }
-        }
     }
 }

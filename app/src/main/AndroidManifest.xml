@@ -280,7 +280,7 @@
         </service>
 
         <receiver
-            android:name=".AlarmReceiver"
+            android:name=".MyNotificationReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

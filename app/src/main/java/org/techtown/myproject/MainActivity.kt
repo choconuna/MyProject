@@ -1,9 +1,7 @@
 package org.techtown.myproject
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -37,12 +35,11 @@ import org.techtown.myproject.my.MyActivity
 import org.techtown.myproject.note.NoteFragment
 import org.techtown.myproject.note.RecordFragment
 import org.techtown.myproject.receipt.ReceiptFragment
-import org.techtown.myproject.utils.DogDungModel
-import org.techtown.myproject.utils.FBRef
-import org.techtown.myproject.utils.FCMToken
-import org.techtown.myproject.utils.UserLocationModel
+import org.techtown.myproject.utils.*
 import org.techtown.myproject.walk.WalkFragment
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 import com.google.firebase.database.DataSnapshot as DataSnapshot1
 
 class MainActivity : AppCompatActivity() {
@@ -56,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var editor : SharedPreferences.Editor
     lateinit var mAuth : FirebaseAuth
     lateinit var uid : String
+    lateinit var dogId : String
     lateinit var dogName : String
     lateinit var userName : String
 
@@ -78,6 +76,9 @@ class MainActivity : AppCompatActivity() {
 
         uid = FirebaseAuth.getInstance().currentUser?.uid.toString() // 현재 로그인된 유저의 uid
         Log.d("tokenRef", uid)
+
+        sharedPreferences = getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
+        dogId = sharedPreferences.getString(uid, "").toString() // 현재 대표 반려견의 id
 
         mDatabaseReference = FBRef.userRef.child(uid)
 
@@ -138,30 +139,56 @@ class MainActivity : AppCompatActivity() {
             editor.putString(uid + "Token", token)
             editor.commit()
 
-//            if (!sharedPreferences.contains(uid + "Location")) { // 앱에 처음 접속했을 때 사용자의 위치 정보를 가져와 저장
-//                checkLocationPermission()
-//            }
-
             checkLocationPermission()
 
             Log.d("getToken", msg)
         })
 
-        // 알림 채널 생성
-        val channelId = "MedicinePlan"
-        val channelName = "Medicine Plan Notification"
-        val importance = NotificationManager.IMPORTANCE_HIGH
-        val channel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel(channelId, channelName, importance).apply {
-                description = "약 복용 일정 알림"
-            }
-        } else {
-            TODO("VERSION.SDK_INT < O")
-        }
+        // Firebase Realtime Database에서 데이터 가져오기
+        FBRef.medicinePlanRef.child(uid).child(dogId).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot1) {
+                for (data in snapshot.children) {
+                    val medicinePlan = data.getValue(DogMedicinePlanModel::class.java)
 
-        // 알림 채널 등록
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
+                    // 현재 시간과 알림을 설정할 시간 비교
+                    val calendar = Calendar.getInstance()
+                    val currentTime = calendar.timeInMillis
+                    val planTime = getPlanTimeInMillis(medicinePlan)
+
+                    if (planTime > currentTime) {
+                        // AlarmManager 설정
+                        val intent = Intent(this@MainActivity, MyNotificationReceiver::class.java).apply {
+                            putExtra("medicineName", medicinePlan?.medicineName)
+                        }
+                        val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+                        if (medicinePlan?.repeat == "매일") {
+                            // startDate와 endDate 사이에 모든 날짜에 알림 설정
+                            val startDate = getDateFromString(medicinePlan?.startDate)
+                            val endDate = getDateFromString(medicinePlan?.endDate)
+                            val interval = 24 * 60 * 60 * 1000 // 1일(24시간) 간격으로 알림 설정
+
+                            var timeInMillis = getPlanTimeInMillis(medicinePlan)
+                            while (timeInMillis <= endDate.timeInMillis) {
+                                if (timeInMillis >= startDate.timeInMillis) {
+                                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
+                                }
+                                timeInMillis += interval
+                            }
+                        } else {
+                            // startDate에만 알림 설정
+                            val startDate = getDateFromString(medicinePlan?.startDate)
+                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, getPlanTimeInMillis(medicinePlan), pendingIntent)
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // 데이터 가져오기 실패 시 처리
+            }
+        })
 
         bnv_main = findViewById(R.id.bottom_menu)
         initNavigationBar()
@@ -241,6 +268,25 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+    }
+
+    // 알림을 보낼 시간 가져오기
+    private fun getPlanTimeInMillis(medicinePlan: DogMedicinePlanModel?): Long {
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.YEAR, medicinePlan?.startDate?.substring(0, 4)?.toInt() ?: 0)
+            set(Calendar.MONTH, medicinePlan?.startDate?.substring(5, 7)?.toInt()?.minus(1) ?: 0)
+            set(Calendar.DAY_OF_MONTH, medicinePlan?.startDate?.substring(8, 10)?.toInt() ?: 0)
+            set(Calendar.HOUR_OF_DAY, medicinePlan?.time?.substring(0, 2)?.toInt() ?: 0)
+            set(Calendar.MINUTE, medicinePlan?.time?.substring(3, 5)?.toInt() ?: 0)
+        }
+        return calendar.timeInMillis
+    }
+
+    // String 타입의 날짜를 Calendar 객체로 변환하는 함수
+    private fun getDateFromString(dateString: String?): Calendar {
+        val calendar = Calendar.getInstance()
+        calendar.time = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(dateString)
+        return calendar
     }
 
     private fun initNavigationBar() { // 하단 탭에 맞는 fragment 띄우기
