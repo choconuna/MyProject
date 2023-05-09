@@ -23,6 +23,9 @@
         android:theme="@style/Theme.MyProject"
         tools:replace="android:label">
         <activity
+            android:name=".my.LeaveActivity"
+            android:exported="false" />
+        <activity
             android:name=".my.ManageBlockActivity"
             android:exported="false" />
         <activity

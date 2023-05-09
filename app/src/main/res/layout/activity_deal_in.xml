@@ -31,38 +31,72 @@
                     android:layout_marginRight="90dp"
                     android:src="@drawable/ic_round_keyboard_arrow_left_brown"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/textView"
+                    app:layout_constraintRight_toLeftOf="@+id/profile"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="MissingConstraints" />
 
-                <LinearLayout
-                    android:id="@+id/textView"
+                <FrameLayout
+                    android:id="@+id/profile"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:ignore="MissingConstraints">
+                    tools:ignore="MissingConstraints" >
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/selllerProfile"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_gravity="center" />
-
-                    <TextView
-                        android:id="@+id/sellerNickNameArea"
+                    <LinearLayout
+                        android:id="@+id/textView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/bold"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
 
-                </LinearLayout>
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/selllerProfile"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            android:id="@+id/sellerNickNameArea"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/bold"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/noProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/basic_user"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/bold"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:text="탈퇴한 사용자"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
 
                 <ImageView
                     android:id="@+id/communitySet"

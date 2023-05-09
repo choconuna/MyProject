@@ -45,6 +45,7 @@ class DealInActivity : AppCompatActivity() {
     private lateinit var sellerNickNameArea : TextView
     private lateinit var communitySet : ImageView // 현재 사용자가 판매자일 경우 거래 게시글 수정/삭제를 위한 아이콘
 
+    private lateinit var noProfile : LinearLayout // 판매자가 탈퇴한 경우의 프로필 영역
     private lateinit var textView : LinearLayout // 판매자의 프로필 영역
 
     private lateinit var state : String
@@ -76,8 +77,8 @@ class DealInActivity : AppCompatActivity() {
 
         setData()
 
-        if(myUid != sellerId)
-            updateVisitors()
+        if(myUid != sellerId && sellerId != "no") // 내가 판매자가 아니고, 판매자가 탈퇴하지 않았을 경우
+            updateVisitors() // 조회수 1씩 늘림
 
         getDealData()
 
@@ -283,6 +284,7 @@ class DealInActivity : AppCompatActivity() {
         sellerNickNameArea = findViewById(R.id.sellerNickNameArea)
         communitySet = findViewById(R.id.communitySet)
 
+        noProfile = findViewById(R.id.noProfile)
         textView = findViewById(R.id.textView)
 
         stateSpinner = findViewById(R.id.stateSpinner)
@@ -306,32 +308,44 @@ class DealInActivity : AppCompatActivity() {
         sellerChatBtn = findViewById(R.id.sellerChatBtn)
         customerChatBtn = findViewById(R.id.customerChatBtn)
 
-        val profileFile = FBRef.userRef.child(sellerId).child("profileImage").get().addOnSuccessListener {
-            val storageReference = Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴
-
-            storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
-                if(task.isSuccessful) {
-                    Glide.with(applicationContext).load(task.result).thumbnail(Glide.with(applicationContext).load(task.result)).into(sellerProfile)
-                } else {
-                    sellerProfile.isVisible = false
-                }
-            })
-        }
-
-        val sellerNickName = FBRef.userRef.child(sellerId).child("nickName").get().addOnSuccessListener {
-            sellerNickNameArea!!.text = it.value.toString() // 게시글에 판매자의 닉네임 표시
-        }
-
-        if(myUid == sellerId) {
-            communitySet.visibility = VISIBLE
-            stateSpinner.visibility = VISIBLE
-            sellerChatBtn.visibility = VISIBLE
+        if(sellerId == "no") { // 판매자가 탈퇴했을 경우
+            noProfile.visibility = VISIBLE
+            textView.visibility = GONE
+            sellerChatBtn.visibility = GONE
             customerChatBtn.visibility = GONE
         } else {
-            communitySet.visibility = GONE
-            stateSpinner.visibility = GONE
-            sellerChatBtn.visibility = GONE
-            customerChatBtn.visibility = VISIBLE
+            noProfile.visibility = GONE
+            textView.visibility = VISIBLE
+        }
+
+        if(sellerId != "no") { // 판매자가 탈퇴하지 않았을 경우
+            val profileFile = FBRef.userRef.child(sellerId).child("profileImage").get().addOnSuccessListener {
+                val storageReference = Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴
+
+                storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Glide.with(applicationContext).load(task.result).thumbnail(Glide.with(applicationContext).load(task.result)).into(sellerProfile)
+                    } else {
+                        sellerProfile.isVisible = false
+                    }
+                })
+            }
+
+            val sellerNickName = FBRef.userRef.child(sellerId).child("nickName").get().addOnSuccessListener {
+                sellerNickNameArea!!.text = it.value.toString() // 게시글에 판매자의 닉네임 표시
+            }
+
+            if (myUid == sellerId) {
+                communitySet.visibility = VISIBLE
+                stateSpinner.visibility = VISIBLE
+                sellerChatBtn.visibility = VISIBLE
+                customerChatBtn.visibility = GONE
+            } else {
+                communitySet.visibility = GONE
+                stateSpinner.visibility = GONE
+                sellerChatBtn.visibility = GONE
+                customerChatBtn.visibility = VISIBLE
+            }
         }
     }
 

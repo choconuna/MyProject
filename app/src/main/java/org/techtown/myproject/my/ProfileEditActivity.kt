@@ -18,12 +18,10 @@ import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import org.techtown.myproject.LogoutActivity
 import org.techtown.myproject.MyNotificationReceiver
 import org.techtown.myproject.R
 import org.techtown.myproject.comment.CommentModel
@@ -31,6 +29,7 @@ import org.techtown.myproject.community.CommunityModel
 import org.techtown.myproject.receipt.Receipt
 import org.techtown.myproject.utils.*
 import java.io.ByteArrayOutputStream
+import java.util.HashMap
 
 class ProfileEditActivity : AppCompatActivity() {
 
@@ -98,6 +97,8 @@ class ProfileEditActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.leaveBtn).setOnClickListener {
 //            removeAllDate()
+//            val intent = Intent(this, LeaveActivity::class.java)
+//            startActivity(intent) // 탈퇴 액티비티 실행시키기
         }
     }
 
@@ -290,6 +291,11 @@ class ProfileEditActivity : AppCompatActivity() {
 
         removeChat() // 채팅 삭제
 
+        removeDeal() // 거래, 거래 채팅 삭제
+
+        FBRef.userMainDogRef.child(uid).removeValue()
+        FBRef.dogRef.child(uid).removeValue()
+        FBRef.userRef.child(uid).removeValue()
     }
 
     private fun removeEatData() {
@@ -739,10 +745,9 @@ class ProfileEditActivity : AppCompatActivity() {
                                                         }
                                                 }
                                             }
-
-                                            FBRef.messageRef.child(item!!.chatConnectionId).child(item!!.messageId).removeValue()
                                         }
 
+                                        FBRef.messageRef.child(item!!.chatConnectionId).removeValue()
                                         FBRef.chatConnectionRef.child(item!!.chatConnectionId).removeValue() // 채팅 커넥션 삭제
 
                                     } catch(e : Exception) {
@@ -771,5 +776,94 @@ class ProfileEditActivity : AppCompatActivity() {
         }
 
         FBRef.chatConnectionRef.addValueEventListener(postListener)
+    }
+
+    private fun removeDeal() {
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    for(dataModel in dataSnapshot.children) {
+                        val deal = dataModel.getValue(DealModel::class.java)
+
+                        if(deal!!.sellerId == uid || deal!!.buyerId == uid) { // 탈퇴할 사용자가 판매자이거나 사용자일 경우
+                            val postListener = object : ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    try {
+                                        for(dataModel in dataSnapshot.children) {
+                                            val item = dataModel.getValue(DealChatConnection::class.java)
+
+                                            if(item!!.userId1 == uid || item!!.userId2 == uid) { // 탈퇴할 사용자가 판매자이거나 사용자일 경우
+                                                val postListener = object : ValueEventListener {
+                                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                                        try {
+
+                                                            for(dataModel in dataSnapshot.children) {
+                                                                val item = dataModel.getValue(DealMessageModel::class.java)
+
+                                                                if(item!!.type == "picture") {
+                                                                    for (index in 0 until item!!.picNum.toInt()) {
+                                                                        Firebase.storage.reference.child("dealMessageImage/${item!!.chatConnectionId}/${item!!.messageId}/${item!!.messageId}$index.png")
+                                                                            .delete().addOnSuccessListener { // 사진 삭제
+                                                                            }.addOnFailureListener {
+                                                                            }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            FBRef.dealMessageRef.child(item!!.dealId).child(item!!.chatConnectionId).removeValue()
+                                                            FBRef.dealChatConnectionRef.child(item!!.dealId).child(item!!.chatConnectionId).removeValue()
+
+                                                        } catch(e : Exception) { }
+                                                    }
+
+                                                    override fun onCancelled(databaseError: DatabaseError) {
+                                                        // Geting Post failed, log a message
+                                                        Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                                                    }
+                                                }
+                                                FBRef.dealMessageRef.child(item!!.dealId).child(item!!.chatConnectionId).addValueEventListener(postListener)
+                                            }
+                                        }
+
+                                    } catch(e : Exception) {
+                                        Log.d("showChatList", e.toString())
+                                    }
+                                }
+
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    // Geting Post failed, log a message
+                                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                                }
+                            }
+                            FBRef.dealChatConnectionRef.child(deal!!.dealId).addValueEventListener(postListener)
+                        }
+
+                        if(deal!!.sellerId == uid) { // 현재 탈퇴할 사용자가 판매자일 경우
+                            if(deal!!.buyerId != "no") { // 구매자가 탈퇴하지 않은 사용자일 경우 -> 거래 모델의 판매자를 "no"로 바꿈
+                                FBRef.dealRef.child(deal!!.dealId).setValue(DealModel(deal!!.dealId, "no", deal!!.location, deal!!.category, deal!!.price, deal!!.title, deal!!.content, deal!!.imgCnt, deal!!.method, "거래 완료", deal!!.date, deal!!.buyerId, deal!!.buyDate, deal!!.visitors))
+                            } else if(deal!!.buyerId == "no" || deal!!.buyerId == "") { // 구매자가 탈퇴한 사용자이거나 없을 경우
+                                FBRef.dealRef.child(deal!!.dealId).removeValue() // 거래 데이터 삭제
+                            }
+                        } else if(deal!!.buyerId == uid) { // 현재 탈퇴할 사용자가 구매자일 경우
+                            if(deal!!.sellerId != "no") { // 판매자가 탈퇴하지 않은 사용자일 경우
+                                FBRef.dealRef.child(deal!!.dealId).setValue(DealModel(deal!!.dealId, deal!!.sellerId, deal!!.location, deal!!.category, deal!!.price, deal!!.title, deal!!.content, deal!!.imgCnt, deal!!.method, "거래 완료", deal!!.date, "no", deal!!.buyDate, deal!!.visitors))
+                            } else if(deal!!.sellerId == "no") { // 판매자가 탈퇴한 사용자일 경우
+                                FBRef.dealRef.child(deal!!.dealId).removeValue() // 거래 데이터 삭제
+                            }
+                        }
+                    }
+
+                } catch(e : Exception) {
+                    Log.d("showChatList", e.toString())
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Geting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+
+        FBRef.dealRef.addValueEventListener(postListener)
     }
 }

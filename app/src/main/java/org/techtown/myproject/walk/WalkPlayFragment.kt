@@ -90,6 +90,8 @@ class WalkPlayFragment : Fragment() {
     private lateinit var mLocationManager: LocationManager
     private lateinit var mLocationListener: LocationListener
 
+    private var mLocationUpdateState = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -102,7 +104,6 @@ class WalkPlayFragment : Fragment() {
 
         mLocationRequest =  LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY //높은 정확도
-            interval = 1000 //1초에 한번씩 GPS 요청
         }
 
         if (checkPermissionForLocation(v!!.context)) {
@@ -113,7 +114,7 @@ class WalkPlayFragment : Fragment() {
             startLocationUpdates()
         }
 
-        startLocationUpdates()
+//        startLocationUpdates()
 
         //Create Retrofit Builder
         retrofit = Retrofit.Builder()
@@ -296,10 +297,25 @@ class WalkPlayFragment : Fragment() {
         // 지정한 루퍼 스레드(Looper.myLooper())에서 콜백(mLocationCallback)으로 위치 업데이트를 요청
         mLocationRequest =  LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY //높은 정확도
-            interval = 60 * 1000 //1초에 한번씩 GPS 요청
         }
 
         mFusedLocationProviderClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
+    }
+
+//    override fun onResume() {
+//        super.onResume()
+//        if (checkPermissionForLocation(requireContext())) {
+//            startLocationUpdates()
+//        }
+//    }
+
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
+    }
+
+    private fun stopLocationUpdates() {
+        mFusedLocationProviderClient?.removeLocationUpdates(mLocationCallback)
     }
 
     // 시스템으로부터 위치 정보를 콜백으로 받음
@@ -328,9 +344,11 @@ class WalkPlayFragment : Fragment() {
         if (address != null && address.isNotEmpty()) {
             if (address.size == 0) {
                 Log.d("getLocation", "위치 찾기 오류")
-            } else {
+            } else if(address != null && address.isNotEmpty() && address[0].getAddressLine(0).split(" ").size > 3 && address[0].getAddressLine(0).split(" ")[2].last() == '구') {
                 Log.d("getLocation", address[0].toString())
                 locationArea.text = address[0].adminArea + " " + address[0].getAddressLine(0).split(" ")[3]
+            } else if(address != null && address.isNotEmpty() && address[0].getAddressLine(0).split(" ").size == 3) {
+                locationArea.text = address[0].adminArea + " " + address[0].getAddressLine(0).split(" ")[2]
             }
         }
 
