@@ -62,9 +62,6 @@
             android:name=".deal.DealChatInActivity"
             android:exported="false" />
         <activity
-            android:name=".chat.AllChatFragment"
-            android:exported="false" />
-        <activity
             android:name=".note.DogCheckUpPictureEditActivity"
             android:exported="false" />
         <activity
