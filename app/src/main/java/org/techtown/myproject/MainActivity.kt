@@ -144,6 +144,9 @@ class MainActivity : AppCompatActivity() {
             Log.d("getToken", msg)
         })
 
+        // NotificationChannel 생성
+        createNotificationChannel()
+
         // Firebase Realtime Database에서 데이터 가져오기
         FBRef.medicinePlanRef.child(uid).child(dogId).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot1) {
@@ -287,6 +290,19 @@ class MainActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance()
         calendar.time = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(dateString)
         return calendar
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "My Notification Channel"
+            val descriptionText = "Channel Description"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel("my_channel_id", name, importance).apply {
+                description = descriptionText
+            }
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
     private fun initNavigationBar() { // 하단 탭에 맞는 fragment 띄우기

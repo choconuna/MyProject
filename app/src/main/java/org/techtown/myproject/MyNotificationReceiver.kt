@@ -17,7 +17,7 @@ class MyNotificationReceiver : BroadcastReceiver() {
     private fun showNotification(context: Context?, medicineName: String?) {
         // 알림을 보여주는 코드
         // NotificationCompat.Builder를 사용하여 알림 생성
-        val builder = NotificationCompat.Builder(context!!, "default")
+        val builder = NotificationCompat.Builder(context!!, "my_channel_id")
             .setSmallIcon(R.drawable.ic_notification_small_icon_medicine)
             .setColor(Color.parseColor("#c08457")) // 알림 아이콘 색
             .setContentTitle("투약 알림")

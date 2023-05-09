@@ -1115,14 +1115,8 @@ class WeeklyReportFragment : Fragment() {
                                 val endDate = LocalDate.parse(weekEndTextView.text, DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.KOREA))
 
                                 var medicineNameMap : MutableMap<String, Int> = mutableMapOf()
-                                var medicineNoNameMap : MutableMap<String, Int> = mutableMapOf()
-
-                                var medicineMap: MutableMap<DogMedicinePlanModel, String> = mutableMapOf()
 
                                 medicineList.text = ""
-
-                                for((key, value) in medicinePlanMap)
-                                    medicineMap[key] = ""
 
                                 var medicineCnt = 0
 
@@ -1161,83 +1155,32 @@ class WeeklyReportFragment : Fragment() {
                                     }
                                 }
 
-
-                                Log.d("medicineMap", medicineMap.toString())
-                                if(medicinePlanMap.isEmpty() && medicineMap.isEmpty()) {
-                                    showNoMedicineArea.visibility = VISIBLE
-                                    medicineList.visibility = VISIBLE
-                                    showMedicineArea.visibility = GONE
-                                } else {
-                                    val allValuesEmpty = medicineMap.all { it.value.isEmpty() }
-                                    val allPlanValuesEmpty = medicinePlanMap.all { it.value.isEmpty() }
-
-                                    if (allValuesEmpty && allPlanValuesEmpty) { // 투약 일정과 투약 패스 기록이 모두 존재하지 않을 경우
+                                Log.d("medicineMapPlan", medicinePlanMap.toString())
+                                Log.d("medicineMapName", medicineNameMap.keys.toString())
+                                if (medicinePlanMap.isEmpty()) { // 투약 일정이 없을 경우
+                                    if(medicineNameMap.isEmpty()) { // 투약한 약이 없을 경우
                                         showNoMedicineArea.visibility = VISIBLE
                                         showMedicineArea.visibility = GONE
                                         showMedicinePlan.visibility = GONE
-                                    } else if(allValuesEmpty && !allPlanValuesEmpty) { // 투약 일정은 존재하고 투약 패스 기록이 존재하지 않을 경우
-                                        showMedicinePlan.text = ""
-                                        val medicineNameMap: MutableMap<String, MutableList<String>> = mutableMapOf()
-
-                                        for ((key, value) in medicinePlanMap) {
-                                            val medicineName = key!!.medicineName
-                                            val start = value.split(" ")[0]
-                                            val end = value.split(" ")[1]
-
-                                            if (medicineNameMap.containsKey(medicineName)) {
-                                                medicineNameMap[medicineName]!!.add("$start~$end")
-                                            } else {
-                                                medicineNameMap[medicineName] = mutableListOf("$start~$end")
-                                            }
-                                        }
-
-                                        for ((medicineName, values) in medicineNameMap) {
-                                            showMedicinePlan.text = showMedicinePlan.text.toString() + "$medicineName\n ${values.joinToString(separator = " ")}" + "\n\n"
-                                        }
-
-                                        showMedicinePlan.visibility = VISIBLE
-
-                                        if(medicineNameMap.isEmpty()) { // 아무런 약을 먹이지 않았을 경우
-                                            showNoMedicineArea.visibility = VISIBLE
-                                            showMedicineArea.visibility = GONE
-                                        } else { // 약을 먹였을 경우
-                                            medicineList.text = ""
-
-                                            for ((key, value) in medicineNameMap.entries) {
-                                                if (key == medicineNameMap.keys.last()) { // 마지막 요소일 경우
-                                                    medicineList.text = medicineList.text.toString() + key
-                                                } else {
-                                                    medicineList.text = medicineList.text.toString() + key + " ∙ "
-                                                }
-                                            }
-
-                                            showNoMedicineArea.visibility = GONE
-                                            showMedicineArea.visibility = VISIBLE
-                                        }
-                                    } else if(!allValuesEmpty && !allPlanValuesEmpty) { // 투약 일정과 투약 패스 기록이 모두 존재할 경우 -> 일부 약을 빠트렸을 경우
-                                        showMedicinePlan.text = ""
-                                        val medicineNameMap: MutableMap<String, MutableList<String>> = mutableMapOf()
-
-                                        for ((key, value) in medicinePlanMap) {
-                                            val medicineName = key!!.medicineName
-                                            val start = value.split(" ")[0]
-                                            val end = value.split(" ")[1]
-
-                                            if (medicineNameMap.containsKey(medicineName)) {
-                                                medicineNameMap[medicineName]!!.add("$start~$end")
-                                            } else {
-                                                medicineNameMap[medicineName] = mutableListOf("$start~$end")
-                                            }
-                                        }
-
-                                        for ((medicineName, values) in medicineNameMap) {
-                                            showMedicinePlan.text = showMedicinePlan.text.toString() + "$medicineName\n ${values.joinToString(separator = " ")}" + "\n\n"
-                                        }
-
-                                        showMedicinePlan.visibility = VISIBLE
-
+                                    } else { // 투약한 약이 있을 경우
                                         medicineList.text = ""
+                                        for ((key, value) in medicineNameMap.entries) {
+                                            if (key == medicineNameMap.keys.last()) { // 마지막 요소일 경우
+                                                medicineList.text =
+                                                    medicineList.text.toString() + key
+                                            } else {
+                                                medicineList.text =
+                                                    medicineList.text.toString() + key + " ∙ "
+                                            }
+                                        }
 
+                                        showNoMedicineArea.visibility = GONE
+                                        showMedicineArea.visibility = VISIBLE
+                                        showMedicinePlan.visibility = GONE
+                                    }
+                                } else { // 투약 일정이 존재할 경우
+                                    if (!medicineNameMap.isEmpty()) { // 투약한 약이 있을 경우
+                                        medicineList.text = ""
                                         for ((key, value) in medicineNameMap.entries) {
                                             if (key == medicineNameMap.keys.last()) { // 마지막 요소일 경우
                                                 medicineList.text = medicineList.text.toString() + key
@@ -1246,8 +1189,48 @@ class WeeklyReportFragment : Fragment() {
                                             }
                                         }
 
+                                        showMedicinePlan.text = ""
+                                        val medicinePlan : MutableMap<String, MutableList<String>> = mutableMapOf()
+                                        for ((key, value) in medicinePlanMap) {
+                                            val medicineName = key!!.medicineName
+                                            val start = value.split(" ")[0]
+                                            val end = value.split(" ")[1]
+
+                                            if (medicinePlan.containsKey(medicineName)) {
+                                                medicinePlan[medicineName]!!.add("$start~$end")
+                                            } else {
+                                                medicinePlan[medicineName] = mutableListOf("$start~$end")
+                                            }
+                                        }
+                                        for ((medicineName, values) in medicinePlan) {
+                                            showMedicinePlan.text = showMedicinePlan.text.toString() + "$medicineName\n ${values.joinToString(separator = " ")}" + "\n\n"
+                                        }
+
                                         showNoMedicineArea.visibility = GONE
                                         showMedicineArea.visibility = VISIBLE
+                                        showMedicinePlan.visibility = VISIBLE
+                                    } else { // 투약한 약이 없을 경우
+                                        val medicinePlan : MutableMap<String, MutableList<String>> = mutableMapOf()
+                                        for ((key, value) in medicinePlanMap) {
+                                            val medicineName = key!!.medicineName
+                                            val start = value.split(" ")[0]
+                                            val end = value.split(" ")[1]
+
+                                            if (medicinePlan.containsKey(medicineName)) {
+                                                medicinePlan[medicineName]!!.add("$start~$end")
+                                            } else {
+                                                medicinePlan[medicineName] = mutableListOf("$start~$end")
+                                            }
+                                        }
+
+                                        showMedicinePlan.text = ""
+                                        for ((medicineName, values) in medicinePlan) {
+                                            showMedicinePlan.text = showMedicinePlan.text.toString() + "$medicineName\n ${values.joinToString(separator = " ")}" + "\n\n"
+                                        }
+
+                                        showNoMedicineArea.visibility = VISIBLE
+                                        showMedicineArea.visibility = GONE
+                                        showMedicinePlan.visibility = VISIBLE
                                     }
                                 }
 
