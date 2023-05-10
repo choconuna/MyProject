@@ -79,9 +79,6 @@ class JoinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join)
 
-        val toolbar = findViewById<Toolbar> (R.id.toolbar)
-        setSupportActionBar(toolbar)
-
         val backBtn = findViewById<ImageView>(R.id.back)
         backBtn.setOnClickListener {
             finish()

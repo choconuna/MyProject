@@ -55,7 +55,6 @@ class DealChatReVAdapter(val dealChatList : ArrayList<DealChatConnection>):
 
         Log.d("chatUid", yourUid)
 
-
         val profileFile = FBRef.userRef.child(yourUid).child("profileImage").get().addOnSuccessListener {
             val storageReference = Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴
 

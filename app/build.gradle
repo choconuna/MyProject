@@ -11,19 +11,30 @@ android {
         applicationId "org.techtown.myproject"
         minSdk 21
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.4"
 
         multiDexEnabled = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [
+                FCM_SERVER_KEY: "AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk"
+        ]
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [FCM_SERVER_KEY: "AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk"]
+            buildConfigField("String", "FCM_SERVER_KEY", "\"AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk\"")
         }
+
+            debug {
+                manifestPlaceholders = [FCM_SERVER_KEY: "AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk"]
+                buildConfigField("String", "FCM_SERVER_KEY", "\"AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk\"")
+            }
 
         // 앱 실행 시 디버그 가능
         customDebugType {

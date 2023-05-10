@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import org.json.JSONObject
+import org.techtown.myproject.BuildConfig
 import org.techtown.myproject.R
 import org.techtown.myproject.chat.ChatInActivity
 import org.techtown.myproject.comment.CommentModel
@@ -45,7 +46,7 @@ class SpecificCommunityInActivity : AppCompatActivity() {
     private val TAG = SpecificCommunityInActivity::class.java.simpleName
 
     private val FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send"
-    private val SERVER_KEY = "AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk"
+    private val SERVER_KEY = BuildConfig.FCM_SERVER_KEY
 
     lateinit var categoryArea : TextView
     lateinit var category : String
