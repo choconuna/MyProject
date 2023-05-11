@@ -64,6 +64,7 @@ class UserDogsReVAdapter(val dogList : ArrayList<DogModel>):
 
         val dogBirth = dogList[position].dogBirthDate
 
+        Log.d("getUserId", dogList[position].dogId)
         val sb = StringBuffer() // 입력된 생년월일이 20100409라면 2010.04.09로 변환하여 화면에 출력하기 위해 StringBuffer() 사용
         sb.append(dogList[position].dogBirthDate)
         sb.insert(4, ".")

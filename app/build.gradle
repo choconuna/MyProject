@@ -11,8 +11,8 @@ android {
         applicationId "org.techtown.myproject"
         minSdk 21
         targetSdk 32
-        versionCode 5
-        versionName "1.4"
+        versionCode 11
+        versionName "1.10"
 
         multiDexEnabled = true
 
@@ -23,18 +23,30 @@ android {
         ]
     }
 
+    signingConfigs {
+        release {
+            storeFile file("my-release-key.keystore")
+            storePassword "password"
+            keyAlias "my-alias"
+            keyPassword "password"
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders = [FCM_SERVER_KEY: "AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk"]
             buildConfigField("String", "FCM_SERVER_KEY", "\"AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk\"")
         }
 
-            debug {
-                manifestPlaceholders = [FCM_SERVER_KEY: "AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk"]
-                buildConfigField("String", "FCM_SERVER_KEY", "\"AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk\"")
-            }
+        debug {
+            manifestPlaceholders = [FCM_SERVER_KEY: "AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk"]
+            buildConfigField("String", "FCM_SERVER_KEY", "\"AAAA3urRte0:APA91bElmJzeARg8yvRN-8-ABV4xZLaHdD2p6wmFzNjTLofP65CWNmvxT0TZ8cfxOLio4XSlJkLgrcLBfL44xUcLYHeTQFHoFTa0qP5G5kf84WvvvjPuHOZ2H7QY_y1Yc23P4gn8CNWk\"")
+        }
 
         // 앱 실행 시 디버그 가능
         customDebugType {

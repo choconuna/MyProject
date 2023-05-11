@@ -46,7 +46,6 @@ class SpecificCommunityInActivity : AppCompatActivity() {
     private val TAG = SpecificCommunityInActivity::class.java.simpleName
 
     private val FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send"
-    private val SERVER_KEY = BuildConfig.FCM_SERVER_KEY
 
     lateinit var categoryArea : TextView
     lateinit var category : String
@@ -418,7 +417,7 @@ class SpecificCommunityInActivity : AppCompatActivity() {
                                                 conn.doInput = true
                                                 conn.addRequestProperty(
                                                     "Authorization",
-                                                    "key=$SERVER_KEY"
+                                                    "key=${BuildConfig.FCM_SERVER_KEY}"
                                                 )
                                                 conn.setRequestProperty(
                                                     "Accept",

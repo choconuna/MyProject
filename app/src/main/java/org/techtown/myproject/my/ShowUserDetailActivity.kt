@@ -46,6 +46,7 @@ class ShowUserDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_user_detail)
 
         userId = intent.getStringExtra("userId").toString() // 사용자의 uid를 받아옴
+        Log.d("getUserId", userId)
 
         getData()
 
@@ -77,29 +78,31 @@ class ShowUserDetailActivity : AppCompatActivity() {
     private fun getUserInfo() {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val post = dataSnapshot.getValue(UserInfo::class.java)
+                try {
+                    val post = dataSnapshot.getValue(UserInfo::class.java)
 
-                textView.text = post!!.userName
-                nameArea.text = post!!.userName
-                nickNameArea.text = post!!.nickName
-                emailArea.text = post!!.email
+                    textView.text = post!!.userName
+                    nameArea.text = post!!.userName
+                    nickNameArea.text = post!!.nickName
+                    emailArea.text = post!!.email
 
-                profileFile = post!!.profileImage // 가져올 유저의 profile 사진
+                    profileFile = post!!.profileImage // 가져올 유저의 profile 사진
 
-                val profileFile =
-                    FBRef.userRef.child(userId).child("profileImage").get().addOnSuccessListener {
-                        val storageReference =
-                            Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴
+                    val profileFile =
+                        FBRef.userRef.child(userId).child("profileImage").get().addOnSuccessListener {
+                            val storageReference =
+                                Firebase.storage.reference.child(it.value.toString()) // 유저의 profile 사진을 DB의 storage로부터 가져옴
 
-                        storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Glide.with(applicationContext).load(task.result)
-                                    .into(imageView) // 유저의 profile 사진을 게시자 이름의 왼편에 표시함
-                            } else {
-                                imageView.isVisible = false
-                            }
-                        })
-                    }
+                            storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Glide.with(applicationContext).load(task.result)
+                                        .into(imageView) // 유저의 profile 사진을 게시자 이름의 왼편에 표시함
+                                } else {
+                                    imageView.isVisible = false
+                                }
+                            })
+                        }
+                } catch(e : Exception) { }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -113,18 +116,20 @@ class ShowUserDetailActivity : AppCompatActivity() {
     private fun getUserDogs() {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
 
-                userDogsReDataList.clear()
+                    userDogsReDataList.clear()
 
-                for(dataModel in dataSnapshot.children) {
-                    Log.d(TAG, dataModel.toString())
-                    val item = dataModel.getValue(DogModel::class.java)
-                    userDogsReDataList.add(item!!)
-                }
+                    for(dataModel in dataSnapshot.children) {
+                        Log.d(TAG, dataModel.toString())
+                        val item = dataModel.getValue(DogModel::class.java)
+                        userDogsReDataList.add(item!!)
+                    }
 
-                userDogsReVAdapter.notifyDataSetChanged()
+                    userDogsReVAdapter.notifyDataSetChanged()
 
-                Log.d(TAG, userDogsReDataList.toString())
+                    Log.d(TAG, userDogsReDataList.toString())
+                } catch(e : Exception) { }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

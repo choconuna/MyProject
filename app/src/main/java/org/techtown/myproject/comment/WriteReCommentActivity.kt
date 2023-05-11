@@ -30,7 +30,6 @@ class WriteReCommentActivity : AppCompatActivity() {
     private val TAG = CommentEditActivity::class.java.simpleName
 
     private val FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send"
-    private val SERVER_KEY = BuildConfig.FCM_SERVER_KEY
 
     private lateinit var communityId : String
     private lateinit var commentId : String
@@ -115,7 +114,7 @@ class WriteReCommentActivity : AppCompatActivity() {
                                 conn.doInput = true
                                 conn.addRequestProperty(
                                     "Authorization",
-                                    "key=$SERVER_KEY"
+                                    "key=${BuildConfig.FCM_SERVER_KEY}"
                                 )
                                 conn.setRequestProperty(
                                     "Accept",
