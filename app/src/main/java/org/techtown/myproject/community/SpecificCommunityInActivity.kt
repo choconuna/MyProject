@@ -161,6 +161,7 @@ class SpecificCommunityInActivity : AppCompatActivity() {
                                                             intent.putExtra("chatConnectionId", item!!.chatConnectionId)
                                                             intent.putExtra("yourUid", writerUid)
                                                             startActivity(intent)
+                                                            break
                                                         }
                                                     }
                                                     if(!isExist) {
@@ -183,7 +184,7 @@ class SpecificCommunityInActivity : AppCompatActivity() {
                                                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                                             }
                                         }
-                                        FBRef.chatConnectionRef.addValueEventListener(postListener)
+                                        FBRef.chatConnectionRef.addListenerForSingleValueEvent(postListener)
 
                                         alertDialog.dismiss()
                                     }

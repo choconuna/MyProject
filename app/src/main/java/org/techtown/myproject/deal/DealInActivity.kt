@@ -213,7 +213,7 @@ class DealInActivity : AppCompatActivity() {
                     Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                 }
             }
-            FBRef.dealChatConnectionRef.child(dealId).addValueEventListener(postListener)
+            FBRef.dealChatConnectionRef.child(dealId).addListenerForSingleValueEvent(postListener)
         }
 
 
@@ -270,7 +270,7 @@ class DealInActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "채팅 기록이 없습니다!", Toast.LENGTH_SHORT).show()
                 }
             }
-            FBRef.dealChatConnectionRef.child(dealId).addValueEventListener(postListener)
+            FBRef.dealChatConnectionRef.child(dealId).addListenerForSingleValueEvent(postListener)
         }
 
         val backBtn = findViewById<ImageView>(R.id.back)
@@ -466,7 +466,7 @@ class DealInActivity : AppCompatActivity() {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        FBRef.dealRef.child(dealId).addValueEventListener(postListener)
+        FBRef.dealRef.child(dealId).addListenerForSingleValueEvent(postListener)
     }
 
     private fun showDialog() { // 게시글 수정/삭제를 위한 다이얼로그 띄우기
