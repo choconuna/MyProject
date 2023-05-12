@@ -91,7 +91,7 @@ class DealReservationFragment : Fragment() {
                     }
 
                     val sortedDealMap = sortMapByKey(dealMap)
-                    for((key, value) in dealMap.entries) {
+                    for((key, value) in sortedDealMap.entries) {
                         dealList.add(key)
                     }
 

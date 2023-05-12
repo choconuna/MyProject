@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.tasks.await
 import org.techtown.myproject.R
 import org.techtown.myproject.community.CommunityModel
 import org.techtown.myproject.note.ImageDetailActivity
@@ -145,37 +146,35 @@ class DealInActivity : AppCompatActivity() {
             FBRef.dealRef.child(dealId).addValueEventListener(postListener)
         }
 
+        FBRef.dealRef.child(dealId).child("state").get().addOnSuccessListener {
+            for (i in 0 until stateSpinner.count) {
+                if (stateSpinner.getItemAtPosition(i).toString() == it.value.toString()) {
+                    stateSpinner.setSelection(i)
+                    break
+                }
+            }
+        }
+
         stateSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long
-            ) {
-                val originState = FBRef.dealRef.child(dealId).child("state").get().addOnSuccessListener {
-                    if(parent.getItemAtPosition(position).toString() == "거래 완료" && it.value.toString() != "거래 완료") {
-                        state = parent.getItemAtPosition(position).toString()
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val state = FBRef.dealRef.child(dealId).child("state").get().addOnSuccessListener {
+                    val newState = parent.getItemAtPosition(position).toString()
+                    val originState = it.value.toString()
 
-                        for (i in 0 until stateSpinner.count) {
-                            if (stateSpinner.getItemAtPosition(i).toString() == it.value.toString()) {
-                                stateSpinner.setSelection(i)
-                                break
-                            }
+                    if (newState != originState) { // 기존의 거래 상태와 다를 경우
+                        if (newState == "거래 완료") {
+                            val intent = Intent(applicationContext, ChoiceBuyerActivity::class.java)
+                            intent.putExtra("dealId", dealId)
+                            startActivity(intent)
+
+                            setState()
+                        }  else {
+                            changeDealState(newState)
+                            if (newState.last() == '중')
+                                Toast.makeText(applicationContext, "거래 상태 정보를 " + newState + "으로 변경했습니다!", Toast.LENGTH_SHORT).show()
+                            else
+                                Toast.makeText(applicationContext, "거래 상태 정보를 " + newState + "로 변경했습니다!", Toast.LENGTH_SHORT).show()
                         }
-
-                        changeDealState(state)
-                    } else if(parent.getItemAtPosition(position).toString() == "거래 완료" && it.value.toString() == "거래 완료") {
-
-                        for (i in 0 until stateSpinner.count) {
-                            if (stateSpinner.getItemAtPosition(i).toString() == it.value.toString()) {
-                                stateSpinner.setSelection(i)
-                                break
-                            }
-                        }
-
-                    } else if(it.value.toString() != parent.getItemAtPosition(position).toString()) {
-                        state = parent.getItemAtPosition(position).toString()
-                        changeDealState(state)
-                        if(state.last() == '중')
-                            Toast.makeText(applicationContext, "거래 상태 정보를 " + state + "으로 변경했습니다!", Toast.LENGTH_SHORT).show()
-                        else
-                            Toast.makeText(applicationContext, "거래 상태 정보를 " + state + "로 변경했습니다!", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -287,8 +286,6 @@ class DealInActivity : AppCompatActivity() {
         noProfile = findViewById(R.id.noProfile)
         textView = findViewById(R.id.textView)
 
-        stateSpinner = findViewById(R.id.stateSpinner)
-
         imageRecyclerView = findViewById(R.id.imageRecyclerView)
         dealImageVAdapter = DealImageReVAdapter(imageDataList)
         imageRecyclerView.setItemViewCacheSize(20)
@@ -296,6 +293,8 @@ class DealInActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         imageRecyclerView.layoutManager = layoutManager
         imageRecyclerView.adapter = dealImageVAdapter
+
+        stateSpinner = findViewById(R.id.stateSpinner)
 
         titleArea = findViewById(R.id.titleArea)
         locationArea = findViewById(R.id.locationArea)
@@ -444,19 +443,29 @@ class DealInActivity : AppCompatActivity() {
         FBRef.dealRef.child(dealId).addValueEventListener(postListener)
     }
 
+    private fun setState() {
+        FBRef.dealRef.child(dealId).child("state").get().addOnSuccessListener {
+            when(it.value.toString()) {
+                "판매 중" -> {
+                    stateSpinner.setSelection(0)
+                }
+                "예약 중" -> {
+                    stateSpinner.setSelection(1)
+                }
+                "거래 완료" -> {
+                    stateSpinner.setSelection(2)
+                }
+            }
+        }
+    }
+
     private fun changeDealState(state : String) { // 거래 상품의 거래 상태를 바꿈
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try { // 거래글 삭제 후 그 키 값에 해당하는 게시글이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 작성
                     val dataModel = dataSnapshot.getValue(DealModel::class.java)
 
-                    if(state == "거래 완료") {
-                        val intent = Intent(applicationContext, ChoiceBuyerActivity::class.java)
-                        intent.putExtra("dealId", dealId)
-                        startActivity(intent)
-                    } else {
-                        FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date, "", "", dataModel!!.visitors)) // 게시물 정보 데이터베이스에 저장
-                    }
+                    FBRef.dealRef.child(dataModel!!.dealId).setValue(DealModel(dataModel!!.dealId, dataModel!!.sellerId, dataModel!!.location, dataModel!!.category, dataModel!!.price, dataModel!!.title, dataModel!!.content, dataModel!!.imgCnt, dataModel!!.method, state, dataModel!!.date, "", "", dataModel!!.visitors)) // 게시물 정보 데이터베이스에 저장
 
                 } catch(e : Exception) { }
             }
