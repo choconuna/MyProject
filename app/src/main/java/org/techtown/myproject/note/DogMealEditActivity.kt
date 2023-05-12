@@ -56,6 +56,8 @@ class DogMealEditActivity : AppCompatActivity() {
     lateinit var spinner : Spinner
     lateinit var mealType : String
 
+    lateinit var mealNameSpinner : Spinner
+
     lateinit var mealNameArea : EditText
     lateinit var mealName : String
     lateinit var mealWeightArea : EditText
@@ -70,6 +72,36 @@ class DogMealEditActivity : AppCompatActivity() {
         dogId = sharedPreferences.getString(userId, "").toString() // 현재 대표 반려견의 id
         dogMealId = intent.getStringExtra("id").toString() // dogMeal id
         nowDate = intent.getStringExtra("date").toString() // 선택된 날짜
+
+        mealNameSpinner = findViewById(R.id.mealNameSpinner)
+        showMealNameSpinner()
+
+        FBRef.mealRef.child(userId).child(dogId).child(dogMealId).child("mealName").get().addOnSuccessListener {
+            for (i in 0 until mealNameSpinner.count) {
+                if (mealNameSpinner.getItemAtPosition(i).toString() == it.value.toString()) {
+                    mealNameSpinner.setSelection(i)
+                    break
+                }
+            }
+        }
+
+        mealNameSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                if (selectedItem == "직접 입력") {
+                    mealNameArea.setText("")
+                    mealNameArea.setSelection(0)
+                    mealNameArea.isEnabled = true
+                } else {
+                    mealNameArea.setText(selectedItem)
+                    mealNameArea.isEnabled = false
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Do nothing
+            }
+        }
 
         mealImage = findViewById(R.id.mealImage)
         timeSlotGroup = findViewById(R.id.time)
@@ -133,6 +165,40 @@ class DogMealEditActivity : AppCompatActivity() {
         backBtn.setOnClickListener {
             finish()
         }
+    }
+
+    private fun showMealNameSpinner() {
+        val mealSet = mutableSetOf<String>()
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    mealSet.clear()
+                    mealSet.add("직접 입력")
+
+                    for (dataModel in dataSnapshot.children) {
+                        val item = dataModel.getValue(DogMealModel::class.java)
+                        item?.let { mealSet.add(it.mealName) }
+                    }
+                    Log.d("mealSet", mealSet.toString())
+
+                    if(mealSet.size == 1)
+                        mealNameSpinner.visibility = View.GONE
+                    else
+                        mealNameSpinner.visibility = View.VISIBLE
+
+                    val adapter = ArrayAdapter<String>(applicationContext, R.layout.custom_spinner, mealSet.toList())
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    mealNameSpinner.adapter = adapter
+
+                } catch (e: Exception) {
+                    Log.d(TAG, "사료 기록 삭제 완료")
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.mealRef.child(userId).child(dogId).addValueEventListener(postListener)
     }
 
     private fun getData() {

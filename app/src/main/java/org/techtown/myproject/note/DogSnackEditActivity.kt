@@ -54,6 +54,8 @@ class DogSnackEditActivity : AppCompatActivity() {
     lateinit var snackUnitSpinner : Spinner
     lateinit var snackUnit : String
 
+    lateinit var snackNameSpinner : Spinner
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dog_snack_edit)
@@ -63,6 +65,36 @@ class DogSnackEditActivity : AppCompatActivity() {
         dogId = sharedPreferences.getString(userId, "").toString() // 현재 대표 반려견의 id
         dogSnackId = intent.getStringExtra("id").toString() // dogSnack id
         nowDate = intent.getStringExtra("date").toString() // 선택된 날짜
+
+        snackNameSpinner = findViewById(R.id.snackNameSpinner)
+        showSnackNameSpinner()
+
+        FBRef.snackRef.child(userId).child(dogId).child(dogSnackId).child("snackName").get().addOnSuccessListener {
+            for (i in 0 until snackNameSpinner.count) {
+                if (snackNameSpinner.getItemAtPosition(i).toString() == it.value.toString()) {
+                    snackNameSpinner.setSelection(i)
+                    break
+                }
+            }
+        }
+
+        snackNameSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                if (selectedItem == "직접 입력") {
+                    snackNameArea.setText("")
+                    snackNameArea.setSelection(0)
+                    snackNameArea.isEnabled = true
+                } else {
+                    snackNameArea.setText(selectedItem)
+                    snackNameArea.isEnabled = false
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Do nothing
+            }
+        }
 
         snackImage = findViewById(R.id.snackImage)
         timeSlotGroup = findViewById(R.id.time)
@@ -128,6 +160,40 @@ class DogSnackEditActivity : AppCompatActivity() {
         backBtn.setOnClickListener {
             finish()
         }
+    }
+
+    private fun showSnackNameSpinner() {
+        val snackSet = mutableSetOf<String>()
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    snackSet.clear()
+                    snackSet.add("직접 입력")
+
+                    for (dataModel in dataSnapshot.children) {
+                        val item = dataModel.getValue(DogSnackModel::class.java)
+                        item?.let { snackSet.add(it.snackName) }
+                    }
+                    Log.d("snackSet", snackSet.toString())
+
+                    if(snackSet.size == 1)
+                        snackNameSpinner.visibility = View.GONE
+                    else
+                        snackNameSpinner.visibility = View.VISIBLE
+
+                    val adapter = ArrayAdapter<String>(applicationContext, R.layout.custom_spinner, snackSet.toList())
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    snackNameSpinner.adapter = adapter
+
+                } catch (e: Exception) {
+                    Log.d(TAG, "간식 기록 삭제 완료")
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.snackRef.child(userId).child(dogId).addValueEventListener(postListener)
     }
 
     private fun getData() {

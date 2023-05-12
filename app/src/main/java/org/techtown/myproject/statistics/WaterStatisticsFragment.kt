@@ -554,6 +554,12 @@ class WaterStatisticsFragment : Fragment() {
         barChart.setDrawBarShadow(false)
         barChart.setDrawGridBackground(false)
 
+        var label : ArrayList<String> = ArrayList()
+        for(i in 0 until labelList.size) {
+            var labelSp = labelList[i].split(".")
+            label.add(labelSp[1]+"."+labelSp[2]+".")
+        }
+
         barChart.run {
             description.isEnabled = false
             setPinchZoom(false)
@@ -575,7 +581,7 @@ class WaterStatisticsFragment : Fragment() {
                 setDrawAxisLine(true)
                 setDrawGridLines(false)
                 textSize = 10f
-                valueFormatter = IndexAxisValueFormatter(labelList)
+                valueFormatter = IndexAxisValueFormatter(label)
             }
 
             axisRight.isEnabled = false

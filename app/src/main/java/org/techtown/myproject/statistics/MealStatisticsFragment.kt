@@ -148,10 +148,7 @@ class MealStatisticsFragment : Fragment() {
 
         spinner = v.findViewById(R.id.spinner)
 
-        setTodayPieChartReady()
-        setTodayPieChart()
-        pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
-        barTodayChartGraph(v, oneDayChart, oneDayBarMap)
+//        setTodayPieChartReady(v)
         setShowChart(v, "오늘")
     }
 
@@ -241,10 +238,7 @@ class MealStatisticsFragment : Fragment() {
 
                 Log.d("oneDayPieMap", "$oneDayPieMap")
                 Log.d("oneDayBarMap", "$oneDayBarMap")
-                setTodayPieChartReady()
-                setTodayPieChart()
-                pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
-                barTodayChartGraph(v, oneDayChart, oneDayBarMap)
+                setTodayPieChartReady(v)
             }
             "1주일" -> {
                 oneDayPieChart.visibility = View.GONE
@@ -329,7 +323,7 @@ class MealStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setTodayPieChartReady() {
+    private fun setTodayPieChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -357,42 +351,56 @@ class MealStatisticsFragment : Fragment() {
                             oneDayBarMap[item!!.timeSlot] = 0.toFloat()
                         }
                     }
-                } catch (e: Exception) {
-                    Log.d(TAG, "사료 기록 삭제 완료")
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.mealRef.child(myUid).child(dogId).addValueEventListener(postListener)
-    }
+                    val nowSp = nowDate.split(".") // 오늘 날짜
+                    val nowYear = nowSp[0].toInt()
+                    val nowMonth = nowSp[1].toInt()
+                    val nowDay = nowSp[2].toInt()
 
-    private fun setTodayPieChart() {
-        val nowSp = nowDate.split(".") // 오늘 날짜
-        val nowYear = nowSp[0].toInt()
-        val nowMonth = nowSp[1].toInt()
-        val nowDay = nowSp[2].toInt()
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try { // 사료 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try { // 사료 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
+                                Log.d("todayChart", oneDayPieMap.toString())
+                                Log.d("todayChart", oneDayBarMap.toString())
 
-                    for (dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogMealModel::class.java)
-                        val date = item!!.date
-                        val sp = date.split(".")
-                        val year = sp[0].toInt()
-                        val month = sp[1].toInt()
-                        val day = sp[2].toInt()
+                                for((key, value) in oneDayPieMap) {
+                                    oneDayPieMap[key] = 0.toFloat()
+                                }
 
-                        if(year == nowYear && month == nowMonth && day == nowDay) {
-                            oneDayPieMap[item!!.mealName] = oneDayPieMap[item!!.mealName]!! + item!!.mealWeight.toFloat()
-                            oneDayBarMap[item!!.timeSlot] = oneDayBarMap[item!!.timeSlot]!! + item!!.mealWeight.toFloat()
+                                for((key, value) in oneDayBarMap) {
+                                    oneDayBarMap[key] = 0.toFloat()
+                                }
+
+                                for (dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DogMealModel::class.java)
+                                    val date = item!!.date
+                                    val sp = date.split(".")
+                                    val year = sp[0].toInt()
+                                    val month = sp[1].toInt()
+                                    val day = sp[2].toInt()
+
+                                    if(year == nowYear && month == nowMonth && day == nowDay) {
+                                        oneDayPieMap[item!!.mealName] = oneDayPieMap[item!!.mealName]!! + item!!.mealWeight.toFloat()
+                                        oneDayBarMap[item!!.timeSlot] = oneDayBarMap[item!!.timeSlot]!! + item!!.mealWeight.toFloat()
+                                    }
+                                }
+
+                                pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
+                                barTodayChartGraph(v, oneDayChart, oneDayBarMap)
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, "사료 기록 삭제 완료")
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                         }
                     }
+                    FBRef.mealRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "사료 기록 삭제 완료")
                 }
@@ -774,6 +782,12 @@ class MealStatisticsFragment : Fragment() {
         barChart.setDrawBarShadow(false)
         barChart.setDrawGridBackground(false)
 
+        var label : ArrayList<String> = ArrayList()
+        for(i in 0 until labelList.size) {
+            var labelSp = labelList[i].split(".")
+            label.add(labelSp[1]+"."+labelSp[2]+".")
+        }
+
         barChart.run {
             description.isEnabled = false
             setPinchZoom(false)
@@ -795,7 +809,7 @@ class MealStatisticsFragment : Fragment() {
                 setDrawAxisLine(true)
                 setDrawGridLines(false)
                 textSize = 10f
-                valueFormatter = IndexAxisValueFormatter(labelList)
+                valueFormatter = IndexAxisValueFormatter(label)
             }
 
             axisRight.isEnabled = false

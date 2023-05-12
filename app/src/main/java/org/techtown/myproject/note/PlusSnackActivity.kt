@@ -170,7 +170,7 @@ class PlusSnackActivity : AppCompatActivity() {
                     snackNameSpinner.adapter = adapter
 
                 } catch (e: Exception) {
-                    Log.d(TAG, "사료 기록 삭제 완료")
+                    Log.d(TAG, "간식 기록 삭제 완료")
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {

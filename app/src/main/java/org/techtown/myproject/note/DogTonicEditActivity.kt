@@ -56,6 +56,8 @@ class DogTonicEditActivity : AppCompatActivity() {
     lateinit var tonicUnitSpinner : Spinner
     lateinit var tonicUnit : String
 
+    lateinit var tonicNameSpinner : Spinner
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dog_tonic_edit)
@@ -65,6 +67,36 @@ class DogTonicEditActivity : AppCompatActivity() {
         dogId = sharedPreferences.getString(userId, "").toString() // 현재 대표 반려견의 id
         dogTonicId = intent.getStringExtra("id").toString() // dogTonic id
         nowDate = intent.getStringExtra("date").toString() // 선택된 날짜
+
+        tonicNameSpinner = findViewById(R.id.tonicNameSpinner)
+        showTonicNameSpinner()
+
+        FBRef.tonicRef.child(userId).child(dogId).child(dogTonicId).child("tonicName").get().addOnSuccessListener {
+            for (i in 0 until tonicNameSpinner.count) {
+                if (tonicNameSpinner.getItemAtPosition(i).toString() == it.value.toString()) {
+                    tonicNameSpinner.setSelection(i)
+                    break
+                }
+            }
+        }
+
+        tonicNameSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                if (selectedItem == "직접 입력") {
+                    tonicNameArea.setText("")
+                    tonicNameArea.setSelection(0)
+                    tonicNameArea.isEnabled = true
+                } else {
+                    tonicNameArea.setText(selectedItem)
+                    tonicNameArea.isEnabled = false
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Do nothing
+            }
+        }
 
         tonicImage = findViewById(R.id.tonicImage)
         timeSlotGroup = findViewById(R.id.time)
@@ -130,6 +162,40 @@ class DogTonicEditActivity : AppCompatActivity() {
         backBtn.setOnClickListener {
             finish()
         }
+    }
+
+    private fun showTonicNameSpinner() {
+        val tonicSet = mutableSetOf<String>()
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                try {
+                    tonicSet.clear()
+                    tonicSet.add("직접 입력")
+
+                    for (dataModel in dataSnapshot.children) {
+                        val item = dataModel.getValue(DogTonicModel::class.java)
+                        item?.let { tonicSet.add(it.tonicName) }
+                    }
+                    Log.d("tonicSet", tonicSet.toString())
+
+                    if(tonicSet.size == 1)
+                        tonicNameSpinner.visibility = View.GONE
+                    else
+                        tonicNameSpinner.visibility = View.VISIBLE
+
+                    val adapter = ArrayAdapter<String>(applicationContext, R.layout.custom_spinner, tonicSet.toList())
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    tonicNameSpinner.adapter = adapter
+
+                } catch (e: Exception) {
+                    Log.d(TAG, "영양제 기록 삭제 완료")
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FBRef.tonicRef.child(userId).child(dogId).addValueEventListener(postListener)
     }
 
     private fun getData() {

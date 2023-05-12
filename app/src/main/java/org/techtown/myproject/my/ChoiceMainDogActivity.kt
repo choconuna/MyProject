@@ -14,6 +14,7 @@ import com.google.firebase.database.ValueEventListener
 import org.techtown.myproject.R
 import org.techtown.myproject.utils.DogModel
 import org.techtown.myproject.utils.FBRef
+import org.techtown.myproject.utils.UserMainDogModel
 
 class ChoiceMainDogActivity : AppCompatActivity() {
 
@@ -43,6 +44,7 @@ class ChoiceMainDogActivity : AppCompatActivity() {
 
         // 프로필 클릭 시 해당 반려견을 대표 반려견으로 선정
         dogListView.setOnItemClickListener { _, _, position, _ ->
+            FBRef.userMainDogRef.child(uid).setValue(UserMainDogModel(dogDataList[position]!!.dogId))
             sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE) // sharedPreferences 이름의 기본모드 설정
             val editor = sharedPreferences.edit() //sharedPreferences를 제어할 editor를 선언
             editor.putString(uid, dogKeyList[position]) // key,value 형식으로 저장

@@ -31,6 +31,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.ktx.storage
 import org.techtown.myproject.my.MyFragment
 import org.techtown.myproject.community.CommunityFragment
+import org.techtown.myproject.deal.ChoiceBuyerActivity
 import org.techtown.myproject.my.MyActivity
 import org.techtown.myproject.note.NoteFragment
 import org.techtown.myproject.note.RecordFragment
@@ -78,7 +79,12 @@ class MainActivity : AppCompatActivity() {
         Log.d("tokenRef", uid)
 
         sharedPreferences = getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE)
-        dogId = sharedPreferences.getString(uid, "").toString() // 현재 대표 반려견의 id
+        FBRef.userMainDogRef.child(uid).child("userMainDogId").get().addOnSuccessListener {
+            editor = sharedPreferences.edit()
+            editor.putString(uid, it.value.toString()) // key,value 형식으로 저장
+            editor.commit() //최종 커밋. 커밋을 해야 저장됨.
+            dogId = sharedPreferences.getString(uid, "").toString() // 현재 대표 반려견의 id
+        }
 
         mDatabaseReference = FBRef.userRef.child(uid)
 
@@ -147,53 +153,53 @@ class MainActivity : AppCompatActivity() {
         // NotificationChannel 생성
         createNotificationChannel()
 
-        // Firebase Realtime Database에서 데이터 가져오기
-        FBRef.medicinePlanRef.child(uid).child(dogId).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot1) {
-                try {
-                    for (data in snapshot.children) {
-                        val medicinePlan = data.getValue(DogMedicinePlanModel::class.java)
-
-                        // 현재 시간과 알림을 설정할 시간 비교
-                        val calendar = Calendar.getInstance()
-                        val currentTime = calendar.timeInMillis
-                        val planTime = getPlanTimeInMillis(medicinePlan)
-
-                        if (planTime > currentTime) {
-                            // AlarmManager 설정
-                            val intent = Intent(this@MainActivity, MyNotificationReceiver::class.java).apply {
-                                putExtra("medicineName", medicinePlan?.medicineName)
-                            }
-                            val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, medicinePlan?.dogMedicinePlanId.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-                            if (medicinePlan?.repeat == "매일") {
-                                // startDate와 endDate 사이에 모든 날짜에 알림 설정
-                                val startDate = getDateFromString(medicinePlan?.startDate)
-                                val endDate = getDateFromString(medicinePlan?.endDate)
-                                val interval = 24 * 60 * 60 * 1000 // 1일(24시간) 간격으로 알림 설정
-
-                                var timeInMillis = getPlanTimeInMillis(medicinePlan)
-                                while (timeInMillis <= endDate.timeInMillis) {
-                                    if (timeInMillis >= startDate.timeInMillis) {
-                                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
-                                    }
-                                    timeInMillis += interval
-                                }
-                            } else {
-                                // startDate에만 알림 설정
-                                val startDate = getDateFromString(medicinePlan?.startDate)
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, getPlanTimeInMillis(medicinePlan), pendingIntent)
-                            }
-                        }
-                    }
-                } catch(e : Exception) { }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // 데이터 가져오기 실패 시 처리
-            }
-        })
+//        // Firebase Realtime Database에서 데이터 가져오기
+//        FBRef.medicinePlanRef.child(uid).child(dogId).addValueEventListener(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot1) {
+//                try {
+//                    for (data in snapshot.children) {
+//                        val medicinePlan = data.getValue(DogMedicinePlanModel::class.java)
+//
+//                        // 현재 시간과 알림을 설정할 시간 비교
+//                        val calendar = Calendar.getInstance()
+//                        val currentTime = calendar.timeInMillis
+//                        val planTime = getPlanTimeInMillis(medicinePlan)
+//
+//                        if (planTime > currentTime) {
+//                            // AlarmManager 설정
+//                            val intent = Intent(this@MainActivity, MyNotificationReceiver::class.java).apply {
+//                                putExtra("medicineName", medicinePlan?.medicineName)
+//                            }
+//                            val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, medicinePlan?.dogMedicinePlanId.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
+//                            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//
+//                            if (medicinePlan?.repeat == "매일") {
+//                                // startDate와 endDate 사이에 모든 날짜에 알림 설정
+//                                val startDate = getDateFromString(medicinePlan?.startDate)
+//                                val endDate = getDateFromString(medicinePlan?.endDate)
+//                                val interval = 24 * 60 * 60 * 1000 // 1일(24시간) 간격으로 알림 설정
+//
+//                                var timeInMillis = getPlanTimeInMillis(medicinePlan)
+//                                while (timeInMillis <= endDate.timeInMillis) {
+//                                    if (timeInMillis >= startDate.timeInMillis) {
+//                                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
+//                                    }
+//                                    timeInMillis += interval
+//                                }
+//                            } else {
+//                                // startDate에만 알림 설정
+//                                val startDate = getDateFromString(medicinePlan?.startDate)
+//                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, getPlanTimeInMillis(medicinePlan), pendingIntent)
+//                            }
+//                        }
+//                    }
+//                } catch(e : Exception) { }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                // 데이터 가져오기 실패 시 처리
+//            }
+//        })
 
         bnv_main = findViewById(R.id.bottom_menu)
         initNavigationBar()

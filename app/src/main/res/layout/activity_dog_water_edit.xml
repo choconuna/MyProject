@@ -63,7 +63,7 @@
                 android:text="날짜"
                 android:fontFamily="@font/regular"
                 android:textColor="@color/black"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 android:layout_gravity="center"/>
 
             <TextView
@@ -133,7 +133,7 @@
                 android:layout_weight="1"
                 android:text="시간대"
                 android:fontFamily="@font/regular"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center"/>
 
@@ -157,7 +157,7 @@
                     android:paddingRight="30dp"
                     android:fontFamily="@font/bold"
                     android:text="아침"
-                    android:textSize="10sp"
+                    android:textSize="15sp"
                     android:layout_weight="1"/>
 
                 <RadioButton
@@ -172,7 +172,7 @@
                     android:paddingRight="30dp"
                     android:fontFamily="@font/bold"
                     android:text="점심"
-                    android:textSize="10sp"
+                    android:textSize="15sp"
                     android:layout_weight="1"/>
 
                 <RadioButton
@@ -187,7 +187,7 @@
                     android:paddingRight="30dp"
                     android:fontFamily="@font/bold"
                     android:text="저녁"
-                    android:textSize="10sp"
+                    android:textSize="15sp"
                     android:layout_weight="1"/>
 
             </RadioGroup>
@@ -200,7 +200,7 @@
                 android:text="양"
                 android:fontFamily="@font/regular"
                 android:layout_marginTop="20dp"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:layout_gravity="center" />
 
             <LinearLayout
@@ -219,7 +219,7 @@
                     android:textAlignment="center"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:textSize="10sp"
+                    android:textSize="15sp"
                     android:inputType="number"
                     android:singleLine="true"
                     android:lines="1"/>
@@ -228,7 +228,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="ml"
-                    android:textSize="10sp"
+                    android:textSize="15sp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/regular"
                     android:layout_marginLeft="10dp"

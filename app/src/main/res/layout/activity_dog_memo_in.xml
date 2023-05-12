@@ -100,7 +100,7 @@
                             android:fontFamily="@font/regular"
                             android:text="date"
                             android:textColor="#999999"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/timeArea"
@@ -112,7 +112,7 @@
                             android:gravity="right"
                             android:text="time"
                             android:textColor="#999999"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
