@@ -106,6 +106,7 @@ class DealChatFragment : Fragment() {
                     val postListener = object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             try {
+                                val unsortedDealChatDataList = mutableListOf<DealChatConnection>()
                                 dealChatDataList.clear()
 
                                 for(dataModel in dataSnapshot.children) {
@@ -114,11 +115,9 @@ class DealChatFragment : Fragment() {
                                     val postListener2 = object : ValueEventListener {
                                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                                             try {
-                                                val unsortedDealChatDataList = mutableListOf<DealChatConnection>()
 
                                                 for(dataModel in dataSnapshot.children) {
                                                     val item = dataModel.getValue(DealChatConnection::class.java)
-                                                    var isBlocked = false
 
                                                     if (item!!.userId1 != myUid && item!!.userId2 == myUid) {
                                                         if (!blockList.contains(item!!.userId1)) {
@@ -139,19 +138,34 @@ class DealChatFragment : Fragment() {
                                                     }
                                                 }
 
+                                                Log.d("notBlockChat", unsortedDealChatDataList.toString())
+
+                                                // unsortedDealChatDataList를 정렬하여 sortedDealChatDataList에 저장
                                                 val sortedDealChatDataList = unsortedDealChatDataList.sortedByDescending { it.lastTime.toLong() }
+
+                                                Log.d("notBlockChat", sortedDealChatDataList.toString())
+
+                                                // dealChatDataList에 추가할 새로운 채팅 리스트
+                                                val newDealChatDataList = mutableListOf<DealChatConnection>()
+                                                dealChatDataList.clear()
 
                                                 // 마지막으로 추가된 채팅 시간 저장
                                                 val lastAddedChatTime = if (dealChatDataList.isEmpty()) 0L else dealChatDataList[0].lastTime.toLong()
 
-                                                for (chat in sortedDealChatDataList) { // 중복되지 않는 새로운 채팅만 추가
+                                                // 새로운 채팅들만 newDealChatDataList에 추가
+                                                for (chat in sortedDealChatDataList) {
                                                     if (chat.lastTime.toLong() > lastAddedChatTime) {
-                                                        dealChatDataList.add(0, chat)
+                                                        newDealChatDataList.add(chat)
                                                     } else {
                                                         break
                                                     }
                                                 }
 
+                                                // 중복된 채팅들을 dealChatDataList에서 제외하고, 새로운 채팅들만 추가
+                                                dealChatDataList.removeAll(newDealChatDataList)
+                                                dealChatDataList.addAll(0, newDealChatDataList)
+
+                                                // 어댑터에 데이터가 변경되었다고 알리기
                                                 dealChatRVAdapter.notifyDataSetChanged()
 
                                             } catch(e : Exception) {
