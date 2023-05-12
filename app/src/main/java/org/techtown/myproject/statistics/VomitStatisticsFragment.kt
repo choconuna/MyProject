@@ -109,9 +109,6 @@ class VomitStatisticsFragment : Fragment() {
 
         spinner = v.findViewById(R.id.spinner)
 
-        setTodayChart()
-        Log.d("oneDayMap", oneDayMap.toString())
-        barTodayChartGraph(v, oneDayChart, oneDayMap)
         setShowChart(v, "오늘")
     }
 
@@ -194,8 +191,7 @@ class VomitStatisticsFragment : Fragment() {
                 yearChart.visibility = View.GONE
 
                 Log.d("oneDayMap", "$oneDayMap")
-                setTodayChart()
-                barTodayChartGraph(v, oneDayChart, oneDayMap)
+                setTodayChart(v)
             }
             "1주일" -> {
                 oneDayChart.visibility = View.GONE
@@ -250,7 +246,7 @@ class VomitStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setTodayChart() {
+    private fun setTodayChart(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -272,6 +268,9 @@ class VomitStatisticsFragment : Fragment() {
                             oneDayMap[item!!.vomitType] = item!!.vomitCount.toFloat()
                         }
                     }
+
+                    barTodayChartGraph(v, oneDayChart, oneDayMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "구토 기록 삭제 완료")
                 }

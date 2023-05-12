@@ -111,9 +111,6 @@ class DungStatisticsFragment : Fragment() {
 
         spinner = v.findViewById(R.id.spinner)
 
-        setTodayChart()
-        Log.d("oneDayMap", oneDayMap.toString())
-        barTodayChartGraph(v, oneDayChart, oneDayMap)
         setShowChart(v, "오늘")
     }
 
@@ -196,8 +193,7 @@ class DungStatisticsFragment : Fragment() {
                 yearChart.visibility = View.GONE
 
                 Log.d("oneDayMap", "$oneDayMap")
-                setTodayChart()
-                barTodayChartGraph(v, oneDayChart, oneDayMap)
+                setTodayChart(v)
             }
             "1주일" -> {
                 oneDayChart.visibility = View.GONE
@@ -252,7 +248,7 @@ class DungStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setTodayChart() {
+    private fun setTodayChart(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -274,6 +270,9 @@ class DungStatisticsFragment : Fragment() {
                             oneDayMap[item!!.dungType] = item!!.dungCount.toFloat()
                         }
                     }
+
+                    barTodayChartGraph(v, oneDayChart, oneDayMap)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "대변 기록 삭제 완료")
                 }

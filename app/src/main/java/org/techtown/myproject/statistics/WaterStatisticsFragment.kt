@@ -126,9 +126,6 @@ class WaterStatisticsFragment : Fragment() {
 
         spinner = v.findViewById(R.id.spinner)
 
-        setTodayChart()
-        Log.d("valueList", valueList.toString())
-        barTodayChartGraph(v, oneDayChart, valueList, labelList)
         setShowChart(v, "오늘")
     }
 
@@ -211,8 +208,7 @@ class WaterStatisticsFragment : Fragment() {
                 yearChart.visibility = GONE
 
                 Log.d("oneDayMap", "$valueList $labelList")
-                setTodayChart()
-                barTodayChartGraph(v, oneDayChart, valueList, labelList)
+                setTodayChart(v)
             }
             "1주일" -> {
                 oneDayChart.visibility = GONE
@@ -288,7 +284,7 @@ class WaterStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setTodayChart() {
+    private fun setTodayChart(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -314,6 +310,9 @@ class WaterStatisticsFragment : Fragment() {
                             valueList.add(item!!.waterWeight.toFloat())
                         }
                     }
+
+                    barTodayChartGraph(v, oneDayChart, valueList, labelList)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "물 기록 삭제 완료")
                 }
@@ -1215,7 +1214,7 @@ class WaterStatisticsFragment : Fragment() {
         val sixMonthMonth = sixMonthWeekSp[1].toInt()
         val sixMonthDay = sixMonthWeekSp[2].toInt()
 
-         var yearCount : MutableMap<Int, Int> = mutableMapOf()
+        var yearCount : MutableMap<Int, Int> = mutableMapOf()
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -1431,7 +1430,7 @@ class WaterStatisticsFragment : Fragment() {
                                     sixMonthMap[3] =
                                         sixMonthMap[3]!! + item!!.waterWeight.toFloat()
 
-                                       if(item!!.waterWeight.toInt() > 0)
+                                    if(item!!.waterWeight.toInt() > 0)
                                         yearCount[3] = yearCount[3]!! + 1
                                 }
                             }
@@ -1526,7 +1525,7 @@ class WaterStatisticsFragment : Fragment() {
                                 sixMonthMap[1] =
                                     sixMonthMap[1]!! + item!!.waterWeight.toFloat()
 
-                                 if(item!!.waterWeight.toInt() > 0)
+                                if(item!!.waterWeight.toInt() > 0)
                                     yearCount[1] = yearCount[1]!! + 1
                             }
                         }
@@ -1880,7 +1879,7 @@ class WaterStatisticsFragment : Fragment() {
                                     yearMap[10] =
                                         yearMap[10]!! + item!!.waterWeight.toFloat()
 
-                                     if(item!!.waterWeight.toInt() > 0)
+                                    if(item!!.waterWeight.toInt() > 0)
                                         yearCount[10] = yearCount[10]!! + 1
                                 }
                             }
@@ -2100,7 +2099,7 @@ class WaterStatisticsFragment : Fragment() {
                                     yearMap[5] =
                                         yearMap[5]!! + item!!.waterWeight.toFloat()
 
-                                      if(item!!.waterWeight.toInt() > 0)
+                                    if(item!!.waterWeight.toInt() > 0)
                                         yearCount[5] = yearCount[5]!! + 1
                                 }
                             }
@@ -2158,7 +2157,7 @@ class WaterStatisticsFragment : Fragment() {
                                     yearMap[4] =
                                         yearMap[4]!! + item!!.waterWeight.toFloat()
 
-                                     if(item!!.waterWeight.toInt() > 0)
+                                    if(item!!.waterWeight.toInt() > 0)
                                         yearCount[4] = yearCount[4]!! + 1
                                 }
                             }

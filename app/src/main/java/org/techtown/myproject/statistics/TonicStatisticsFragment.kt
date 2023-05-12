@@ -209,9 +209,6 @@ class TonicStatisticsFragment : Fragment() {
 
         spinner = v.findViewById(R.id.spinner)
 
-        setTodayPieChartReady()
-        setTodayPieChart()
-        pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
         setShowChart(v, "오늘")
 
         for((key, value) in oneDayMap.entries) {
@@ -309,10 +306,7 @@ class TonicStatisticsFragment : Fragment() {
                 yearRecyclerView.visibility = View.GONE
 
                 Log.d("oneDayPieMap", "$oneDayPieMap")
-                setTodayPieChartReady()
-                setTodayPieChart()
-                pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
-                setTodayTonic()
+                setTodayPieChartReady(v)
                 Log.d("tonicList", labelList.toString())
             }
             "1주일" -> {
@@ -403,7 +397,7 @@ class TonicStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setTodayPieChartReady() {
+    private fun setTodayPieChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -431,41 +425,52 @@ class TonicStatisticsFragment : Fragment() {
                             oneDayMap[item!!.tonicName] = 0
                         }
                     }
-                } catch (e: Exception) {
-                    Log.d(TAG, "영양제 기록 삭제 완료")
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
-    }
+                    val nowSp = nowDate.split(".") // 오늘 날짜
+                    val nowYear = nowSp[0].toInt()
+                    val nowMonth = nowSp[1].toInt()
+                    val nowDay = nowSp[2].toInt()
 
-    private fun setTodayPieChart() {
-        val nowSp = nowDate.split(".") // 오늘 날짜
-        val nowYear = nowSp[0].toInt()
-        val nowMonth = nowSp[1].toInt()
-        val nowDay = nowSp[2].toInt()
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try { // 영양제 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
+                                for((key, value) in oneDayPieMap) {
+                                    oneDayPieMap[key] = 0.toFloat()
+                                }
 
-                    for (dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogTonicModel::class.java)
-                        val date = item!!.date
-                        val sp = date.split(".")
-                        val year = sp[0].toInt()
-                        val month = sp[1].toInt()
-                        val day = sp[2].toInt()
+                                for((key, value) in oneDayMap) {
+                                    oneDayMap[key] = 0
+                                }
 
-                        if(year == nowYear && month == nowMonth && day == nowDay) {
-                            oneDayPieMap[item!!.tonicPart] = oneDayPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                for (dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DogTonicModel::class.java)
+                                    val date = item!!.date
+                                    val sp = date.split(".")
+                                    val year = sp[0].toInt()
+                                    val month = sp[1].toInt()
+                                    val day = sp[2].toInt()
+
+                                    if(year == nowYear && month == nowMonth && day == nowDay) {
+                                        oneDayPieMap[item!!.tonicPart] = oneDayPieMap[item!!.tonicPart]!! + 1.toFloat()
+                                    }
+                                }
+
+                                pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
+                                setTodayTonic()
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, "영양제 기록 삭제 완료")
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                         }
                     }
+                    FBRef.tonicRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "영양제 기록 삭제 완료")
                 }
@@ -722,7 +727,7 @@ class TonicStatisticsFragment : Fragment() {
 
             setEntryLabelTextSize(10f)
             setEntryLabelColor(Color.parseColor("#000000"))
-              animateY(1400, Easing.EaseInOutQuad)
+            animateY(1400, Easing.EaseInOutQuad)
         }
 
         var sum = 0.toFloat()

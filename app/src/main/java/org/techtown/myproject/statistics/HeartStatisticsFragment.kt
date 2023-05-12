@@ -124,9 +124,6 @@ class HeartStatisticsFragment : Fragment() {
 
         spinner = v.findViewById(R.id.spinner)
 
-        setTodayChart()
-        Log.d("valueList", valueList.toString())
-        barTodayChartGraph(v, oneDayChart, valueList, labelList)
         setShowChart(v, "오늘")
     }
 
@@ -209,8 +206,7 @@ class HeartStatisticsFragment : Fragment() {
                 yearChart.visibility = View.GONE
 
                 Log.d("oneDayMap", "$valueList $labelList")
-                setTodayChart()
-                barTodayChartGraph(v, oneDayChart, valueList, labelList)
+                setTodayChart(v)
             }
             "1주일" -> {
                 oneDayChart.visibility = View.GONE
@@ -273,7 +269,7 @@ class HeartStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setTodayChart() {
+    private fun setTodayChart(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -301,6 +297,9 @@ class HeartStatisticsFragment : Fragment() {
                             i += 1
                         }
                     }
+
+                    barTodayChartGraph(v, oneDayChart, valueList, labelList)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "호흡수 기록 삭제 완료")
                 }

@@ -209,9 +209,6 @@ class SnackStatisticsFragment : Fragment() {
 
         spinner = v.findViewById(R.id.spinner)
 
-        setTodayPieChartReady()
-        setTodayPieChart()
-        pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
         setShowChart(v, "오늘")
 
         for((key, value) in oneDayMap.entries) {
@@ -309,11 +306,7 @@ class SnackStatisticsFragment : Fragment() {
                 yearRecyclerView.visibility = View.GONE
 
                 Log.d("oneDayPieMap", "$oneDayPieMap")
-                setTodayPieChartReady()
-                setTodayPieChart()
-                pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
-                setTodaySnack()
-                Log.d("snackList", labelList.toString())
+                setTodayPieChartReady(v)
             }
             "1주일" -> {
                 oneDayPieChart.visibility = View.GONE
@@ -403,7 +396,7 @@ class SnackStatisticsFragment : Fragment() {
         }
     }
 
-    private fun setTodayPieChartReady() {
+    private fun setTodayPieChartReady(v : View) {
         val nowSp = nowDate.split(".") // 오늘 날짜
         val nowYear = nowSp[0].toInt()
         val nowMonth = nowSp[1].toInt()
@@ -431,42 +424,52 @@ class SnackStatisticsFragment : Fragment() {
                             oneDayMap[item!!.snackName] = 0
                         }
                     }
-                } catch (e: Exception) {
-                    Log.d(TAG, "간식 기록 삭제 완료")
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        FBRef.snackRef.child(myUid).child(dogId).addValueEventListener(postListener)
-    }
+                    val nowSp = nowDate.split(".") // 오늘 날짜
+                    val nowYear = nowSp[0].toInt()
+                    val nowMonth = nowSp[1].toInt()
+                    val nowDay = nowSp[2].toInt()
 
-    private fun setTodayPieChart() {
-        val nowSp = nowDate.split(".") // 오늘 날짜
-        val nowYear = nowSp[0].toInt()
-        val nowMonth = nowSp[1].toInt()
-        val nowDay = nowSp[2].toInt()
+                    val postListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            try { // 간식 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
 
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                try { // 간식 기록 삭제 후 그 키 값에 해당하는 기록이 호출되어 오류가 발생, 오류 발생되어 앱이 종료되는 것을 막기 위한 예외 처리 적용
+                                for((key, value) in oneDayPieMap) {
+                                    oneDayPieMap[key] = 0.toFloat()
+                                }
 
-                    for (dataModel in dataSnapshot.children) {
-                        val item = dataModel.getValue(DogSnackModel::class.java)
-                        val date = item!!.date
-                        val sp = date.split(".")
-                        val year = sp[0].toInt()
-                        val month = sp[1].toInt()
-                        val day = sp[2].toInt()
+                                for((key, value) in oneDayMap) {
+                                    oneDayMap[key] = 0
+                                }
 
-                        if(year == nowYear && month == nowMonth && day == nowDay) {
-                            oneDayPieMap[item!!.snackType] = oneDayPieMap[item!!.snackType]!! + 1.toFloat()
-                            // oneDayBarMap[item!!.timeSlot] = oneDayBarMap[item!!.timeSlot]!! + item!!.mealWeight.toFloat()
+                                for (dataModel in dataSnapshot.children) {
+                                    val item = dataModel.getValue(DogSnackModel::class.java)
+                                    val date = item!!.date
+                                    val sp = date.split(".")
+                                    val year = sp[0].toInt()
+                                    val month = sp[1].toInt()
+                                    val day = sp[2].toInt()
+
+                                    if(year == nowYear && month == nowMonth && day == nowDay) {
+                                        oneDayPieMap[item!!.snackType] = oneDayPieMap[item!!.snackType]!! + 1.toFloat()
+                                    }
+                                }
+
+                                pieTodayChartGraph(v, oneDayPieChart, oneDayPieMap)
+                                setTodaySnack()
+
+                            } catch (e: Exception) {
+                                Log.d(TAG, "간식 기록 삭제 완료")
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                         }
                     }
+                    FBRef.snackRef.child(myUid).child(dogId).addValueEventListener(postListener)
+
                 } catch (e: Exception) {
                     Log.d(TAG, "간식 기록 삭제 완료")
                 }
