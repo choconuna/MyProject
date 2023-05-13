@@ -11,8 +11,8 @@ android {
         applicationId "org.techtown.myproject"
         minSdk 21
         targetSdk 32
-        versionCode 17
-        versionName "1.16"
+        versionCode 18
+        versionName "1.17"
 
         multiDexEnabled = true
 
