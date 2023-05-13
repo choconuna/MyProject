@@ -153,54 +153,6 @@ class MainActivity : AppCompatActivity() {
         // NotificationChannel 생성
         createNotificationChannel()
 
-//        // Firebase Realtime Database에서 데이터 가져오기
-//        FBRef.medicinePlanRef.child(uid).child(dogId).addValueEventListener(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot1) {
-//                try {
-//                    for (data in snapshot.children) {
-//                        val medicinePlan = data.getValue(DogMedicinePlanModel::class.java)
-//
-//                        // 현재 시간과 알림을 설정할 시간 비교
-//                        val calendar = Calendar.getInstance()
-//                        val currentTime = calendar.timeInMillis
-//                        val planTime = getPlanTimeInMillis(medicinePlan)
-//
-//                        if (planTime > currentTime) {
-//                            // AlarmManager 설정
-//                            val intent = Intent(this@MainActivity, MyNotificationReceiver::class.java).apply {
-//                                putExtra("medicineName", medicinePlan?.medicineName)
-//                            }
-//                            val pendingIntent = PendingIntent.getBroadcast(this@MainActivity, medicinePlan?.dogMedicinePlanId.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
-//                            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//
-//                            if (medicinePlan?.repeat == "매일") {
-//                                // startDate와 endDate 사이에 모든 날짜에 알림 설정
-//                                val startDate = getDateFromString(medicinePlan?.startDate)
-//                                val endDate = getDateFromString(medicinePlan?.endDate)
-//                                val interval = 24 * 60 * 60 * 1000 // 1일(24시간) 간격으로 알림 설정
-//
-//                                var timeInMillis = getPlanTimeInMillis(medicinePlan)
-//                                while (timeInMillis <= endDate.timeInMillis) {
-//                                    if (timeInMillis >= startDate.timeInMillis) {
-//                                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
-//                                    }
-//                                    timeInMillis += interval
-//                                }
-//                            } else {
-//                                // startDate에만 알림 설정
-//                                val startDate = getDateFromString(medicinePlan?.startDate)
-//                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, getPlanTimeInMillis(medicinePlan), pendingIntent)
-//                            }
-//                        }
-//                    }
-//                } catch(e : Exception) { }
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                // 데이터 가져오기 실패 시 처리
-//            }
-//        })
-
         bnv_main = findViewById(R.id.bottom_menu)
         initNavigationBar()
     }
@@ -226,17 +178,15 @@ class MainActivity : AppCompatActivity() {
                     var address: MutableList<Address> = mutableListOf()
 
                     try {
-                        address = g.getFromLocation(location.latitude, location.longitude, 20)
+                        address = g.getFromLocation(location.latitude, location.longitude, 200)
                         Log.d("getLocation", address.toString())
-//                        Log.d("getLocation", address[0].getAddressLine(0).split(" ")[3])
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
 
-                    if (address != null && address.isNotEmpty() && address[0].getAddressLine(0).split(" ").size > 3 && address[0].getAddressLine(0).split(" ")[2].last() == '구') {
+                    if (address != null && address.isNotEmpty() && address[0].getAddressLine(0).split(" ").size > 3) {
                         var adminArea = address[0].adminArea
-                        var subLocality = address[0].subLocality
-//                        var thoroughfare = address[0].thoroughfare
+                        var subLocality = address[0].getAddressLine(0).split(" ")[2]
                         var thoroughfare = address[0].getAddressLine(0).split(" ")[3]
 
                         sharedPreferences.edit()
@@ -279,25 +229,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-    }
-
-    // 알림을 보낼 시간 가져오기
-    private fun getPlanTimeInMillis(medicinePlan: DogMedicinePlanModel?): Long {
-        val calendar = Calendar.getInstance().apply {
-            set(Calendar.YEAR, medicinePlan?.startDate?.substring(0, 4)?.toInt() ?: 0)
-            set(Calendar.MONTH, medicinePlan?.startDate?.substring(5, 7)?.toInt()?.minus(1) ?: 0)
-            set(Calendar.DAY_OF_MONTH, medicinePlan?.startDate?.substring(8, 10)?.toInt() ?: 0)
-            set(Calendar.HOUR_OF_DAY, medicinePlan?.time?.substring(0, 2)?.toInt() ?: 0)
-            set(Calendar.MINUTE, medicinePlan?.time?.substring(3, 5)?.toInt() ?: 0)
-        }
-        return calendar.timeInMillis
-    }
-
-    // String 타입의 날짜를 Calendar 객체로 변환하는 함수
-    private fun getDateFromString(dateString: String?): Calendar {
-        val calendar = Calendar.getInstance()
-        calendar.time = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(dateString)
-        return calendar
     }
 
     private fun createNotificationChannel() {

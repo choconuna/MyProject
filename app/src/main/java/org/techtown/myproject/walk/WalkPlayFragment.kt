@@ -57,6 +57,9 @@ class WalkPlayFragment : Fragment() {
     private lateinit var mLocationRequest: LocationRequest // 위치 정보 요청의 매개변수를 저장하는
     private val REQUEST_PERMISSION_LOCATION = 10
 
+    private var isLocationAndWeatherFetched = false // 위치 정보와 날씨 정보를 가져왔는지 여부를 저장할 변수
+    private var isFragmentVisible = false // 현재 Fragment가 사용자에게 보여지는 상태인지 여부를 저장할 변수
+
     var BaseUrl = "https://api.openweathermap.org/data/2.5/"
     var AppId = "0fd049ed291f9069c321e2d10a9c2d4b"
     var lat = ""
@@ -113,8 +116,6 @@ class WalkPlayFragment : Fragment() {
         refresh.setOnClickListener {
             startLocationUpdates()
         }
-
-//        startLocationUpdates()
 
         //Create Retrofit Builder
         retrofit = Retrofit.Builder()
@@ -302,13 +303,6 @@ class WalkPlayFragment : Fragment() {
         mFusedLocationProviderClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        if (checkPermissionForLocation(requireContext())) {
-//            startLocationUpdates()
-//        }
-//    }
-
     override fun onPause() {
         super.onPause()
         stopLocationUpdates()
@@ -330,6 +324,7 @@ class WalkPlayFragment : Fragment() {
 
     // 시스템으로 부터 받은 위치 정보를 화면에 갱신해주는 메소드
     fun onLocationChanged(location: Location) {
+        if (!isVisible) return // walkPlayFragment가 화면에 보이지 않으면 중지
         mLastLocation = location
 
         val g = Geocoder(context)
@@ -344,7 +339,7 @@ class WalkPlayFragment : Fragment() {
         if (address != null && address.isNotEmpty()) {
             if (address.size == 0) {
                 Log.d("getLocation", "위치 찾기 오류")
-            } else if(address != null && address.isNotEmpty() && address[0].getAddressLine(0).split(" ").size > 3 && address[0].getAddressLine(0).split(" ")[2].last() == '구') {
+            } else if(address != null && address.isNotEmpty() && address[0].getAddressLine(0).split(" ").size > 3) {
                 Log.d("getLocation", address[0].toString())
                 locationArea.text = address[0].adminArea + " " + address[0].getAddressLine(0).split(" ")[3]
             } else if(address != null && address.isNotEmpty() && address[0].getAddressLine(0).split(" ").size == 3) {
