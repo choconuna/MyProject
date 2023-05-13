@@ -30,6 +30,7 @@ import org.techtown.myproject.R
 import org.techtown.myproject.chat.ChatInActivity
 import org.techtown.myproject.comment.CommentModel
 import org.techtown.myproject.comment.CommentReVAdapter
+import org.techtown.myproject.note.ImageDetailActivity
 import org.techtown.myproject.utils.BlockModel
 import org.techtown.myproject.utils.ChatConnection
 import org.techtown.myproject.utils.FBRef
@@ -101,7 +102,7 @@ class SpecificCommunityInActivity : AppCompatActivity() {
         communityImageVAdapter.setItemClickListener(object: CommunityImageAdapter.OnItemClickListener{
             override fun onClick(v: View, position: Int) {
                 // 클릭 시 이벤트 작성
-                val intent = Intent(applicationContext, CommunityImageDetailActivity::class.java)
+                val intent = Intent(applicationContext, ImageDetailActivity::class.java)
                 intent.putExtra("image", imageDataList[position]) // 사진 링크 넘기기
                 startActivity(intent)
             }

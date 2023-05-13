@@ -123,7 +123,7 @@
                             android:fontFamily="@font/regular"
                             android:text="병원"
                             android:textColor="#999999"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/dateArea"
@@ -135,7 +135,7 @@
                             android:gravity="right"
                             android:text="날짜"
                             android:textColor="#999999"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
