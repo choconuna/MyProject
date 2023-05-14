@@ -60,6 +60,7 @@ class DealChatReVAdapter(val dealChatList : ArrayList<DealChatConnection>):
 
             storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
                 if(task.isSuccessful) {
+                    Glide.with(holder!!.view!!.context).clear(holder!!.yourProfile!!) // clear() 메서드 호출
                     Glide.with(holder!!.view!!.context).load(task.result).thumbnail(Glide.with(holder!!.view!!.context).load(task.result)).into(holder!!.yourProfile!!)
                 } else {
                     holder!!.yourProfile!!.isVisible = false
@@ -93,6 +94,7 @@ class DealChatReVAdapter(val dealChatList : ArrayList<DealChatConnection>):
 
                 storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
                     if(task.isSuccessful) {
+                        Glide.with(holder!!.view!!.context).clear(holder!!.itemImageArea!!) // clear() 메서드 호출
                         Glide.with(holder!!.view!!.context).load(task.result).into(holder!!.itemImageArea!!) // 게시글에 첫 번째 이미지를 표시함
                     } else {
                         holder!!.itemImageArea!!.visibility = GONE
