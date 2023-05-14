@@ -64,6 +64,7 @@ class DealReVAdapter(val dealList : ArrayList<DealModel>):
 
             storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
                 if(task.isSuccessful) {
+                    Glide.with(holder.view!!.context).clear(holder!!.profileImageArea!!) // 이전 이미지를 지움
                     Glide.with(holder!!.view!!.context).load(task.result).into(holder!!.profileImageArea!!) // 유저의 profile 사진을 게시자 이름의 왼편에 표시함
                 } else {
                     holder!!.profileImageArea!!.isVisible = false
@@ -130,6 +131,7 @@ class DealReVAdapter(val dealList : ArrayList<DealModel>):
 
             storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
                 if(task.isSuccessful) {
+                    Glide.with(holder.view!!.context).clear(holder!!.dealImage!!) // 이전 이미지를 지움
                     Glide.with(holder!!.view!!.context).load(task.result).into(holder!!.dealImage!!) // 게시글에 첫 번째 이미지를 표시함
                 } else {
                     holder!!.dealImage!!.isVisible = false

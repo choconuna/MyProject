@@ -57,6 +57,7 @@ class ChatReVAdapter(val chatList : ArrayList<ChatConnection>):
 
             storageReference.downloadUrl.addOnCompleteListener(OnCompleteListener { task ->
                 if(task.isSuccessful) {
+                    Glide.with(holder.view!!.context).clear(holder!!.yourProfile!!) // 이전 이미지를 지움
                     Glide.with(holder!!.view!!.context).load(task.result).thumbnail(Glide.with(holder!!.view!!.context).load(task.result)).into(holder!!.yourProfile!!)
                 } else {
                     holder!!.yourProfile!!.isVisible = false
