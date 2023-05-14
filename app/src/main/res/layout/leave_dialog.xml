@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center"
+    android:minWidth="300dp"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/confirmTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minHeight="50dp"
+        android:textSize="14sp"
+        android:fontFamily="@font/bold"
+        android:text="정말 멍노트를 탈퇴하시겠습니까?" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/noBtn"
+            android:background="@drawable/circular_custom"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="7dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/bold"
+            android:textColor="@color/mainColor"
+            android:text="아니요"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/yesBtn"
+            android:background="@drawable/circular_custom_brown"
+            android:fontFamily="@font/bold"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:text="예"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

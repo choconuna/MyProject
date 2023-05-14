@@ -26,6 +26,9 @@ import org.techtown.myproject.MyNotificationReceiver
 import org.techtown.myproject.R
 import org.techtown.myproject.comment.CommentModel
 import org.techtown.myproject.community.CommunityModel
+import org.techtown.myproject.note.DogDungEditActivity
+import org.techtown.myproject.note.DogPeeEditActivity
+import org.techtown.myproject.note.DogVomitEditActivity
 import org.techtown.myproject.receipt.Receipt
 import org.techtown.myproject.utils.*
 import java.io.ByteArrayOutputStream
@@ -96,9 +99,26 @@ class ProfileEditActivity : AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.leaveBtn).setOnClickListener {
-            removeAllDate()
-            val intent = Intent(this, LeaveActivity::class.java)
-            startActivity(intent) // 탈퇴 액티비티 실행시키기
+            val mDialogView = LayoutInflater.from(this).inflate(R.layout.leave_dialog, null)
+            val mBuilder = AlertDialog.Builder(this).setView(mDialogView)
+
+            val alertDialog = mBuilder.show()
+            val noBtn = alertDialog.findViewById<Button>(R.id.noBtn)
+            noBtn?.setOnClickListener { // 아니요 버튼 클릭 시
+                Log.d(TAG, "no Button Clicked")
+
+                alertDialog.dismiss()
+            }
+
+            val yesBtn = alertDialog.findViewById<Button>(R.id.yesBtn)
+            yesBtn?.setOnClickListener {  // 예 버튼 클릭 시
+                Log.d(TAG, "yes Button Clicked")
+                alertDialog.dismiss()
+
+                removeAllDate()
+                val intent = Intent(this, LeaveActivity::class.java)
+                startActivity(intent) // 탈퇴 액티비티 실행시키기
+            }
         }
     }
 
