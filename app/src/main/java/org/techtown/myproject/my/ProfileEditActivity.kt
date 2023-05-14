@@ -96,9 +96,9 @@ class ProfileEditActivity : AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.leaveBtn).setOnClickListener {
-//            removeAllDate()
-//            val intent = Intent(this, LeaveActivity::class.java)
-//            startActivity(intent) // 탈퇴 액티비티 실행시키기
+            removeAllDate()
+            val intent = Intent(this, LeaveActivity::class.java)
+            startActivity(intent) // 탈퇴 액티비티 실행시키기
         }
     }
 
