@@ -258,7 +258,7 @@ class ChatInActivity : AppCompatActivity() {
                         val item = dataModel.getValue(ChatConnection::class.java)
 
                         // 이미 글 작성자와 채팅 이력이 존재한다면
-                        if((item!!.userId1 == myUid || item!!.userId2 == yourUid) || (item!!.userId1 == yourUid && item!!.userId2 == myUid)) {
+                        if((item!!.userId1 == myUid && item!!.userId2 == yourUid) || (item!!.userId1 == yourUid && item!!.userId2 == myUid)) {
                             val postListener = object : ValueEventListener {
                                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                                     try {
@@ -279,6 +279,8 @@ class ChatInActivity : AppCompatActivity() {
                                                     .addOnFailureListener {}
                                             }
 
+
+                                            Log.d("getMessage", item!!.toString())
                                             messageDataList.add(item!!)
                                         }
 
