@@ -25,6 +25,19 @@
 * API, 라이브러리: RESTful API, Retrofit, OpenWeatherMap API, NaverMap API
 
 ## 화면
-<img src="https://user-images.githubusercontent.com/51365114/119627750-716f3100-be47-11eb-8e83-686b23c2c161.png  width="200" height="400"/>
+<div align="center">
+  <div>
+    <img src="images/mung1.png"  width="200" height="400"/>
+    <img src="images/mung2.png"  width="200" height="400"/>
+    <img src="images/mung3.png"  width="200" height="400"/>
+    <img src="images/mung7.png"  width="200" height="400"/>
+    <img src="images/mung9.png"  width="200" height="400"/>
+    <img src="images/mung10.png"  width="200" height="400"/>
+    <img src="images/mung12.png"  width="200" height="400"/>
+    <img src="images/mung13.png"  width="200" height="400"/>
+    <img src="images/mung14.png"  width="200" height="400"/>
+    <img src="images/mung15.png"  width="200" height="400"/>
+  </div>
+</div>
 
 ## 기능
