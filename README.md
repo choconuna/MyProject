@@ -27,16 +27,16 @@
 ## 화면
 <div align="center">
   <div>
-    <img src="images/mung1.png"  width="200" height="400"/>
-    <img src="images/mung2.png"  width="200" height="400"/>
-    <img src="images/mung3.png"  width="200" height="400"/>
-    <img src="images/mung7.png"  width="200" height="400"/>
-    <img src="images/mung9.png"  width="200" height="400"/>
-    <img src="images/mung10.png"  width="200" height="400"/>
-    <img src="images/mung12.png"  width="200" height="400"/>
-    <img src="images/mung13.png"  width="200" height="400"/>
-    <img src="images/mung14.png"  width="200" height="400"/>
-    <img src="images/mung15.png"  width="200" height="400"/>
+    <img src="image/mung1.png"  width="200" height="400"/>
+    <img src="image/mung2.png"  width="200" height="400"/>
+    <img src="image/mung3.png"  width="200" height="400"/>
+    <img src="image/mung4.png"  width="200" height="400"/>
+    <img src="image/mung5.png"  width="200" height="400"/>
+    <img src="image/mung6.png"  width="200" height="400"/>
+    <img src="image/mung7.png"  width="200" height="400"/>
+    <img src="image/mung8.png"  width="200" height="400"/>
+    <img src="image/mung9.png"  width="200" height="400"/>
+    <img src="image/mung10.png"  width="200" height="400"/>
   </div>
 </div>
 
