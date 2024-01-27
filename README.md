@@ -10,8 +10,8 @@
 ## 목차
   - [개요](#개요)
   - [개발환경](#개발환경)
-  - [애플리케이션 화면](#애플리케이션화면)
-  - [주요 기능](#주요기능)
+  - [화면](#화면)
+  - [기능](#기능)
 
 ## 개요
 * 프로젝트 이름: 멍노트(Mung Note)
@@ -24,6 +24,7 @@
 * IDE: Android Studio
 * API, 라이브러리: RESTful API, Retrofit, OpenWeatherMap API, NaverMap API
 
-## 애플리케이션 화면
+## 화면
+<img src="https://user-images.githubusercontent.com/51365114/119627750-716f3100-be47-11eb-8e83-686b23c2c161.png  width="200" height="400"/>
 
-## 주요 기능
+## 기능
